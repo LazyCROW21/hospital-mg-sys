@@ -1,0 +1,26 @@
+<div class="auth-container">
+    <p-card>
+        <div class="grid">
+            <div class="col-6">
+                <h1>Hopital Management System</h1>
+                <p-divider></p-divider>
+                <ng-template [ngIf]="activeTab === 0" [ngIfElse]="doctorAuth">
+                    <p>Patient Login</p>
+                </ng-template>
+                <ng-template #doctorAuth>
+                    <p>Doctor Login</p>
+                </ng-template>
+            </div>
+            <div class="col-6">
+                <p-tabView [(activeIndex)]="activeTab">
+                    <p-tabPanel header="Patient" headerStyleClass="auth-tabs">
+                        Content 1
+                    </p-tabPanel>
+                    <p-tabPanel header="Doctor" headerStyleClass="auth-tabs">
+                        Content 3
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </p-card>
+</div>
