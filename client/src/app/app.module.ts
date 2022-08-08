@@ -5,6 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TabViewModule } from 'primeng/tabview';
 import { DividerModule } from 'primeng/divider';
 import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { MenuModule } from 'primeng/menu';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +31,13 @@ import { AuthComponent } from './auth/auth.component';
     BrowserAnimationsModule,
     TabViewModule,
     DividerModule,
-    CardModule
+    CardModule,
+    InputTextModule,
+    ButtonModule,
+    DialogModule,
+    DropdownModule,
+    CalendarModule,
+    MenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

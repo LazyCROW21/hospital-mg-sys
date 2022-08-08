@@ -1,5 +1,5 @@
 <div class="auth-container">
-    <p-card>
+    <p-card styleClass="mt-8">
         <div class="grid">
             <div class="col-6">
                 <h1>Hopital Management System</h1>
@@ -14,13 +14,87 @@
             <div class="col-6">
                 <p-tabView [(activeIndex)]="activeTab">
                     <p-tabPanel header="Patient" headerStyleClass="auth-tabs">
-                        Content 1
+                        <div>
+                            <div class="p-inputgroup mb-2">
+                                <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input type="text" pInputText placeholder="Username">
+                            </div>
+                            <div class="p-inputgroup mb-2">
+                                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                                <input type="password" pInputText placeholder="Password">
+                            </div>
+                            <div class="text-center">
+                                <p-button label="Login" class="block-btn"></p-button>
+                            </div>
+                            <p class="text-center mt-2">
+                                <a href="#">Forgotten password?</a>
+                            </p>
+                            <p-divider></p-divider>
+                            <div class="text-center">
+                                <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
+                                </p-button>
+                            </div>
+                        </div>
                     </p-tabPanel>
                     <p-tabPanel header="Doctor" headerStyleClass="auth-tabs">
-                        Content 3
+                        <div>
+                            <div class="p-inputgroup mb-2">
+                                <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input type="text" pInputText placeholder="Username">
+                            </div>
+                            <div class="p-inputgroup mb-2">
+                                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                                <input type="password" pInputText placeholder="Password">
+                            </div>
+                            <div class="text-center">
+                                <p-button label="Login" class="block-btn"></p-button>
+                            </div>
+                            <p class="text-center mt-2">
+                                <a href="#">Forgotten password?</a>
+                            </p>
+                            <p-divider></p-divider>
+                            <div class="text-center">
+                                <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
+                                </p-button>
+                            </div>
+                        </div>
                     </p-tabPanel>
                 </p-tabView>
             </div>
         </div>
     </p-card>
 </div>
+<p-dialog [(visible)]="showNewAccountForm" [header]="activeTab === 0 ? 'New Patient Acount' : 'New Doctor Account'"
+    [style]="{ maxWidth: '80%' }">
+    <form>
+        <div class="grid">
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="First Name" />
+            </div>
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="Last Name" />
+            </div>
+            <div class="col-6">
+                <input type="email" class="w-full" pInputText placeholder="E-Mail">
+            </div>
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="Phone">
+            </div>
+            <div class="col-6">
+                <p-dropdown styleClass="w-full" appendTo="body" placeholder="Gender" [options]="genderOptions"
+                    optionLabel="label" optionValue="value">
+                </p-dropdown>
+            </div>
+            <div class="col-6">
+                <p-calendar styleClass="w-full" appendTo="body" [maxDate]="maxDate" [showIcon]="true">
+                </p-calendar>
+            </div>
+        </div>
+    </form>
+    <ng-template [ngIf]="activeTab === 0" [ngIfElse]="doctorForm">
+
+    </ng-template>
+    <ng-template #doctorForm>
+
+    </ng-template>
+</p-dialog>

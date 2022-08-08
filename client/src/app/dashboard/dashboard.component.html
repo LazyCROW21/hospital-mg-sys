@@ -1,1 +1,16 @@
-<p>dashboard works!</p>
+<div class="flex flex-wrap gap-2 align-items-center p-4">
+    <div class="w-full md:w-auto flex justify-content-between">
+        <button>
+            <i class="pi pi-bars" style="font-size: 2rem"></i>
+        </button>
+        <h2 class="ml-4">HMS</h2>
+    </div>
+    <div
+        class="flex flex-column md:flex-row flex-grow-1 gap-2 justify-content-end">
+        <p-button type="button" label="Menu" (onClick)="menu.toggle($event)"></p-button>
+        <p-menu [popup]="true" [model]="menuItems" #menu></p-menu>
+    </div>
+</div>
+<div class="container">
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea dolor suscipit cumque nulla quam asperiores laborum, corporis harum facere expedita, adipisci possimus quae quibusdam, aperiam quidem nostrum recusandae accusantium assumenda?</p>
+</div>
