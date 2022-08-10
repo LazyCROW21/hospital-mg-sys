@@ -86,8 +86,26 @@
                 </p-dropdown>
             </div>
             <div class="col-6">
-                <p-calendar styleClass="w-full" appendTo="body" [maxDate]="maxDate" [showIcon]="true">
+                <p-calendar placeholder="Date Of Birth" styleClass="w-full" appendTo="body" [maxDate]="maxDate" [showIcon]="true">
                 </p-calendar>
+            </div>
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="Address Line 1">
+            </div>
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="Address Line 2">
+            </div>
+            <div class="col-6">
+                <p-inputNumber [style]="{ width: '100%' }" styleClass="w-full" placeholder="PINCODE" [min]="0" [max]="999999">
+                </p-inputNumber>
+            </div>
+            <div class="col-6">
+                <input type="text" class="w-full" pInputText placeholder="City">
+            </div>
+            <div class="col-6">
+                <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions"
+                        optionLabel="label" optionValue="value">
+                </p-dropdown>
             </div>
         </div>
     </form>

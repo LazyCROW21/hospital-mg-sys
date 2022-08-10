@@ -12,6 +12,10 @@ export class AuthComponent implements OnInit {
     { label: 'Male', value: 'M' },
     { label: 'Femail', value: 'F' }
   ];
+  stateOptions = [
+    { label: 'Gujarat', value: 'GJ' },
+    { label: 'Maharashtra', value: 'MH' }
+  ];
   maxDate = new Date();
   constructor() { }
 

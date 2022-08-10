@@ -29,9 +29,37 @@ const User = sequelize.define('User', {
   gender: {
     type: DataTypes.STRING(1),
     allowNull: false
+  },
+  dob: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  line1: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  line2: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  pincode: {
+    type: DataTypes.STRING(6),
+    allowNull: false
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 }, {
-    timestamps: true
+  timestamps: true
 });
 
 module.exports = User;

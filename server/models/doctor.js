@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./config/db'); 
+const sequelize = require('../config/db'); 
 
 const Doctor = sequelize.define('Doctor', {
   userId: {
@@ -8,7 +8,7 @@ const Doctor = sequelize.define('Doctor', {
   },
   departmentId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   designation: {
     type: DataTypes.STRING(40),
