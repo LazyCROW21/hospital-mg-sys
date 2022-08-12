@@ -7,12 +7,25 @@ const getAllDoctors = async () => {
     return doctors;
 }
 
+const getDoctorsByDepartmentId = async (id) => {
+    const doctors = await DoctorModel.findAll({ where: { departmentId: id }})
+    return doctors
+}
+
 const getDoctorById = async (id) => {
     const doctor = await DoctorModel.findByPk(id)
     return doctor
 }
 
+const addDoctor = async (doctorData) => {
+    let doctor = new DoctorModel(doctorData);
+    await doctor.save();
+    return doctor;
+}
+
 module.exports = {
     getAllDoctors,
-    getDoctorById
+    getDoctorsByDepartmentId,
+    getDoctorById,
+    addDoctor
 }

@@ -14,6 +14,7 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TableModule } from 'primeng/table';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +24,7 @@ import { AuthComponent } from './auth/auth.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
 import { AppointmentComponent } from './dashboard/appointment/appointment.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { AppointmentComponent } from './dashboard/appointment/appointment.compon
     AuthComponent,
     DashboardHomeComponent,
     PatientRecordComponent,
-    AppointmentComponent
+    AppointmentComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,8 @@ import { AppointmentComponent } from './dashboard/appointment/appointment.compon
     MenuModule,
     SidebarModule,
     PanelMenuModule,
-    InputNumberModule
+    InputNumberModule,
+    TableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

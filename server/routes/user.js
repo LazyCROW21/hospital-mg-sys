@@ -14,8 +14,8 @@ router.post('/doctor', async (req, res) => {
 });
 
 router.post('/patient', async (req, res) => {
-    const doctor = await userController.addPatient(req.body);
-    res.send(doctor);
+    const patient = await userController.addPatient(req.body);
+    res.send(patient);
 });
 
 module.exports = router;

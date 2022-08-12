@@ -5,6 +5,7 @@ import { AppointmentComponent } from './dashboard/appointment/appointment.compon
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
@@ -17,7 +18,8 @@ const routes: Routes = [
       { path: '', component: DashboardHomeComponent, pathMatch: 'full' },
       // Patient
       { path: 'myrecord', component: PatientRecordComponent },
-      { path: 'appointment', component: AppointmentComponent }
+      { path: 'appointment', component: AppointmentComponent },
+      { path: 'profile', component: ProfileComponent }
     ]
   },
 ];

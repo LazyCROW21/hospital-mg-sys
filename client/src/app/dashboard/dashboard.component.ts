@@ -13,14 +13,14 @@ export class DashboardComponent implements OnInit {
 
   constructor() {
     this.menuItems = [
-      { label: 'Profile', icon: 'pi pi-fw pi-user' },
+      { label: 'Profile', icon: 'pi pi-fw pi-user', routerLink: '/dashboard/profile' },
       { label: 'Settings', icon: 'pi pi-fw pi-cog' },
       { label: 'Log out', icon: 'pi pi-fw pi-sign-out' },
     ];
     this.sideMenuItems = [
-      { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', routerLink: '/dashboard', command: this.closeSidebar },
-      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: 'appointment', command: this.closeSidebar },
-      { label: 'My Record', icon: 'pi pi-fw pi-briefcase', routerLink: 'myrecord', command: this.closeSidebar },
+      { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', routerLink: '/dashboard', command: this.closeSidebar.bind(this) },
+      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: 'appointment', command: this.closeSidebar.bind(this) },
+      { label: 'My Record', icon: 'pi pi-fw pi-briefcase', routerLink: 'myrecord', command: this.closeSidebar.bind(this) },
     ];
   }
 

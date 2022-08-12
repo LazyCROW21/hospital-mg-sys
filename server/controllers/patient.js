@@ -12,7 +12,14 @@ const getPatientById = async (id) => {
     return patient;
 }
 
+const addPatient = async (patientData) => {
+    let patient = new PatientModel(patientData);
+    await patient.save();
+    return patient;
+}
+
 module.exports = {
     getAllPatients,
-    getPatientById
+    getPatientById,
+    addPatient
 }

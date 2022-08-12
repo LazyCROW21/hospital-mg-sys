@@ -1,1 +1,44 @@
-<p>patient-record works!</p>
+<p-card>
+    <p-table
+        [columns]="recordCols" 
+        [value]="records" 
+        responsiveLayout="scroll" 
+        styleClass="p-datatable-sm p-datatable-striped"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+        [rowsPerPageOptions]="[10,25,50]"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                My Records
+                <p-button icon="pi pi-refresh"></p-button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{ col.label }}
+                    <p-sortIcon field="code"></p-sortIcon>
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-record let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns">
+                    {{ record[col.field] }}
+                </td>
+                <td>
+                    <p-button icon="pi pi-cog"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-table>
+</p-card>
