@@ -1,3 +1,67 @@
 <p-card>
-    <p>profile works!</p>
+    <h1 class="border-bottom-1 mb-2">My Profile</h1>
+    <div class="grid">
+        <div class="col-4">
+            <img height="128" width="128" alt="Profile">
+        </div>
+    </div>
+    <h2 class="mt-4 mb-2 border-bottom-1">Account Informtion</h2>
+    <div class="grid">
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="First Name" />
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="Last Name" />
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="Contact Number">
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="Emergency Contact Number">
+        </div>
+        <div class="col-6">
+            <input type="email" class="w-full" pInputText placeholder="E-Mail">
+        </div>
+        <div class="col-6">
+            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Gender" [options]="genderOptions"
+                optionLabel="label" optionValue="value">
+            </p-dropdown>
+        </div>
+        <div class="col-6">
+            <p-calendar placeholder="Date Of Birth" styleClass="w-full" appendTo="body" [maxDate]="maxDate" [showIcon]="true">
+            </p-calendar>
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="Address Line 1">
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="Address Line 2">
+        </div>
+        <div class="col-6">
+            <p-inputNumber styleClass="w-full" placeholder="PINCODE" [min]="0" [max]="999999">
+            </p-inputNumber>
+        </div>
+        <div class="col-6">
+            <input type="text" class="w-full" pInputText placeholder="City">
+        </div>
+        <div class="col-6">
+            <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions"
+                    optionLabel="label" optionValue="value">
+            </p-dropdown>
+        </div>
+    </div>
+    <div class="flex justify-content-end mt-2">
+        <p-button label="CANCEL" styleClass="p-button-text p-button-plain"></p-button>
+        <p-button label="SUBMIT" styleClass="ml-2"></p-button>
+    </div>
+    <h2 class="mt-4 mb-2 border-bottom-1">Change Password</h2>
+    <div class="flex flex-column">
+        <input type="text" class="my-1 w-full md:w-6" pInputText placeholder="Old Password">
+        <input type="text" class="my-1 w-full md:w-6" pInputText placeholder="New Password">
+        <input type="text" class="my-1 w-full md:w-6" pInputText placeholder="Confirm New Password">
+    </div>
+    <div class="flex justify-content-end mt-2">
+        <p-button label="CANCEL" styleClass="p-button-text p-button-plain"></p-button>
+        <p-button label="SUBMIT" styleClass="ml-2"></p-button>
+    </div>
 </p-card>

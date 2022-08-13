@@ -32,6 +32,10 @@ import { MainComponent } from './home/main/main.component';
 import { FacilityComponent } from './home/facility/facility.component';
 import { AboutComponent } from './home/about/about.component';
 import { ContactusComponent } from './home/contactus/contactus.component';
+import { DepartmentsComponent } from './dashboard/departments/departments.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
+import { DepartmentComponent } from './dashboard/departments/department/department.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +51,10 @@ import { ContactusComponent } from './home/contactus/contactus.component';
     FacilityComponent,
     AboutComponent,
     ContactusComponent,
+    DepartmentsComponent,
+    PageNotFoundComponent,
+    DoctorCasesComponent,
+    DepartmentComponent,
   ],
   imports: [
     BrowserModule,

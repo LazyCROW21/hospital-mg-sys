@@ -4,6 +4,9 @@ import { AuthComponent } from './auth/auth.component';
 import { AppointmentComponent } from './dashboard/appointment/appointment.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DepartmentComponent } from './dashboard/departments/department/department.component';
+import { DepartmentsComponent } from './dashboard/departments/departments.component';
+import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { AboutComponent } from './home/about/about.component';
@@ -11,6 +14,7 @@ import { ContactusComponent } from './home/contactus/contactus.component';
 import { FacilityComponent } from './home/facility/facility.component';
 import { HomeComponent } from './home/home.component';
 import { MainComponent } from './home/main/main.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   { 
@@ -28,12 +32,17 @@ const routes: Routes = [
     children: [
       // General
       { path: '', component: DashboardHomeComponent, pathMatch: 'full' },
+      { path: 'departments', component: DepartmentsComponent, pathMatch: 'full' },
+      { path: 'departments/:id', component: DepartmentComponent, pathMatch: 'full' },
       // Patient
-      { path: 'myrecord', component: PatientRecordComponent },
+      { path: 'records', component: PatientRecordComponent },
       { path: 'appointment', component: AppointmentComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      // Doctor
+      { path: 'cases', component: DoctorCasesComponent }
     ]
   },
+  { path: '**', component: PageNotFoundComponent, pathMatch: 'full', }
 ];
 
 @NgModule({

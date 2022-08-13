@@ -1,7 +1,7 @@
 <div class="flex flex-wrap gap-2 align-items-center justify-content-between p-4 bg-white">
     <div class="flex align-items-center">
         <button pButton class="p-button-text" icon="pi pi-bars" (click)="showSidebar = true;"></button>
-        <span class="text-xl ml-4">HMS</span>
+        <span class="text-2xl ml-4">HMS</span>
     </div>
     <div class="flex justify-content-end flex-grow-1 gap-2">
         <p-menu [popup]="true" [model]="menuItems" #menu styleClass="mt-2"></p-menu>
@@ -9,8 +9,12 @@
             (click)="menu.toggle($event)"></button>
     </div>
 </div>
-<p-sidebar [(visible)]="showSidebar">
+<p-sidebar [(visible)]="showSidebar" styleClass="bg-purple-300">
     <p-panelMenu [model]="sideMenuItems" [style]="{'width':'100%'}"></p-panelMenu>
+    <p-divider></p-divider>
+    <p-panelMenu [model]="patientSideMenuItems" [style]="{'width':'100%'}"></p-panelMenu>
+    <p-divider></p-divider>
+    <p-panelMenu [model]="doctorSideMenuItems" [style]="{'width':'100%'}"></p-panelMenu>
 </p-sidebar>
 <div class="container">
     <router-outlet></router-outlet>

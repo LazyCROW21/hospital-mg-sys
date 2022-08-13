@@ -1,0 +1,34 @@
+<p-card>
+    <div class="flex justify-content-between">
+        <h1>All Cases</h1>
+        <p-button label="Add New Report" icon="pi pi-plus">
+        </p-button>
+    </div>
+    <p-divider></p-divider>
+    <p-table [value]="cases" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Disease</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-case let-i="rowIndex">
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ case.id }}</td>
+                <td>{{ case.patient }}</td>
+                <td>{{ case.disease }}</td>
+                <td>{{ case.date }}</td>
+                <td>{{ case.status }}</td>
+                <td>
+                    <p-button icon="pi pi-cog"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

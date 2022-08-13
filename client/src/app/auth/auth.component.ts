@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { genderOptions, specializationOptions, stateOptions } from '../common/dropdown-options';
 
 @Component({
   selector: 'app-auth',
@@ -8,14 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class AuthComponent implements OnInit {
   activeTab: number = 0;
   showNewAccountForm: boolean = false;
-  genderOptions = [
-    { label: 'Male', value: 'M' },
-    { label: 'Femail', value: 'F' }
-  ];
-  stateOptions = [
-    { label: 'Gujarat', value: 'GJ' },
-    { label: 'Maharashtra', value: 'MH' }
-  ];
+  genderOptions = genderOptions;
+  stateOptions = stateOptions;
+  specializationOptions = specializationOptions;
+  
   maxDate = new Date();
   constructor() { }
 
