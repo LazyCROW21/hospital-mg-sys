@@ -1,0 +1,9 @@
+td {
+    padding: 0.5rem;
+}
+
+iframe{
+    display: block;
+    width: 100%;
+    height: 450px;
+}

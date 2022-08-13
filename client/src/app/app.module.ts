@@ -15,6 +15,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TableModule } from 'primeng/table';
+import { CarouselModule } from 'primeng/carousel';
+import { FieldsetModule } from 'primeng/fieldset';
+import { AccordionModule } from 'primeng/accordion';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +28,10 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
 import { AppointmentComponent } from './dashboard/appointment/appointment.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
+import { MainComponent } from './home/main/main.component';
+import { FacilityComponent } from './home/facility/facility.component';
+import { AboutComponent } from './home/about/about.component';
+import { ContactusComponent } from './home/contactus/contactus.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +42,11 @@ import { ProfileComponent } from './dashboard/profile/profile.component';
     DashboardHomeComponent,
     PatientRecordComponent,
     AppointmentComponent,
-    ProfileComponent
+    ProfileComponent,
+    MainComponent,
+    FacilityComponent,
+    AboutComponent,
+    ContactusComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +64,10 @@ import { ProfileComponent } from './dashboard/profile/profile.component';
     SidebarModule,
     PanelMenuModule,
     InputNumberModule,
-    TableModule
+    TableModule,
+    CarouselModule,
+    FieldsetModule,
+    AccordionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

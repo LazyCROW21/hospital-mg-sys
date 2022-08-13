@@ -6,10 +6,22 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
+import { AboutComponent } from './home/about/about.component';
+import { ContactusComponent } from './home/contactus/contactus.component';
+import { FacilityComponent } from './home/facility/facility.component';
 import { HomeComponent } from './home/home.component';
+import { MainComponent } from './home/main/main.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { 
+    path: '', component: HomeComponent,
+    children: [
+      { path: '', component: MainComponent, pathMatch: 'full' },
+      { path: 'facilities', component: FacilityComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'contactus', component: ContactusComponent },
+    ]
+  },
   { path: 'login', component: AuthComponent },
   { 
     path: 'dashboard', component: DashboardComponent,

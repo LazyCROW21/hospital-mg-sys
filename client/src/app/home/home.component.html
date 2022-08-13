@@ -7,16 +7,34 @@
             </button>
         </div>
     </div>
-    <div
-        *ngIf="showMenu"
-        class="flex flex-column md:flex-row flex-grow-1 gap-2 justify-content-end">
-        <a href="#">Home</a>
-        <a href="#">Facilities</a>
-        <a href="#">About</a>
-        <a href="#">Contact Us</a>
-        <a href="/login">Login</a>
+    <div *ngIf="showMenu" class="flex flex-column md:flex-row flex-grow-1 gap-2 justify-content-end">
+        <button pButton type="button" label="Home" class="p-button-text" [routerLink]="['/']"
+            routerLinkActive="p-button-outlined" [routerLinkActiveOptions]="{exact: true}"></button>
+        <button pButton type="button" label="Facilities" class="p-button-text" [routerLink]="['/facilities']"
+            routerLinkActive="p-button-outlined"></button>
+        <button pButton type="button" label="About" class="p-button-text" [routerLink]="['/about']"
+            routerLinkActive="p-button-outlined"></button>
+        <button pButton type="button" label="Contact Us" class="p-button-text" [routerLink]="['/contactus']"
+            routerLinkActive="p-button-outlined"></button>
+        <button pButton type="button" label="Login" class="p-button-text" [routerLink]="['/login']"
+            routerLinkActive="p-button-outlined"></button>
     </div>
 </div>
 <div class="container">
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea dolor suscipit cumque nulla quam asperiores laborum, corporis harum facere expedita, adipisci possimus quae quibusdam, aperiam quidem nostrum recusandae accusantium assumenda?</p>
+    <router-outlet></router-outlet>
+</div>
+
+<div class="mt-5 bg-pink-900">
+    <div class="container">
+        <div class="grid text-white">
+            <div class="col-6 text-left">
+                <p class="mb-2">Useful Links | Feedback | RTI | Disclaimer </p>
+                <p>Terms and Conditions | Privacy Policy | Copyright Policy | Help</p>
+            </div>
+            <div class="col-6 text-right">
+                <p class="mb-2">Visitors: 3620 | Page last updated on: 12/8/2022</p>
+                <p>&copy; 2022 General Hospital, Mehsana. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
 </div>

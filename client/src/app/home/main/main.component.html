@@ -1,0 +1,54 @@
+<p-card styleClass="my-2">
+    <p-carousel [value]="hospitalPhotos" [autoplayInterval]="3000" [circular]="true" [numVisible]="1" [numScroll]="1">
+        <ng-template let-photo pTemplate="item">
+            <div class="relative my-carousel flex flex-column align-items-center justify-content-center"
+                [style]="getBackgroundStyle(photo.url)">
+                <div class="w-9 my-carousel-text">
+                    <h3 class="text-center line-height-2 my-2">{{ photo.title }}</h3>
+                    <p class="text-center line-height-2">{{ photo.body }}</p>
+                    <p class="text-center line-height-2">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique, saepe?
+                    </p>
+                    <p class="text-center line-height-2">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio aspernatur quia eaque, fuga
+                        totam impedit.
+                    </p>
+                </div>
+            </div>
+        </ng-template>
+    </p-carousel>
+</p-card>
+<p-card styleClass="my-2">
+    <p-fieldset legend="Mission">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, libero expedita blanditiis maxime qui asperiores inventore vitae autem magnam totam neque in ut saepe quidem? Velit accusamus quibusdam qui vero.
+    </p-fieldset>
+</p-card>
+<p-card styleClass="my-2">
+    <p-fieldset legend="Vision">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, libero expedita blanditiis maxime qui asperiores inventore vitae autem magnam totam neque in ut saepe quidem? Velit accusamus quibusdam qui vero.
+    </p-fieldset>
+</p-card>
+<p-card>
+    <div class="grid text-center my-showcase">
+        <div class="col-3">
+            <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/000000/external-patient-biochemistry-and-medicine-healthcare-flatart-icons-lineal-color-flatarticons.png"/>
+            <h3>977986+</h3>
+            <h5>Patients Treated</h5>
+        </div>
+        <div class="col-3">
+            <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-hospital-bed-nursing-flaticons-flat-flat-icons-2.png"/>
+            <h3>1870+</h3>
+            <h5>Hospital Beds</h5>
+        </div>
+        <div class="col-3">
+            <img src="https://img.icons8.com/fluency/96/000000/medical-doctor.png"/>
+            <h3>540+</h3>
+            <h5>Expertise</h5>
+        </div>
+        <div class="col-3">
+            <img src="https://img.icons8.com/fluency/96/000000/nurse-female.png"/>
+            <h3>2100+</h3>
+            <h5>Trained Staff</h5>
+        </div>
+    </div>
+</p-card>
