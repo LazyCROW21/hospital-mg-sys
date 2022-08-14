@@ -18,4 +18,7 @@ const Department = sequelize.define('Department', {
   timestamps: true
 });
 
+Department.hasMany(Department, { foreignKey: 'parentDepartmentId' });
+Department.belongsTo(Department, { as: 'parentDepartment' });
+
 module.exports = Department;

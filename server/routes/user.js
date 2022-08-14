@@ -8,14 +8,22 @@ router.get('/', async (req, res) => {
     res.send(users);
 });
 
-router.post('/doctor', async (req, res) => {
-    const doctor = await userController.addDoctor(req.body);
-    res.send(doctor);
+router.post('/', async (req, res) => {
+    let user;
+    if(req.body.role === 'P') {
+        user = await userController.addPatient(req.body);
+    } else if(req.body.role === 'D') {
+        user = await userController.addDoctor(req.body);
+    }
+    res.send(user);
 });
 
-router.post('/patient', async (req, res) => {
-    const patient = await userController.addPatient(req.body);
-    res.send(patient);
+router.post('/login', async (req, res) => {
+    
+});
+
+router.post('/logout', async (req, res) => {
+
 });
 
 module.exports = router;

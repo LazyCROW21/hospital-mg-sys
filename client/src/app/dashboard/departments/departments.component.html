@@ -1,26 +1,60 @@
 <p-card>
-    <h1>All Departments</h1>
+    <div class="flex justify-content-between">
+        <h2>All Departments</h2>
+        <p-button label="Add New Department" icon="pi pi-plus" (onClick)="openDepartmentForm()">
+        </p-button>
+    </div>
     <p-divider></p-divider>
-    <p-table [value]="departments" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Parent Department</th>
-                <th>Action</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-department let-i="rowIndex">
-            <tr>
-                <td>{{ i + 1 }}</td>
-                <td>{{ department.id }}</td>
-                <td>{{ department.name }}</td>
-                <td>{{ department.parent }}</td>
-                <td>
-                    <p-button icon="pi pi-cog"></p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <ng-template [ngIf]="isLoadingDepartments" [ngIfElse]="notLoading">
+        <p class="text-center">Loading..</p>
+        <p-progressBar mode="indeterminate"></p-progressBar>
+    </ng-template>
+    <ng-template #notLoading>
+        <p-table [value]="departments" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Parent Department</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-department let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ department.name }}</td>
+                    <td>{{ department.parentDepartment ? department.parentDepartment.name : '' }}</td>
+                    <td>
+                        <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
+                            (onClick)="openMenu(i); menu.toggle($event);"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-menu #menu [popup]="true" [model]="rowMenu"></p-menu>
+    </ng-template>
 </p-card>
+
+<!-- Create Department Dialog -->
+<p-dialog [(visible)]="showNewDepartmentForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="newDepartmentForm" (ngSubmit)="onSubmit()">
+        <div class="field">
+            <label>Parent Department</label>
+            <input type="text" class="w-full" pInputText value="-- None --" readonly>
+        </div>
+        <div class="field">
+            <label>New Department Name</label>
+            <input type="text" class="w-full" pInputText placeholder="Name" formControlName="name" />
+        </div>
+        <div class="field">
+            <label>New Department Description</label>
+            <textarea pInputTextarea class="w-full" placeholder="Description" formControlName="description"></textarea>
+        </div>
+
+        <div class="flex justify-content-end mt-2">
+            <p-button [disabled]="!newDepartmentForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon">
+            </p-button>
+        </div>
+    </form>
+</p-dialog>
+<p-toast></p-toast>

@@ -39,7 +39,7 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   city: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(40),
     allowNull: false
   },
   state: {
@@ -55,7 +55,7 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   pwd: {
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(32),
     allowNull: false
   },
   role: {

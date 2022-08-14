@@ -19,6 +19,10 @@ import { TableModule } from 'primeng/table';
 import { CarouselModule } from 'primeng/carousel';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AccordionModule } from 'primeng/accordion';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -80,9 +84,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CarouselModule,
     FieldsetModule,
     AccordionModule,
-    HttpClientModule
+    ToastModule,
+    HttpClientModule,
+    ProgressBarModule,
+    InputTextareaModule
   ],
-  providers: [],
+  providers: [
+    MessageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
