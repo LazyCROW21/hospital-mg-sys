@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 import { TabViewModule } from 'primeng/tabview';
 import { DividerModule } from 'primeng/divider';
@@ -36,6 +37,7 @@ import { DepartmentsComponent } from './dashboard/departments/departments.compon
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { DepartmentComponent } from './dashboard/departments/department/departme
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     TabViewModule,
     DividerModule,
@@ -75,7 +79,8 @@ import { DepartmentComponent } from './dashboard/departments/department/departme
     TableModule,
     CarouselModule,
     FieldsetModule,
-    AccordionModule
+    AccordionModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
