@@ -16,7 +16,17 @@ router.get('/:id', async (req, res) => {
     return res.sendStatus(404);
 });
 
-router.post('/', (req, res) => {
+router.get('/doctor/:id', async (req, res) => {
+    const records = await recordController.getRecordsByDoctorId(req.params.id);
+    return res.send(records);
+});
+
+router.get('/patient/:id', async (req, res) => {
+    const records = await recordController.getRecordsByPatientId(req.params.id);
+    return res.send(records);
+});
+
+router.post('/', async (req, res) => {
     const newRecord = await recordController.addRecord(req.body);
     res.send(newRecord);
 });

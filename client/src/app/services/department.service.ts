@@ -13,8 +13,16 @@ export class DepartmentService {
     });
   }
 
+  getDepartment(departmentId: number) {
+    return this.http.get(baseURL+'/api/department/'+departmentId, { headers: this.baseHeader });
+  }
+
   getAllDepartments() {
     return this.http.get(baseURL+'/api/department', { headers: this.baseHeader });
+  }
+
+  getSubDepartments(departmentId: number) {
+    return this.http.get(baseURL+'/api/department/sub-departments/'+departmentId, { headers: this.baseHeader });
   }
 
   addDepartment(data: any) {

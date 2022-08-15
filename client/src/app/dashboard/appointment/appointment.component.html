@@ -1,35 +1,77 @@
 <p-card>
     <div class="flex justify-content-between">
         <h2>All Appointments</h2>
-        <p-button label="Book New Appointment" icon="pi pi-plus">
+        <p-button label="Book Appointment" styleClass="p-button-text" icon="pi pi-plus"
+            (onClick)="openAppointmentForm()">
         </p-button>
     </div>
     <p-divider></p-divider>
-    <p-table
-        [columns]="appointmentCols" 
-        [value]="appointments" 
-        responsiveLayout="scroll"
-        styleClass="p-datatable-sm p-datatable-striped"
-    >
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns">
-                    {{ col.label }}
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-record let-columns="columns">
-            <tr>
-                <td *ngFor="let col of columns">
-                    {{ record[col.field] }}
-                </td>
-                <td>
-                    <p-button icon="pi pi-cog"></p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <ng-template [ngIf]="isLoadingAppointments" [ngIfElse]="notLoading">
+        <p class="text-center">Loading..</p>
+        <p-progressBar mode="indeterminate"></p-progressBar>
+    </ng-template>
+    <ng-template #notLoading>
+        <p-table [value]="appointments" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-striped">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>#</th>
+                    <th *ngIf="isDoctor || isAdmin">Patient</th>
+                    <th *ngIf="isPatient || isAdmin">Doctor</th>
+                    <th>Subject</th>
+                    <th>Preferred Date</th>
+                    <th class="text-center">Status</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-appointment>
+                <tr>
+                    <td>#</td>
+                    <td *ngIf="isDoctor || isAdmin">{{ appointment.patientId }}</td>
+                    <td *ngIf="isPatient || isAdmin">{{ appointment.doctorId }}</td>
+                    <td>{{ appointment.subject }}</td>
+                    <td>{{ appointment.preferredDateTime | date:'short' }}</td>
+                    <td class="text-center">
+                        <p-badge *ngIf="appointment.status === 'fixed'" value="fixed" severity="success"></p-badge>
+                        <p-badge *ngIf="appointment.status === 'applied'" value="applied" severity="info"></p-badge>
+                        <p-badge *ngIf="appointment.status === 'rejected'" value="rejected" severity="danger"></p-badge>
+                    </td>
+                    <td>
+                        <p-button styleClass="p-button-text" icon="pi pi pi-ellipsis-v" (onClick)="menu.toggle($event)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-menu #menu [popup]="true" [model]="rowMenu"></p-menu>
+    </ng-template>
 </p-card>
+
+<!-- Create Appointment Dialog -->
+<p-dialog [(visible)]="showNewAppointmentForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="newAppointmentForm" (ngSubmit)="onSubmit()">
+        <div class="field">
+            <label>Doctor</label>
+            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Doctor" [options]="doctorOptions"
+            formControlName="doctorId" optionLabel="label" optionValue="value"></p-dropdown>
+        </div>
+        <div class="field">
+            <label>Subject</label>
+            <input type="text" class="w-full" pInputText placeholder="Subject" formControlName="subject" />
+        </div>
+        <div class="field">
+            <label>Message</label>
+            <textarea pInputTextarea class="w-full" placeholder="Describe your problem here"
+                formControlName="message"></textarea>
+        </div>
+        <div class="field">
+            <label>Preferred Date & Time:</label>
+            <p-calendar placeholder="Appointment Date" styleClass="w-full" appendTo="body" [minDate]="minDate"
+                [showIcon]="true" formControlName="preferredDateTime">
+            </p-calendar>
+        </div>
+        <div class="flex justify-content-end mt-2">
+            <p-button [disabled]="!newAppointmentForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon">
+            </p-button>
+        </div>
+    </form>
+</p-dialog>
+<p-toast></p-toast>

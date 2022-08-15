@@ -1,16 +1,16 @@
 <p-card>
     <div class="flex justify-content-between">
-        <h2>All Departments</h2>
-        <p-button label="Add Department" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openDepartmentForm()">
+        <h2>All Records</h2>
+        <p-button label="Add Record" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openRecordForm()">
         </p-button>
     </div>
     <p-divider></p-divider>
-    <ng-template [ngIf]="isLoadingDepartments" [ngIfElse]="notLoading">
+    <ng-template [ngIf]="isLoadingRecords" [ngIfElse]="notLoading">
         <p class="text-center">Loading..</p>
         <p-progressBar mode="indeterminate"></p-progressBar>
     </ng-template>
     <ng-template #notLoading>
-        <p-table [value]="departments" responsiveLayout="scroll">
+        <p-table [value]="records" responsiveLayout="scroll">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
@@ -19,11 +19,11 @@
                     <th></th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-department let-i="rowIndex">
+            <ng-template pTemplate="body" let-record let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <td>{{ department.name }}</td>
-                    <td>{{ department.parentDepartment ? department.parentDepartment.name : '' }}</td>
+                    <td>{{ record.name }}</td>
+                    <td>{{ record.parentDepartment ? record.parentDepartment.name : '' }}</td>
                     <td>
                         <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
                             (onClick)="openMenu(i); menu.toggle($event);"></p-button>
@@ -35,8 +35,8 @@
     </ng-template>
 </p-card>
 
-<!-- Create Department Dialog -->
-<p-dialog [(visible)]="showNewDepartmentForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
+<!-- Create Record Dialog -->
+<p-dialog [(visible)]="showNewRecordForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
     <form [formGroup]="newDepartmentForm" (ngSubmit)="onSubmit()">
         <div class="field">
             <label>Parent Department</label>

@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); 
+const Doctor = require('./doctor');
+const Patient = require('./patient');
 
 const Appointment = sequelize.define('Appointment', {
   patientId: {
@@ -30,5 +32,8 @@ const Appointment = sequelize.define('Appointment', {
 }, {
     timestamps: true
 });
+
+Appointment.belongsTo(Doctor, { foreignKey: 'doctorId', as: 'doctor' });
+Appointment.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
 
 module.exports = Appointment;

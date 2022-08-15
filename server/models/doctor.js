@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Department = require('./department');
+const User = require('./user');
 
 const Doctor = sequelize.define('Doctor', {
   userId: {
@@ -24,5 +26,8 @@ const Doctor = sequelize.define('Doctor', {
 }, {
   timestamps: true
 });
+
+Doctor.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+Doctor.belongsTo(Department, { foreignKey: 'departmentId', as: 'department' });
 
 module.exports = Doctor;

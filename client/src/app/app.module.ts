@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { BadgeModule } from 'primeng/badge';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,7 +31,6 @@ import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthComponent } from './auth/auth.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
-import { PatientRecordComponent } from './dashboard/patient-record/patient-record.component';
 import { AppointmentComponent } from './dashboard/appointment/appointment.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { MainComponent } from './home/main/main.component';
@@ -42,6 +42,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RecordsComponent } from './dashboard/records/records.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DashboardComponent,
     AuthComponent,
     DashboardHomeComponent,
-    PatientRecordComponent,
     AppointmentComponent,
     ProfileComponent,
     MainComponent,
@@ -61,6 +61,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     PageNotFoundComponent,
     DoctorCasesComponent,
     DepartmentComponent,
+    RecordsComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,7 +88,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ToastModule,
     HttpClientModule,
     ProgressBarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    BadgeModule
   ],
   providers: [
     MessageService

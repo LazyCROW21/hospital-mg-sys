@@ -1,25 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
-import { DepartmentService } from 'src/app/services/department.service';
+import { RecordService } from 'src/app/services/record.service';
 
 @Component({
-  selector: 'app-departments',
-  templateUrl: './departments.component.html',
-  styleUrls: ['./departments.component.css']
+  selector: 'app-records',
+  templateUrl: './records.component.html',
+  styleUrls: ['./records.component.css']
 })
-export class DepartmentsComponent implements OnInit {
-  isLoadingDepartments: boolean = false;
+export class RecordsComponent implements OnInit {
+  isDoctor: boolean = false;
+  isPatient: boolean = false;
+  isAdmin: boolean = true;
+  holderId: number = 1;
+  isLoadingRecords: boolean = false;
   loadingIcon: string = '';
-  showNewDepartmentForm: boolean = false;
+  showNewRecordForm: boolean = false;
   activeRow: number = 0;
   rowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
+    { label: 'View', icon: 'pi pi-eye' },
     { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash' },
   ];
-  departments: any[] = [
+  records: any[] = [
     { id: 2, name: 'Brain Cancer', parent: 'Cancer' },
     { id: 1, name: 'Liver Cancer', parent: 'Cancer' }
   ];
@@ -30,26 +34,31 @@ export class DepartmentsComponent implements OnInit {
     parentDepartmentId: new FormControl(null)
   });
 
-  constructor(private departmentService: DepartmentService, private messageService: MessageService, private router: Router) { }
+  constructor(private recordService: RecordService, private messageService: MessageService, private router: Router) { }
 
   ngOnInit(): void {
-    this.fetchDepartments();
+    this.fetchRecords();
   }
 
   openMenu(rowIndex: number) {
     this.activeRow = rowIndex;
   }
 
-  goToDepartment() {
-    this.router.navigateByUrl(`/dashboard/departments/${this.departments[this.activeRow].id}`);
-  }
-
-  fetchDepartments () {
-    this.isLoadingDepartments = true;
-    this.departmentService.getAllDepartments().subscribe({
+  fetchRecords () {
+    let allRecords;
+    if(this.isAdmin) {
+      allRecords = this.recordService.getAllRecords()
+    } else if(this.isDoctor) {
+      allRecords = this.recordService.getRecordsByDoctorId(this.holderId);
+    } else {
+      allRecords = this.recordService.getRecordsByPatientId(this.holderId);
+    }
+    this.isLoadingRecords = true;
+    this.isLoadingRecords = true;
+    allRecords.subscribe({
       next: (result) => {
         console.log(result);
-        this.departments = <any[]>result;
+        this.records.splice(0, this.records.length, ...<any[]>result);
       },
       error: (error) => {
         this.messageService.add({
@@ -58,27 +67,27 @@ export class DepartmentsComponent implements OnInit {
           detail: 'Cannot fetch Data'
         });
         console.error(error);
-        this.departments = [];
-        this.isLoadingDepartments = false;
+        this.records.splice(0, this.records.length);
+        this.isLoadingRecords = false;
       },
       complete: () => {
-        this.isLoadingDepartments = false;
+        this.isLoadingRecords = false;
       }
     });
   }
   
-  openDepartmentForm() {
-    this.showNewDepartmentForm = true;
+  openRecordForm() {
+    this.showNewRecordForm = true;
   }
 
   onSubmit() {
     this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.departmentService.addDepartment(this.newDepartmentForm.value).subscribe({
+    this.recordService.addRecord(this.newDepartmentForm.value).subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Department created',
-          detail: 'Now you add staff to this department!'
+          summary: 'Record created',
+          detail: 'Your patient will be notified of the report!'
         });
         console.log(result);
       },
@@ -94,9 +103,10 @@ export class DepartmentsComponent implements OnInit {
       complete: () => {
         this.newDepartmentForm.reset();
         this.loadingIcon = '';
-        this.showNewDepartmentForm = false;
-        this.fetchDepartments();
+        this.showNewRecordForm = false;
+        this.fetchRecords();
       }
     });
   }
+
 }

@@ -16,4 +16,9 @@ router.get('/:id', async (req, res) => {
     return res.sendStatus(404);
 });
 
+router.get('/department/:id', async (req, res) => {
+    const doctors = await doctorController.getDoctorsByDepartmentId(req.params.id);
+    return res.send(doctors);
+});
+
 module.exports = router;
