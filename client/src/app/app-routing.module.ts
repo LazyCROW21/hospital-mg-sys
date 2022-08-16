@@ -14,7 +14,8 @@ import { FacilityComponent } from './home/facility/facility.component';
 import { HomeComponent } from './home/home.component';
 import { MainComponent } from './home/main/main.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { RecordsComponent } from './dashboard/records/records.component';
+import { ReportsComponent } from './dashboard/reports/reports.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { 
@@ -26,16 +27,17 @@ const routes: Routes = [
       { path: 'contactus', component: ContactusComponent },
     ]
   },
-  { path: 'login', component: AuthComponent },
+  { path: 'login', component: AuthComponent, canActivate: [AuthGuard] },
   { 
     path: 'dashboard', component: DashboardComponent,
+    canActivate: [AuthGuard], canActivateChild: [AuthGuard],
     children: [
       // General
       { path: '', component: DashboardHomeComponent, pathMatch: 'full' },
       { path: 'departments', component: DepartmentsComponent, pathMatch: 'full' },
       { path: 'departments/:id', component: DepartmentComponent, pathMatch: 'full' },
       // Patient
-      { path: 'records', component: RecordsComponent },
+      { path: 'reports', component: ReportsComponent },
       { path: 'appointment', component: AppointmentComponent },
       { path: 'profile', component: ProfileComponent },
       // Doctor

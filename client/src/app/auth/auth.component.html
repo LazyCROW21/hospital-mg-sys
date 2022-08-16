@@ -14,17 +14,24 @@
             <div class="col-6">
                 <p-tabView [(activeIndex)]="activeTab" (onChange)="onRoleChange($event)">
                     <p-tabPanel header="Patient" headerStyleClass="auth-tabs">
-                        <div>
+                        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                             <div class="p-inputgroup mb-2">
                                 <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                                <input type="text" pInputText placeholder="Email">
+                                <input type="email" pInputText placeholder="Email" formControlName="email">
                             </div>
+                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                                Invalid Email
+                            </p>
                             <div class="p-inputgroup mb-2">
                                 <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
-                                <input type="password" pInputText placeholder="Password">
+                                <input type="password" pInputText placeholder="Password" formControlName="pwd">
                             </div>
+                            <p class="p-error mb-2" *ngIf="loginForm.get('pwd')?.invalid && (loginForm.get('pwd')?.dirty || loginForm.get('pwd')?.touched)">
+                                Invalid Password
+                            </p>
                             <div class="text-center">
-                                <p-button label="Login" class="block-btn"></p-button>
+                                <p class="p-error mb-2" *ngIf="loginError">{{ loginError }}</p>
+                                <p-button label="Login" class="block-btn" (onClick)="onLogin()"></p-button>
                             </div>
                             <p class="text-center mt-2">
                                 <a href="#">Forgotten password?</a>
@@ -34,20 +41,27 @@
                                 <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
                                 </p-button>
                             </div>
-                        </div>
+                        </form>
                     </p-tabPanel>
                     <p-tabPanel header="Doctor" headerStyleClass="auth-tabs">
-                        <div>
+                        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                             <div class="p-inputgroup mb-2">
-                                <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
-                                <input type="text" pInputText placeholder="Username">
+                                <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                                <input type="email" pInputText placeholder="Email" formControlName="email">
                             </div>
+                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                                Invalid Email
+                            </p>
                             <div class="p-inputgroup mb-2">
                                 <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
-                                <input type="password" pInputText placeholder="Password">
+                                <input type="password" pInputText placeholder="Password" formControlName="pwd">
                             </div>
+                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('pwd')?.invalid && (loginForm.get('pwd')?.dirty || loginForm.get('pwd')?.touched)">
+                                Invalid Password
+                            </p>
                             <div class="text-center">
-                                <p-button label="Login" class="block-btn"></p-button>
+                                <p class="p-error mb-2" *ngIf="loginError">{{ loginError }}</p>
+                                <p-button label="Login" class="block-btn" (onClick)="onLogin()"></p-button>
                             </div>
                             <p class="text-center mt-2">
                                 <a href="#">Forgotten password?</a>
@@ -57,7 +71,7 @@
                                 <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
                                 </p-button>
                             </div>
-                        </div>
+                        </form>
                     </p-tabPanel>
                 </p-tabView>
             </div>
@@ -93,11 +107,11 @@
             </div>
             <div class="col-6">
                 <input type="password" class="w-full" pInputText placeholder="Password" formControlName="pwd">
-                <small class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</small>
+                <p class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</p>
             </div>
             <div class="col-6">
                 <input type="password" class="w-full" pInputText placeholder="Confirm password" formControlName="confPwd">
-                <small class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</small>
+                <p class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</p>
             </div>
             <div class="col-6">
                 <p-calendar placeholder="Date Of Birth" styleClass="w-full" appendTo="body" [maxDate]="maxDate"

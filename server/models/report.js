@@ -1,7 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Doctor = require('./doctor');
+const Patient = require('./patient');
 
-const Record = sequelize.define('Record', {
+const Report = sequelize.define('Report', {
     patientId: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -41,4 +43,7 @@ const Record = sequelize.define('Record', {
     timestamps: true
 });
 
-module.exports = Record;
+Report.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
+Report.belongsTo(Doctor, { foreignKey: 'doctorId', as: 'doctor' });
+
+module.exports = Report;

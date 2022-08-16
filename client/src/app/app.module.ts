@@ -42,7 +42,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RecordsComponent } from './dashboard/records/records.component';
+import { ReportsComponent } from './dashboard/reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +61,7 @@ import { RecordsComponent } from './dashboard/records/records.component';
     PageNotFoundComponent,
     DoctorCasesComponent,
     DepartmentComponent,
-    RecordsComponent,
+    ReportsComponent
   ],
   imports: [
     BrowserModule,

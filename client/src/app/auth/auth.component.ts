@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { matchField } from '../common/custom-validators';
 import { genderOptions, specializationOptions, stateOptions } from '../common/dropdown-options';
@@ -21,6 +22,12 @@ export class AuthComponent implements OnInit {
 
   maxDate = new Date();
 
+  loginError: string = '';
+  loginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    pwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)])
+  });
+
   newUserForm: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
@@ -41,7 +48,7 @@ export class AuthComponent implements OnInit {
     specialization: new FormControl(null, [])
   }, [matchField('pwd', 'confPwd')]);
 
-  constructor(private authService: AuthService, private messageService: MessageService) { }
+  constructor(private authService: AuthService, private messageService: MessageService, private router: Router) { }
 
   ngOnInit(): void { }
 
@@ -59,6 +66,29 @@ export class AuthComponent implements OnInit {
 
   openNewAccountForm() {
     this.showNewAccountForm = true;
+  }
+
+  onLogin() {
+    if(this.loginForm.valid) {
+      this.authService.loginUser(this.loginForm.value).subscribe({
+        next: (response: any) => {
+          this.authService.setUser(response.user, response.role, true);
+          localStorage.setItem('ACCESS_TOKEN', response.token);
+          localStorage.setItem('USER', JSON.stringify(response.user));
+          localStorage.setItem('ROLE', JSON.stringify(response.role));
+          this.loginForm.get('pwd')?.reset();
+          this.router.navigateByUrl('/dashboard');
+        },
+        error: (error: any) => {
+          console.log(error);
+          if(error.status === 401) {
+            this.loginError = 'Invalid email / password';
+          }
+          this.loginForm.get('pwd')?.reset();
+          this.loginError = 'Something went wrong!';
+        }
+      });
+    } 
   }
 
   onSubmit() {
