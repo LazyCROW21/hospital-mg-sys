@@ -28,4 +28,8 @@ export class DepartmentService {
   addDepartment(data: any) {
     return this.http.post(baseURL+'/api/department', data, { headers: this.baseHeader });
   }
+
+  deleteDepartment(departmentId: number) {
+    return this.http.delete(baseURL+'/api/department/'+departmentId, { headers: this.baseHeader });
+  }
 }

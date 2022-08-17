@@ -31,4 +31,9 @@ router.post('/', async (req, res) => {
     res.send(appointment);
 });
 
+router.patch('/:id', async (req, res) => {
+    const appointment = await appointmentController.changeAppointmentStatus(req.params.id, req.body.status);
+    res.send(appointment);
+});
+
 module.exports = router;

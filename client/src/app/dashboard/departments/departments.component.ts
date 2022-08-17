@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
 import { DepartmentService } from 'src/app/services/department.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class DepartmentsComponent implements OnInit {
   rowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
     { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash' },
+    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
   departments: any[] = [
     { id: 2, name: 'Brain Cancer', parent: 'Cancer' },
@@ -30,7 +30,12 @@ export class DepartmentsComponent implements OnInit {
     parentDepartmentId: new FormControl(null)
   });
 
-  constructor(private departmentService: DepartmentService, private messageService: MessageService, private router: Router) { }
+  constructor(
+    private departmentService: DepartmentService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.fetchDepartments();
@@ -44,7 +49,7 @@ export class DepartmentsComponent implements OnInit {
     this.router.navigateByUrl(`/dashboard/departments/${this.departments[this.activeRow].id}`);
   }
 
-  fetchDepartments () {
+  fetchDepartments() {
     this.isLoadingDepartments = true;
     this.departmentService.getAllDepartments().subscribe({
       next: (result) => {
@@ -66,7 +71,7 @@ export class DepartmentsComponent implements OnInit {
       }
     });
   }
-  
+
   openDepartmentForm() {
     this.showNewDepartmentForm = true;
   }
@@ -82,7 +87,7 @@ export class DepartmentsComponent implements OnInit {
         });
         console.log(result);
       },
-      error: (error: any) => { 
+      error: (error: any) => {
         console.error(error);
         this.messageService.add({
           severity: 'error',
@@ -96,6 +101,37 @@ export class DepartmentsComponent implements OnInit {
         this.loadingIcon = '';
         this.showNewDepartmentForm = false;
         this.fetchDepartments();
+      }
+    });
+  }
+
+  onDelete() {
+    this.confirmationService.confirm({
+      acceptButtonStyleClass: 'p-button-danger',
+      message: `Do you want to delete this department (${this.departments[this.activeRow].name})?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.departmentService.deleteDepartment(this.departments[this.activeRow].id).subscribe({
+          next: (reponse: any) => {
+            this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Department deleted' });
+            this.fetchDepartments();
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+          }
+        });
+      },
+      reject: (type: ConfirmEventType) => {
+        switch (type) {
+          case ConfirmEventType.REJECT:
+            this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
+            break;
+          case ConfirmEventType.CANCEL:
+            this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
+            break;
+        }
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
 import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
 
@@ -29,7 +29,7 @@ export class DepartmentComponent implements OnInit {
   deptRowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment()  },
     { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash' },
+    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete()  },
   ];
 
   doctorRowMenu: MenuItem[] = [
@@ -47,7 +47,8 @@ export class DepartmentComponent implements OnInit {
   constructor(
     private messageService: MessageService, 
     private departmentService: DepartmentService, 
-    private doctorService: DoctorService, 
+    private doctorService: DoctorService,
+    private confirmationService: ConfirmationService,
     private route: ActivatedRoute, 
     private router: Router
   ) { }
@@ -176,6 +177,37 @@ export class DepartmentComponent implements OnInit {
         this.loadingIcon = '';
         this.showNewDepartmentForm = false;
         this.fetchSubDepartments();
+      }
+    });
+  }
+
+  onDelete() {
+    this.confirmationService.confirm({
+      acceptButtonStyleClass: 'p-button-danger',
+      message: `Do you want to delete this department (${this.subDepartments[this.activeRow].name})?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.departmentService.deleteDepartment(this.subDepartments[this.activeRow].id).subscribe({
+          next: (reponse: any) => {
+            this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Department deleted' });
+            this.fetchSubDepartments();
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+          }
+        });
+      },
+      reject: (type: ConfirmEventType) => {
+        switch (type) {
+          case ConfirmEventType.REJECT:
+            this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
+            break;
+          case ConfirmEventType.CANCEL:
+            this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
+            break;
+        }
       }
     });
   }

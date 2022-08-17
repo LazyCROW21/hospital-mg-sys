@@ -113,10 +113,19 @@ const addAppointment = async (appointmentData) => {
     return newAppointment;
 }
 
+const changeAppointmentStatus = async (id, status) => {
+    const result = await AppointmentModel.update(
+        { status },
+        { where: { id } }
+    );
+    return result;
+}
+
 module.exports = {
     getAllAppointments,
     getAppointmentById,
     getAppointmentsByPatientId,
     getAppointmentsByDoctorId,
-    addAppointment
+    addAppointment,
+    changeAppointmentStatus
 }

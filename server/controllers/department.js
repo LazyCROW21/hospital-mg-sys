@@ -37,11 +37,18 @@ const addDepartment = async (departmentData) => {
     return newDepartment;
 }
 
+const removeDepartment = async (id) => {
+    return await DepartmentModel.destroy({
+        where: { id }
+    });
+}
+
 
 
 module.exports = {
     getAllDepartments,
     getDepartmentById,
     getDepartmentsByParentDepartmentId,
-    addDepartment
+    addDepartment,
+    removeDepartment
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { AppointmentService } from 'src/app/services/appointment.service';
 
 @Component({
@@ -9,12 +10,14 @@ import { AppointmentService } from 'src/app/services/appointment.service';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit {
-  isDoctor: boolean = false;
-  isPatient: boolean = false;
+  isDoctor: boolean = true;
+  isPatient: boolean = true;
   isAdmin: boolean = true;
   holderId: number = 1;
   isLoadingAppointments: boolean = false;
   showNewAppointmentForm: boolean = false;
+  showAppointmentDetails: boolean = false;
+  appointmentDetails: any = {};
   loadingIcon: string = '';
   minDate = new Date();
   doctorOptions:{ label: string, value: number }[] = [
@@ -24,9 +27,9 @@ export class AppointmentComponent implements OnInit {
   ];
 
   appointments: any[] = [];
-
+  activeRow: number = 0;
   rowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye' },
+    { label: 'View', icon: 'pi pi-eye', command: () => { this.openAppointmentDetails(); } },
     { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash' },
   ];
@@ -40,6 +43,13 @@ export class AppointmentComponent implements OnInit {
     // status: new FormControl('', [Validators.required])
   });
 
+  // accept, reject, cancel btn icons
+  updateButtonIcons = {
+    'rejected': 'pi pi-ban',
+    'fixed': 'pi pi-check',
+    'cancelled': 'pi pi-ban'
+  };
+
   constructor(
     private appointmentService: AppointmentService,
     private messageService: MessageService
@@ -50,8 +60,17 @@ export class AppointmentComponent implements OnInit {
     this.fetchAppointments();
   }
 
+  openMenu(rowIndex: number) {
+    this.activeRow = rowIndex;
+  }
+
   openAppointmentForm() {
     this.showNewAppointmentForm = true;
+  }
+
+  openAppointmentDetails () {
+    this.appointmentDetails = this.appointments[this.activeRow];
+    this.showAppointmentDetails = true;
   }
   
   fetchAppointments() {
@@ -110,6 +129,33 @@ export class AppointmentComponent implements OnInit {
         this.showNewAppointmentForm = false;
         this.fetchAppointments();
       }
+    });
+  }
+
+  onChangeAppointmentStatus(status: 'fixed'|'rejected'|'cancelled') {
+    let orginalIcon = this.updateButtonIcons[status];
+    this.updateButtonIcons[status] = 'pi pi-spin pi-spinner';
+    this.appointmentService.changeAppointmentStatus(this.appointmentDetails.id, { status })
+    .subscribe({
+      next: (result: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Appointment '+status,
+          detail: this.isDoctor ? 'Your patient will be notified' : 'The hospital staff will be notified'
+        });
+        this.appointments[this.activeRow].status = status;
+        this.updateButtonIcons[status] = orginalIcon;
+        console.log(result);
+      },
+      error: (error: any) => { 
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+        this.updateButtonIcons[status] = orginalIcon;
+      },
     });
   }
 }

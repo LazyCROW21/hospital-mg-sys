@@ -32,4 +32,8 @@ export class AppointmentService {
   addAppointment(data: any) {
     return this.http.post(baseURL+'/api/appointment', data, { headers: this.baseHeader });
   }
+
+  changeAppointmentStatus(id: number, data: any) {
+    return this.http.patch(baseURL+'/api/appointment/'+id, data, { headers: this.baseHeader });
+  }
 }

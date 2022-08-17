@@ -12,7 +12,7 @@
     </ng-template>
     <ng-template #notLoading>
         <p-table [value]="appointments" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-striped">
-            <ng-template pTemplate="header" let-columns>
+            <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
                     <th *ngIf="isDoctor || isAdmin">Patient</th>
@@ -23,11 +23,13 @@
                     <th class="text-center"></th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-appointment>
+            <ng-template pTemplate="body" let-appointment let-i="rowIndex">
                 <tr>
-                    <td>#</td>
-                    <td *ngIf="isDoctor || isAdmin">{{ appointment.patientId }}</td>
-                    <td *ngIf="isPatient || isAdmin">{{ appointment.doctorId }}</td>
+                    <td>{{ i+1 }}</td>
+                    <td *ngIf="isDoctor || isAdmin">{{ appointment.patient.user.firstName +
+                        appointment.patient.user.lastName }}</td>
+                    <td *ngIf="isPatient || isAdmin">{{ appointment.patient.doctor?.firstName +
+                        appointment.patient.doctor?.lastName }}</td>
                     <td>{{ appointment.subject }}</td>
                     <td>{{ appointment.preferredDateTime | date:'short' }}</td>
                     <td class="text-center">
@@ -36,7 +38,8 @@
                         <p-badge *ngIf="appointment.status === 'rejected'" value="rejected" severity="danger"></p-badge>
                     </td>
                     <td class="text-center">
-                        <p-button styleClass="p-button-text" icon="pi pi pi-ellipsis-v" (onClick)="menu.toggle($event)"></p-button>
+                        <p-button styleClass="p-button-text" icon="pi pi pi-ellipsis-v"
+                            (onClick)="openMenu(i); menu.toggle($event)"></p-button>
                     </td>
                 </tr>
             </ng-template>
@@ -46,12 +49,12 @@
 </p-card>
 
 <!-- Create Appointment Dialog -->
-<p-dialog [(visible)]="showNewAppointmentForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
+<p-dialog [(visible)]="showNewAppointmentForm" header="Apply for Appointment" [style]="{ maxWidth: '80%' }">
     <form [formGroup]="newAppointmentForm" (ngSubmit)="onSubmit()">
         <div class="field">
             <label>Doctor</label>
             <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Doctor" [options]="doctorOptions"
-            formControlName="doctorId" optionLabel="label" optionValue="value"></p-dropdown>
+                formControlName="doctorId" optionLabel="label" optionValue="value"></p-dropdown>
         </div>
         <div class="field">
             <label>Subject</label>
@@ -73,5 +76,63 @@
             </p-button>
         </div>
     </form>
+</p-dialog>
+<p-dialog [(visible)]="showAppointmentDetails" header="Appointment Details" [style]="{ maxWidth: '80%' }">
+    <table class="appointment-table">
+        <tbody>
+            <tr>
+                <th>Appointment ID:</th>
+                <td>{{ appointmentDetails.id }}</td>
+            </tr>
+            <tr *ngIf="appointmentDetails.patient">
+                <th>Patient:</th>
+                <td>{{ appointmentDetails.patient.user.firstName + appointmentDetails.patient.user.lastName }}</td>
+            </tr>
+            <tr *ngIf="appointmentDetails.doctor">
+                <th>Doctor:</th>
+                <td>{{ appointmentDetails.doctor.user.firstName + appointmentDetails.doctor.user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Subject:</th>
+                <td>{{ appointmentDetails.subject }}</td>
+            </tr>
+            <tr>
+                <th>Message:</th>
+                <td>{{ appointmentDetails.message }}</td>
+            </tr>
+            <tr>
+                <th>Preferred Date & Time:</th>
+                <td>{{ appointmentDetails.preferredDateTime | date:'short' }}</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td>
+                    <p-badge *ngIf="appointmentDetails.status === 'fixed'" value="fixed" severity="success"></p-badge>
+                    <p-badge *ngIf="appointmentDetails.status === 'applied'" value="applied" severity="info"></p-badge>
+                    <p-badge *ngIf="appointmentDetails.status === 'rejected'" value="rejected" severity="danger">
+                    </p-badge>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="flex justify-content-end gap-2 mt-2">
+        <p-button label="Close" icon="pi pi-times" styleClass="p-button-plain p-button-text" (onClick)="showAppointmentDetails = false;">
+        </p-button>
+        <ng-template [ngIf]="isDoctor">
+            <p-button [disabled]="appointmentDetails.status !== 'applied'" label="Reject" [icon]="updateButtonIcons['rejected']"
+                (onClick)="onChangeAppointmentStatus('rejected')" styleClass="p-button-danger p-button-text">
+            </p-button>
+            <p-button [disabled]="appointmentDetails.status !== 'applied'" label="Accept"
+                (onClick)="onChangeAppointmentStatus('fixed')" [icon]="updateButtonIcons['fixed']"
+                styleClass="p-button-success p-button-text">
+            </p-button>
+        </ng-template>
+        <ng-template [ngIf]="isPatient">
+            <p-button [disabled]="appointmentDetails.status !== 'applied'" label="Cancel"
+                (onClick)="onChangeAppointmentStatus('cancelled')"
+                [icon]="updateButtonIcons['cancelled']" styleClass="p-button-warning p-button-text">
+            </p-button>
+        </ng-template>
+    </div>
 </p-dialog>
 <p-toast></p-toast>

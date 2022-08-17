@@ -27,4 +27,9 @@ router.post('/', async (req, res) => {
     res.send(department);
 });
 
+router.delete('/:id', async (req, res) => {
+    await departmentController.removeDepartment(req.params.id);
+    res.sendStatus(204);
+});
+
 module.exports = router;
