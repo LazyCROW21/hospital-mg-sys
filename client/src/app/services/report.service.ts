@@ -1,6 +1,6 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { baseURL } from '../common/api-config';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,22 +14,22 @@ export class ReportService {
   }
   
   getAllReports() {
-    return this.http.get(baseURL+'/api/report', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/report', { headers: this.baseHeader });
   }
 
   getReportById(reportId: number) {
-    return this.http.get(baseURL+'/api/report/'+reportId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/report/'+reportId, { headers: this.baseHeader });
   }
 
   getReportsByDoctorId(doctorId: number) {
-    return this.http.get(baseURL+'/api/report/doctor/'+doctorId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/report/doctor/'+doctorId, { headers: this.baseHeader });
   }
 
   getReportsByPatientId(patientId: number) {
-    return this.http.get(baseURL+'/api/report/patient/'+patientId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/report/patient/'+patientId, { headers: this.baseHeader });
   }
 
   addReport(data: any) {
-    return this.http.post(baseURL+'/api/report', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/report', data, { headers: this.baseHeader });
   }
 }

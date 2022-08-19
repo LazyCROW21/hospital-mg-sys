@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { baseURL } from '../common/api-config';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   loginUser(data: any) {
-    return this.http.post(baseURL+'/api/auth/login', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/auth/login', data, { headers: this.baseHeader });
   }
 
   setUser(user: any, role: any, isLoggedIn: boolean) {
@@ -49,6 +49,6 @@ export class AuthService {
   }
 
   createUser(data: any) {
-    return this.http.post(baseURL+'/api/user', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/user', data, { headers: this.baseHeader });
   }
 }

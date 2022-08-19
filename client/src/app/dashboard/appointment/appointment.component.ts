@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { AppointmentService } from 'src/app/services/appointment.service';
 
 @Component({

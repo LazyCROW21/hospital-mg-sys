@@ -41,7 +41,6 @@ import { AboutComponent } from './home/about/about.component';
 import { ContactusComponent } from './home/contactus/contactus.component';
 import { DepartmentsComponent } from './dashboard/departments/departments.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportsComponent } from './dashboard/reports/reports.component';
@@ -61,7 +60,6 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
     ContactusComponent,
     DepartmentsComponent,
     PageNotFoundComponent,
-    DoctorCasesComponent,
     DepartmentComponent,
     ReportsComponent
   ],

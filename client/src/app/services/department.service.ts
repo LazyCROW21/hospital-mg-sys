@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { baseURL } from '../common/api-config';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,22 +14,22 @@ export class DepartmentService {
   }
 
   getDepartment(departmentId: number) {
-    return this.http.get(baseURL+'/api/department/'+departmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/department/'+departmentId, { headers: this.baseHeader });
   }
 
   getAllDepartments() {
-    return this.http.get(baseURL+'/api/department', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/department', { headers: this.baseHeader });
   }
 
   getSubDepartments(departmentId: number) {
-    return this.http.get(baseURL+'/api/department/sub-departments/'+departmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/department/sub-departments/'+departmentId, { headers: this.baseHeader });
   }
 
   addDepartment(data: any) {
-    return this.http.post(baseURL+'/api/department', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/department', data, { headers: this.baseHeader });
   }
 
   deleteDepartment(departmentId: number) {
-    return this.http.delete(baseURL+'/api/department/'+departmentId, { headers: this.baseHeader });
+    return this.http.delete(environment.apiURL+'/department/'+departmentId, { headers: this.baseHeader });
   }
 }

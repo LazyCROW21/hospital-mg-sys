@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const AppointmentModel = require('../models/appointment');
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
@@ -80,10 +81,51 @@ const getAppointmentsByPatientId = async (patientId) => {
     return appointments;
 }
 
-const getAppointmentsByDoctorId = async (doctorId) => {
-    const appointments = await AppointmentModel.findAll({
+const getAllNextAppointments = async () => {
+    const appointments = await AppointmentModel.findAndCountAll({
         where: {
-            doctorId: doctorId
+            preferredDateTime: {
+                [Op.gt]: new Date()
+            }
+        },
+    });
+    return appointments;
+}
+
+const getNextAppointmentsByPatientId = async (patientId) => {
+    const appointments = await AppointmentModel.findAndCountAll({
+        where: {
+            patientId: patientId,
+            preferredDateTime: {
+                [Op.gt]: new Date()
+            }
+        },
+        // include: [
+        //     {
+        //         model: Doctor,
+        //         as: 'doctor',
+        //         include: {
+        //             model: User,
+        //             as: 'user'
+        //         }
+        //     },
+        //     {
+        //         model: Patient,
+        //         as: 'patient',
+        //         include: {
+        //             model: User,
+        //             as: 'user'
+        //         }
+        //     }
+        // ]
+    });
+    return appointments;
+}
+
+const getAppointmentsByDoctorId = async (doctorId) => {
+    const appointments = await AppointmentModel.findAndCountAll({
+        where: {
+            doctorId: doctorId,
         },
         include: [
             {
@@ -103,6 +145,33 @@ const getAppointmentsByDoctorId = async (doctorId) => {
                 }
             }
         ]
+    });
+    return appointments;
+}
+
+const getNextAppointmentsByDoctorId = async (doctorId) => {
+    const appointments = await AppointmentModel.findAndCountAll({
+        where: {
+            doctorId: doctorId
+        },
+        // include: [
+        //     {
+        //         model: Doctor,
+        //         as: 'doctor',
+        //         include: {
+        //             model: User,
+        //             as: 'user'
+        //         }
+        //     },
+        //     {
+        //         model: Patient,
+        //         as: 'patient',
+        //         include: {
+        //             model: User,
+        //             as: 'user'
+        //         }
+        //     }
+        // ]
     });
     return appointments;
 }
@@ -127,5 +196,8 @@ module.exports = {
     getAppointmentsByPatientId,
     getAppointmentsByDoctorId,
     addAppointment,
-    changeAppointmentStatus
+    changeAppointmentStatus,
+    getNextAppointmentsByPatientId,
+    getNextAppointmentsByDoctorId,
+    getAllNextAppointments
 }

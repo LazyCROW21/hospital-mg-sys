@@ -8,6 +8,11 @@ router.get('/', async (req, res) => {
     res.send(doctors);
 });
 
+router.get('/new', async (req, res) => {
+    const doctors = await doctorController.getNewDoctorsCount();
+    res.send(doctors);
+});
+
 router.get('/:id', async (req, res) => {
     const doctor = await doctorController.getDoctorById(req.params.id);
     if(doctor) {

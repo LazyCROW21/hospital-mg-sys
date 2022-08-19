@@ -8,6 +8,11 @@ router.get('/', async (req, res) => {
     res.send(appointments);
 });
 
+router.get('/next', async (req, res) => {
+    const appointments = await appointmentController.getAllNextAppointments();
+    res.send(appointments);
+});
+
 router.get('/:id', async (req, res) => {
     const appointment = await appointmentController.getAppointmentById(req.params.id);
     if(appointment) {
@@ -21,8 +26,18 @@ router.get('/patient/:id', async (req, res) => {
     res.send(appointments);
 });
 
+router.get('/patient/next/:id', async (req, res) => {
+    const appointments = await appointmentController.getNextAppointmentsByPatientId(req.params.id);
+    res.send(appointments);
+});
+
 router.get('/doctor/:id', async (req, res) => {
     const appointments = await appointmentController.getAppointmentsByDoctorId(req.params.id);
+    res.send(appointments);
+});
+
+router.get('/doctor/next/:id', async (req, res) => {
+    const appointments = await appointmentController.getNextAppointmentsByDoctorId(req.params.id);
     res.send(appointments);
 });
 

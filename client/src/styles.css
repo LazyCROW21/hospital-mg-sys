@@ -36,6 +36,14 @@ body {
     color: white !important;
 }
 
+.p-fieldset-legend {
+    margin-left: 2rem;
+}
+
+.p-fieldset-toggleable {
+    padding: 0.75rem 0.25rem;
+}
+
 @media only screen and (min-width: 768px) {
     .container {
         width: 720px;

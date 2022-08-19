@@ -6,7 +6,6 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
 import { DepartmentsComponent } from './dashboard/departments/departments.component';
-import { DoctorCasesComponent } from './dashboard/doctor-cases/doctor-cases.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { AboutComponent } from './home/about/about.component';
 import { ContactusComponent } from './home/contactus/contactus.component';
@@ -36,12 +35,11 @@ const routes: Routes = [
       { path: '', component: DashboardHomeComponent, pathMatch: 'full' },
       { path: 'departments', component: DepartmentsComponent, pathMatch: 'full' },
       { path: 'departments/:id', component: DepartmentComponent, pathMatch: 'full' },
-      // Patient
       { path: 'reports', component: ReportsComponent },
+      // Patient
       { path: 'appointment', component: AppointmentComponent },
       { path: 'profile', component: ProfileComponent },
       // Doctor
-      { path: 'cases', component: DoctorCasesComponent }
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full', }

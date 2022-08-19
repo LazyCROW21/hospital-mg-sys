@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const Department = require('../models/department');
 const DoctorModel = require('../models/doctor');
 const User = require('../models/user');
@@ -16,6 +17,20 @@ const getAllDoctors = async () => {
                 as: 'department'
             }
         ]
+    });
+    return doctors;
+}
+
+// returns no of doctors registered in the week
+const getNewDoctorsCount = async () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    const doctors = await DoctorModel.findAndCountAll({
+        where: {
+            createdAt: {
+                [Op.gt]: d
+            }
+        }
     });
     return doctors;
 }
@@ -61,6 +76,7 @@ const addDoctor = async (doctorData) => {
 
 module.exports = {
     getAllDoctors,
+    getNewDoctorsCount,
     getDoctorsByDepartmentId,
     getDoctorById,
     addDoctor
