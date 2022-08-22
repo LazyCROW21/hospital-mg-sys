@@ -11,6 +11,14 @@ router.post('/login', async (req, res) => {
     return res.send(result);
 });
 
+router.post('/refresh', async (req, res) => {
+    const accessToken = await authController.generateAccessToken(req.body.refreshToken);
+    if(!accessToken) {
+        return res.sendStatus(401);
+    }
+    res.send({ accessToken });
+});
+
 router.post('/logout', async (req, res) => {
 
 });

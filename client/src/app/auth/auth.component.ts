@@ -73,7 +73,8 @@ export class AuthComponent implements OnInit {
       this.authService.loginUser(this.loginForm.value).subscribe({
         next: (response: any) => {
           this.authService.setUser(response.user, response.role, true);
-          localStorage.setItem('ACCESS_TOKEN', response.token);
+          localStorage.setItem('ACCESS_TOKEN', response.accessToken);
+          localStorage.setItem('REFRESH_TOKEN', response.refreshToken);
           localStorage.setItem('USER', JSON.stringify(response.user));
           localStorage.setItem('ROLE', JSON.stringify(response.role));
           this.loginForm.get('pwd')?.reset();

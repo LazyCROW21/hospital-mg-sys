@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { TabViewModule } from 'primeng/tabview';
 import { DividerModule } from 'primeng/divider';
@@ -44,6 +44,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { DepartmentComponent } from './dashboard/departments/department/department.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportsComponent } from './dashboard/reports/reports.component';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,12 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
   ],
   providers: [
     MessageService,
-    ConfirmationService
+    ConfirmationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

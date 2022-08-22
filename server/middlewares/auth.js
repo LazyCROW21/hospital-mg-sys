@@ -11,12 +11,16 @@ module.exports = function verifyToken(req, res, next) {
     if(!token) {
         return res.sendStatus(401);
     }
-    let payload = jwt.verify(token, ACCESS_SECRET);
-    if(!payload) {
+    try {
+        let payload = jwt.verify(token, ACCESS_SECRET);
+        if(!payload) {
+            return res.sendStatus(401);
+        }
+        console.log(payload);
+        req.user = payload.user;
+        req.role = payload.role;
+        next();
+    } catch (err) {
         return res.sendStatus(401);
     }
-    console.log(payload);
-    req.user = payload.user;
-    req.role = payload.role;
-    next();
 }
