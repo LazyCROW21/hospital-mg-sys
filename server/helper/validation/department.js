@@ -14,6 +14,4 @@ const creationSchema = Joi.object({
     description: Joi.string().min(3).max(255).required(),
 });
 
-module.exports = {
-    creationSchema
-}
+module.exports = creationSchema;

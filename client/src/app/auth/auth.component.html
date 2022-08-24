@@ -4,156 +4,176 @@
             <div class="col-6">
                 <h1>Hopital Management System</h1>
                 <p-divider></p-divider>
-                <ng-template [ngIf]="activeTab === 0" [ngIfElse]="doctorAuth">
-                    <p>Patient Login</p>
-                </ng-template>
-                <ng-template #doctorAuth>
-                    <p>Doctor Login</p>
-                </ng-template>
+                <p>Login / Sign-Up</p>
             </div>
             <div class="col-6">
-                <p-tabView [(activeIndex)]="activeTab" (onChange)="onRoleChange($event)">
-                    <p-tabPanel header="Patient" headerStyleClass="auth-tabs">
-                        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-                            <div class="p-inputgroup mb-2">
-                                <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                                <input type="email" pInputText placeholder="Email" formControlName="email">
-                            </div>
-                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
-                                Invalid Email
-                            </p>
-                            <div class="p-inputgroup mb-2">
-                                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
-                                <input type="password" pInputText placeholder="Password" formControlName="pwd">
-                            </div>
-                            <p class="p-error mb-2" *ngIf="loginForm.get('pwd')?.invalid && (loginForm.get('pwd')?.dirty || loginForm.get('pwd')?.touched)">
-                                Invalid Password
-                            </p>
-                            <div class="text-center">
-                                <p class="p-error mb-2" *ngIf="loginError">{{ loginError }}</p>
-                                <p-button label="Login" class="block-btn" (onClick)="onLogin()"></p-button>
-                            </div>
-                            <p class="text-center mt-2">
-                                <a href="#">Forgotten password?</a>
-                            </p>
-                            <p-divider></p-divider>
-                            <div class="text-center">
-                                <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
-                                </p-button>
-                            </div>
-                        </form>
-                    </p-tabPanel>
-                    <p-tabPanel header="Doctor" headerStyleClass="auth-tabs">
-                        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-                            <div class="p-inputgroup mb-2">
-                                <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                                <input type="email" pInputText placeholder="Email" formControlName="email">
-                            </div>
-                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
-                                Invalid Email
-                            </p>
-                            <div class="p-inputgroup mb-2">
-                                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
-                                <input type="password" pInputText placeholder="Password" formControlName="pwd">
-                            </div>
-                            <p class="w-full p-error mb-2" *ngIf="loginForm.get('pwd')?.invalid && (loginForm.get('pwd')?.dirty || loginForm.get('pwd')?.touched)">
-                                Invalid Password
-                            </p>
-                            <div class="text-center">
-                                <p class="p-error mb-2" *ngIf="loginError">{{ loginError }}</p>
-                                <p-button label="Login" class="block-btn" (onClick)="onLogin()"></p-button>
-                            </div>
-                            <p class="text-center mt-2">
-                                <a href="#">Forgotten password?</a>
-                            </p>
-                            <p-divider></p-divider>
-                            <div class="text-center">
-                                <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
-                                </p-button>
-                            </div>
-                        </form>
-                    </p-tabPanel>
-                </p-tabView>
+                <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                    <div class="p-inputgroup mb-2">
+                        <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                        <input type="email" pInputText placeholder="Email" formControlName="email">
+                    </div>
+                    <p class="w-full p-error mb-2"
+                        *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                        Invalid Email
+                    </p>
+                    <div class="p-inputgroup mb-2">
+                        <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                        <input type="password" pInputText placeholder="Password" formControlName="pwd">
+                    </div>
+                    <p class="p-error mb-2"
+                        *ngIf="loginForm.get('pwd')?.invalid && (loginForm.get('pwd')?.dirty || loginForm.get('pwd')?.touched)">
+                        Invalid Password
+                    </p>
+                    <div class="text-center">
+                        <p class="p-error mb-2" *ngIf="loginError">{{ loginError }}</p>
+                        <p-button label="Login" class="block-btn" (onClick)="onLogin()"></p-button>
+                    </div>
+                    <p class="text-center mt-2">
+                        <a href="#">Forgotten password?</a>
+                    </p>
+                    <p-divider></p-divider>
+                    <div class="text-center">
+                        <p-button label="Create New Account" class="block-btn" (onClick)="openNewAccountForm()">
+                        </p-button>
+                    </div>
+                </form>
             </div>
         </div>
     </p-card>
 </div>
 
 <!-- Create User Dialog -->
-<p-dialog [(visible)]="showNewAccountForm" [header]="activeTab === 0 ? 'New Patient Acount' : 'New Doctor Account'"
-    [style]="{ maxWidth: '80%' }">
+<p-dialog [(visible)]="showNewAccountForm" header="New User Acount" [style]="{ maxWidth: '80%' }">
     <form [formGroup]="newUserForm" (ngSubmit)="onSubmit()">
         <div class="grid">
-            <div class="col-6">
+            <div class=" col-6">
                 <input type="text" class="w-full" pInputText placeholder="First Name" formControlName="firstName" />
+                <small *ngIf="newUserForm.get('firstName')?.invalid && newUserForm.get('firstName')?.touched"
+                    class="p-error">
+                    First name is required & must be under 40 characters
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Last Name" formControlName="lastName" />
+                <small *ngIf="newUserForm.get('lastName')?.invalid && newUserForm.get('lastName')?.touched"
+                    class="p-error">
+                    Last name is required & must be under 40 characters
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Contact Number" formControlName="phone">
+                <small *ngIf="newUserForm.get('phone')?.invalid && newUserForm.get('phone')?.touched" class="p-error">
+                    Contact Number is required & must be valid
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Emergency Contact Number"
                     formControlName="emergencyPhone">
+                <small
+                    *ngIf="
+                        (newUserForm.errors?.['match'] && newUserForm.get('phone')?.touched) || 
+                        (newUserForm.get('emergencyPhone')?.invalid && newUserForm.get('emergencyPhone')?.touched)"
+                    class="p-error">
+                    Emergency Contact is required & must be different from Primany Contact
+                </small>
             </div>
             <div class="col-6">
                 <input type="email" class="w-full" pInputText placeholder="E-Mail" formControlName="email">
+                <small *ngIf="newUserForm.get('email')?.invalid && newUserForm.get('email')?.touched" class="p-error">
+                    E-Mail is required & must be valid
+                </small>
             </div>
             <div class="col-6">
                 <p-dropdown styleClass="w-full" appendTo="body" placeholder="Gender" [options]="genderOptions"
                     formControlName="gender" optionLabel="label" optionValue="value">
                 </p-dropdown>
+                <small *ngIf="newUserForm.get('gender')?.invalid && newUserForm.get('gender')?.touched" class="p-error">
+                    Gender is required
+                </small>
             </div>
             <div class="col-6">
                 <input type="password" class="w-full" pInputText placeholder="Password" formControlName="pwd">
-                <p class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</p>
+                <small class="p-error" *ngIf="newUserForm.get('pwd')?.invalid && newUserForm.get('pwd')?.touched">
+                    Passowrds must be 8 to 32 characters long
+                </small>
             </div>
             <div class="col-6">
-                <input type="password" class="w-full" pInputText placeholder="Confirm password" formControlName="confPwd">
-                <p class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the same</p>
+                <input type="password" class="w-full" pInputText placeholder="Confirm password"
+                    formControlName="confPwd">
+                <small class="p-error" *ngIf="newUserForm.errors?.['misMatch']">Passowrds must be exactly the
+                    same</small>
             </div>
             <div class="col-6">
                 <p-calendar placeholder="Date Of Birth" styleClass="w-full" appendTo="body" [maxDate]="maxDate"
                     [showIcon]="true" formControlName="dob">
                 </p-calendar>
+                <small class="p-error" *ngIf="newUserForm.get('dob')?.invalid && newUserForm.get('dob')?.touched">
+                    Date Of Birth is required
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Address Line 1" formControlName="line1">
+                <small class="p-error" *ngIf="newUserForm.get('line1')?.invalid && newUserForm.get('line1')?.touched">
+                    Line 1 is required, must be under 80 characters
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Address Line 2" formControlName="line2">
+                <small class="p-error" *ngIf="newUserForm.get('line2')?.invalid && newUserForm.get('line2')?.touched">
+                    Line 2 is required, must be under 80 characters
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="PINCODE" formControlName="pincode">
+                <small class="p-error"
+                    *ngIf="newUserForm.get('pincode')?.invalid && newUserForm.get('pincode')?.touched">
+                    PINCODE is required, must be a 6 digit number
+                </small>
             </div>
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="City" formControlName="city">
+                <small class="p-error" *ngIf="newUserForm.get('city')?.invalid && newUserForm.get('city')?.touched">
+                    City is required, must be under 40 characters
+                </small>
             </div>
             <div class="col-6">
                 <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions"
                     formControlName="state" optionLabel="label" optionValue="value">
                 </p-dropdown>
+                <small class="p-error" *ngIf="newUserForm.get('state')?.invalid && newUserForm.get('state')?.touched">
+                    State is required
+                </small>
             </div>
         </div>
-        <ng-template [ngIf]="activeTab === 0" [ngIfElse]="doctorForm">
-
-        </ng-template>
-        <ng-template #doctorForm>
+        <p-divider>
+            <p-checkbox label="Register as Doctor" value="D" trueValue="D" falseValue="P" [(ngModel)]="roleType"
+                [ngModelOptions]="{standalone: true}" [binary]="true" (onChange)="onRoleChange()"></p-checkbox>
+        </p-divider>
+        <ng-template [ngIf]="roleType === 'D'">
             <p-divider></p-divider>
             <div class="grid">
                 <div class="col-6">
-                    <p-inputNumber styleClass="w-full" placeholder="Experience (Years)" [min]="0" [max]="60" formControlName="experience">
+                    <p-inputNumber styleClass="w-full" placeholder="Experience (Years)" [min]="0" [max]="60"
+                        formControlName="experience">
                     </p-inputNumber>
+                    <small class="p-error"
+                        *ngIf="newUserForm.get('experience')?.invalid && newUserForm.get('experience')?.touched">
+                        Experience is required
+                    </small>
                 </div>
                 <div class="col-6">
-                    <p-dropdown appendTo="body" [options]="specializationOptions" optionLabel="label" formControlName="specialization"
-                        placeholder="Specialization" styleClass="w-full" optionValue="value"></p-dropdown>
+                    <p-dropdown appendTo="body" [options]="specializationOptions" optionLabel="label"
+                        formControlName="specialization" placeholder="Specialization" styleClass="w-full"
+                        optionValue="value"></p-dropdown>
+                    <small class="p-error"
+                        *ngIf="newUserForm.get('specialization')?.invalid && newUserForm.get('specialization')?.touched">
+                        Specialization is required
+                    </small>
                 </div>
             </div>
         </ng-template>
         <div class="flex justify-content-end mt-2">
-            <p-button [disabled]="!newUserForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon"></p-button>
+            <p-button label="SUBMIT" type="submit" [icon]="loadingIcon"></p-button>
         </div>
     </form>
 </p-dialog>

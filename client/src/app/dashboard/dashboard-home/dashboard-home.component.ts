@@ -12,7 +12,7 @@ import { PatientService } from 'src/app/services/patient.service';
 export class DashboardHomeComponent implements OnInit {
   isDoctor: boolean = true;
   isPatient: boolean = false;
-  isAdmin: boolean = true;
+  isAdmin: boolean = false;
   holderId: number = 1;
   newAppointmentCount: string = 'pi pi-spin pi-spinner';
   newPatientCount: string = 'pi pi-spin pi-spinner';

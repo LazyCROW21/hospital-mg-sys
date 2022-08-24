@@ -10,7 +10,7 @@ import { AppointmentService } from 'src/app/services/appointment.service';
 })
 export class AppointmentComponent implements OnInit {
   isDoctor: boolean = true;
-  isPatient: boolean = true;
+  isPatient: boolean = false;
   isAdmin: boolean = true;
   holderId: number = 1;
   isLoadingAppointments: boolean = false;
@@ -132,7 +132,9 @@ export class AppointmentComponent implements OnInit {
   }
 
   onChangeAppointmentStatus(status: 'fixed'|'rejected'|'cancelled') {
+    // original icon
     let orginalIcon = this.updateButtonIcons[status];
+    // change to loading icon
     this.updateButtonIcons[status] = 'pi pi-spin pi-spinner';
     this.appointmentService.changeAppointmentStatus(this.appointmentDetails.id, { status })
     .subscribe({
@@ -143,6 +145,7 @@ export class AppointmentComponent implements OnInit {
           detail: this.isDoctor ? 'Your patient will be notified' : 'The hospital staff will be notified'
         });
         this.appointments[this.activeRow].status = status;
+        // back to original icon
         this.updateButtonIcons[status] = orginalIcon;
         console.log(result);
       },
@@ -153,6 +156,7 @@ export class AppointmentComponent implements OnInit {
           summary: 'Error!',
           detail: 'Something went wrong'
         });
+        // back to original icon
         this.updateButtonIcons[status] = orginalIcon;
       },
     });

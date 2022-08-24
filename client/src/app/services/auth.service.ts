@@ -12,6 +12,7 @@ export class AuthService {
   refreshToken: BehaviorSubject<string>;
   userSubject: BehaviorSubject<any>;
   roleSubject: BehaviorSubject<any>;
+  userType: string = 'P';
   isLoggedIn: BehaviorSubject<boolean>;
 
   baseHeader: HttpHeaders;
@@ -29,6 +30,7 @@ export class AuthService {
       this.isLoggedIn = new BehaviorSubject<boolean>(true);
       this.accessToken = new BehaviorSubject<string>(accessToken);
       this.refreshToken = new BehaviorSubject<string>(refreshToken);
+      this.userType = this.userSubject.value.role;
     } else {
       this.userSubject = new BehaviorSubject<any>(null);
       this.roleSubject = new BehaviorSubject<any>(null);
@@ -51,6 +53,7 @@ export class AuthService {
     this.userSubject.next(user);
     this.roleSubject.next(role);
     this.isLoggedIn.next(isLoggedIn);
+    this.userType = this.userSubject.value.role;
   }
 
   logout() {

@@ -18,6 +18,6 @@ router.use('/patient', patientRouter);
 router.use('/doctor', doctorRouter);
 router.use('/appointment', appointmentRouter);
 router.use('/department', departmentRouter);
-router.use('/report', authMiddleware, reportRouter);
+router.use('/report', reportRouter);
 
 module.exports = router;

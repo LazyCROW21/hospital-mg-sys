@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { matchField } from '../common/custom-validators';
+import { matchField, differentField } from '../common/custom-validators';
 import { genderOptions, specializationOptions, stateOptions } from '../common/dropdown-options';
-import { createUser } from '../common/types/user';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -13,7 +12,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./auth.component.css'],
 })
 export class AuthComponent implements OnInit {
-  activeTab: number = 0;
+  roleType: 'P' | 'D' = 'P';
   showNewAccountForm: boolean = false;
   genderOptions = genderOptions;
   stateOptions = stateOptions;
@@ -44,23 +43,24 @@ export class AuthComponent implements OnInit {
     pwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)]),
     confPwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)]),
     role: new FormControl('P', [Validators.required]),
+    // optional
     experience: new FormControl(null, [Validators.min(0), Validators.max(60)]),
-    specialization: new FormControl(null, [])
-  }, [matchField('pwd', 'confPwd')]);
+    specialization: new FormControl(null)
+  }, [matchField('pwd', 'confPwd'), differentField('phone', 'emergencyPhone')]);
 
   constructor(private authService: AuthService, private messageService: MessageService, private router: Router) { }
 
   ngOnInit(): void { }
 
-  onRoleChange(event: any) {
-    if (event.index === 1) {
+  onRoleChange() {
+    if (this.roleType === 'D') {
       this.newUserForm.patchValue({ 'role': 'D' });
-      this.newUserForm.get('experience')?.addValidators(Validators.required);
-      this.newUserForm.get('specialization')?.addValidators(Validators.required);
+      this.newUserForm.get('experience')?.addValidators([Validators.required]);
+      this.newUserForm.get('specialization')?.addValidators([Validators.required]);
     } else {
       this.newUserForm.patchValue({ 'role': 'P' });
-      this.newUserForm.get('experience')?.removeValidators(Validators.required);
-      this.newUserForm.get('specialization')?.removeValidators(Validators.required);
+      this.newUserForm.get('experience')?.removeValidators([Validators.required]);
+      this.newUserForm.get('specialization')?.removeValidators([Validators.required]);
     }
   }
 
@@ -69,7 +69,7 @@ export class AuthComponent implements OnInit {
   }
 
   onLogin() {
-    if(this.loginForm.valid) {
+    if (this.loginForm.valid) {
       this.authService.loginUser(this.loginForm.value).subscribe({
         next: (response: any) => {
           this.authService.setUser(response.user, response.role, true);
@@ -82,17 +82,23 @@ export class AuthComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
-          if(error.status === 401) {
+          if (error.status === 401) {
             this.loginError = 'Invalid email / password';
           }
           this.loginForm.get('pwd')?.reset();
           this.loginError = 'Something went wrong!';
         }
       });
-    } 
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
   }
 
   onSubmit() {
+    if(this.newUserForm.invalid) {
+      this.newUserForm.markAllAsTouched();
+      return;
+    }
     this.loadingIcon = 'pi pi-spin pi-spinner';
     this.authService.createUser(this.newUserForm.value).subscribe({
       next: (result: any) => {
@@ -103,7 +109,7 @@ export class AuthComponent implements OnInit {
         });
         console.log(result);
       },
-      error: (error: any) => { 
+      error: (error: any) => {
         console.error(error);
         this.messageService.add({
           severity: 'error',
@@ -113,7 +119,7 @@ export class AuthComponent implements OnInit {
       },
       complete: () => {
         this.newUserForm.reset();
-        this.newUserForm.patchValue({ 'role': this.activeTab === 0 ? 'P' : 'D' });
+        this.newUserForm.patchValue({ 'role': this.roleType === 'P' ? 'P' : 'D' });
         this.loadingIcon = '';
         this.showNewAccountForm = false;
       }

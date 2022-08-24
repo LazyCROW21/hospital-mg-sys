@@ -14,8 +14,9 @@ export class DashboardComponent implements OnInit {
   patientSideMenuItems: MenuItem[];
   doctorSideMenuItems: MenuItem[];
   showSidebar: boolean = false;
+  userName = '';
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(public authService: AuthService, private router: Router) {
     this.menuItems = [
       { label: 'Profile', icon: 'pi pi-fw pi-user', routerLink: '/dashboard/profile' },
       { label: 'Settings', icon: 'pi pi-fw pi-cog' },
@@ -23,19 +24,17 @@ export class DashboardComponent implements OnInit {
     ];
     this.sideMenuItems = [
       { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', routerLink: '/dashboard', command: this.closeSidebar.bind(this) },
-      { label: 'All Departments', icon: 'pi pi-fw pi-th-large', routerLink: 'departments', command: this.closeSidebar.bind(this) }
+      { label: 'All Departments', icon: 'pi pi-fw pi-th-large', routerLink: 'departments', command: this.closeSidebar.bind(this) },
+      { label: 'Reports', icon: 'pi pi-fw pi-briefcase', routerLink: 'reports', command: this.closeSidebar.bind(this) },
+      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: 'appointment', command: this.closeSidebar.bind(this) }
     ];
     
     this.patientSideMenuItems = [
-      { label: 'Reports', icon: 'pi pi-fw pi-briefcase', routerLink: 'reports', command: this.closeSidebar.bind(this) },
-      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: 'appointment', command: this.closeSidebar.bind(this) },
     ];
 
     this.doctorSideMenuItems = [
       { label: 'My Department', icon: 'pi pi-fw pi-briefcase', routerLink: ['departments', '2'], command: this.closeSidebar.bind(this) },
-      { label: 'My Cases', icon: 'pi pi-fw pi-briefcase', routerLink: 'cases', command: this.closeSidebar.bind(this) },
     ]
-
   }
 
   closeSidebar() {
@@ -43,6 +42,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userName  = this.authService.userSubject.value.firstName + ' ' + this.authService.userSubject.value.lastName;
   }
 
   onLogout() {
