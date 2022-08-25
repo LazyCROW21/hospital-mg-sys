@@ -13,7 +13,7 @@ router.get('/new', async (req, res) => {
     res.send(doctors);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id(\\d+)', async (req, res) => {
     const doctor = await doctorController.getDoctorById(req.params.id);
     if(doctor) {
         return res.send(doctor);
@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
     return res.sendStatus(404);
 });
 
-router.get('/department/:id', async (req, res) => {
+router.get('/department/:id(\\d+)', async (req, res) => {
     const doctors = await doctorController.getDoctorsByDepartmentId(req.params.id);
     return res.send(doctors);
 });

@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit {
   sideMenuItems: MenuItem[];
   patientSideMenuItems: MenuItem[];
   doctorSideMenuItems: MenuItem[];
+  adminSideMenuItems: MenuItem[];
   showSidebar: boolean = false;
   userName = '';
 
@@ -34,6 +35,11 @@ export class DashboardComponent implements OnInit {
 
     this.doctorSideMenuItems = [
       { label: 'My Department', icon: 'pi pi-fw pi-briefcase', routerLink: ['departments', '2'], command: this.closeSidebar.bind(this) },
+    ];
+
+    this.adminSideMenuItems = [
+      { label: 'Admins', icon: 'pi pi-fw pi-user', routerLink: 'admins', command: this.closeSidebar.bind(this) },
+      { label: 'Users', icon: 'pi pi-fw pi-users', routerLink: 'users', command: this.closeSidebar.bind(this) },
     ]
   }
 

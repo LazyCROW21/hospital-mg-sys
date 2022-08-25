@@ -1,6 +1,7 @@
 const UserModel = require('../models/user');
 const PatientModel = require('../models/patient');
 const DoctorModel = require('../models/doctor');
+const AdminModel = require('../models/admin');
 
 UserModel.sync();
 
@@ -10,6 +11,7 @@ const getAllUsers = async () => {
 }
 
 const addPatient = async (userData) => {
+    userData.status = 'N';
     let newUser = new UserModel(userData);
     await newUser.save();
     let newPatient = new PatientModel({ userId: newUser.id, ...userData });
@@ -18,6 +20,7 @@ const addPatient = async (userData) => {
 }
 
 const addDoctor = async (userData) => {
+    userData.status = 'N';
     let newUser = new UserModel(userData);
     await newUser.save();
     let newDoctor = new DoctorModel({ userId: newUser.id, ...userData });
@@ -25,8 +28,20 @@ const addDoctor = async (userData) => {
     return { user: newUser, doctor: newDoctor };
 }
 
+const addAdmin = async (userData) => {
+    userData.status = 'A';
+    userData.pwd = 'asdf1234';
+    userData.access = JSON.stringify(userData.access);
+    let newUser = new UserModel(userData);
+    await newUser.save();
+    let newAdmin = new AdminModel({ userId: newUser.id, ...userData });
+    await newAdmin.save();
+    return { user: newUser, admin: newAdmin };
+}
+
 module.exports = {
     getAllUsers,
     addPatient,
-    addDoctor
+    addDoctor,
+    addAdmin
 }

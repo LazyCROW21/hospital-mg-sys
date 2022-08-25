@@ -33,8 +33,14 @@ const getDepartmentsByParentDepartmentId = async (parentId) => {
 
 const addDepartment = async (departmentData) => {
     const newDepartment = new DepartmentModel(departmentData);
-    newDepartment.save();
+    await newDepartment.save();
     return newDepartment;
+}
+
+const updateDepartment = async (id, data) => {
+    return await DepartmentModel.update(data, {
+        where: { id }
+    });
 }
 
 const removeDepartment = async (id) => {
@@ -50,5 +56,6 @@ module.exports = {
     getDepartmentById,
     getDepartmentsByParentDepartmentId,
     addDepartment,
-    removeDepartment
+    removeDepartment,
+    updateDepartment
 }

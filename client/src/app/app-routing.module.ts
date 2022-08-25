@@ -15,6 +15,8 @@ import { MainComponent } from './home/main/main.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AuthGuard } from './guards/auth.guard';
+import { AdminsComponent } from './dashboard/admins/admins.component';
+import { UsersComponent } from './dashboard/users/users.component';
 
 const routes: Routes = [
   { 
@@ -40,6 +42,9 @@ const routes: Routes = [
       { path: 'appointment', component: AppointmentComponent },
       { path: 'profile', component: ProfileComponent },
       // Doctor
+      // Admins
+      { path: 'admins', component: AdminsComponent },
+      { path: 'users', component: UsersComponent },
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full', }

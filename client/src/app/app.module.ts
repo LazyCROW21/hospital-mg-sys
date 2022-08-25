@@ -27,6 +27,7 @@ import { BadgeModule } from 'primeng/badge';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +47,8 @@ import { DepartmentComponent } from './dashboard/departments/department/departme
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
+import { AdminsComponent } from './dashboard/admins/admins.component';
+import { UsersComponent } from './dashboard/users/users.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +66,9 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
     DepartmentsComponent,
     PageNotFoundComponent,
     DepartmentComponent,
-    ReportsComponent
+    ReportsComponent,
+    AdminsComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +98,8 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
     InputTextareaModule,
     BadgeModule,
     ConfirmDialogModule,
-    CheckboxModule
+    CheckboxModule,
+    MultiSelectModule
   ],
   providers: [
     MessageService,

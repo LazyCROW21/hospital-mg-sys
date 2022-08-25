@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+// const { Op } = require('sequelize');
 const Department = require('../models/department');
 const DoctorModel = require('../models/doctor');
 const User = require('../models/user');
@@ -23,13 +23,15 @@ const getAllDoctors = async () => {
 
 // returns no of doctors registered in the week
 const getNewDoctorsCount = async () => {
-    const d = new Date();
-    d.setDate(d.getDate() - 7);
-    const doctors = await DoctorModel.findAndCountAll({
+    // const d = new Date();
+    // d.setDate(d.getDate() - 7);
+    const doctors = await DoctorModel.findAll({
         where: {
-            createdAt: {
-                [Op.gt]: d
-            }
+            '$user.status$': 'N'
+        },
+        include: {
+            model: User,
+            as: 'user'
         }
     });
     return doctors;

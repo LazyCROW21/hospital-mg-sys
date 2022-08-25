@@ -8,12 +8,14 @@ const doctorRouter = require('./doctor');
 const appointmentRouter = require('./appointment');
 const departmentRouter = require('./department');
 const reportRouter = require('./report');
+const adminRouter = require('./admin');
 
 const authMiddleware = require('../middlewares/auth');
 
 router.use('/public', publicRouter);
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
+router.use('/admin', adminRouter);
 router.use('/patient', patientRouter);
 router.use('/doctor', doctorRouter);
 router.use('/appointment', appointmentRouter);

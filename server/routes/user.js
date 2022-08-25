@@ -14,6 +14,8 @@ router.post('/', async (req, res) => {
         user = await userController.addPatient(req.body);
     } else if(req.body.role === 'D') {
         user = await userController.addDoctor(req.body);
+    } else if(req.body.role === 'A') {
+        user = await userController.addAdmin(req.body);
     }
     res.send(user);
 });

@@ -14,3 +14,9 @@ export const specializationOptions = [
     { label: 'Neurologists', value: 'Neurologists' },
     { label: 'Pediatricians', value: 'Pediatricians' }
 ];
+
+export const accessOptions = [
+    { label: 'Super Admin', value: 'Super Admin' },
+    { label: 'Department Head', value: 'Department Head' },
+    { label: 'Patient Manager', value: 'Patient Manager' },
+];

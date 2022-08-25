@@ -22,6 +22,11 @@
         <p-panelMenu [model]="doctorSideMenuItems" [style]="{'width':'100%'}">
         </p-panelMenu>
     </ng-template>
+    <ng-template [ngIf]="authService.userType === 'A'">
+        <p-divider></p-divider>
+        <p-panelMenu [model]="adminSideMenuItems" [style]="{'width':'100%'}">
+        </p-panelMenu>
+    </ng-template>
 </p-sidebar>
 <div class="container">
     <router-outlet></router-outlet>
