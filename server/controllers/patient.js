@@ -1,10 +1,16 @@
 const { Op } = require("sequelize");
 const PatientModel = require('../models/patient');
+const User = require("../models/user");
 
 PatientModel.sync();
 
 const getAllPatients = async () => {
-    const patients = await PatientModel.findAll();
+    const patients = await PatientModel.findAll({
+        include: {
+            model: User,
+            as: 'user'
+        }
+    });
     return patients;
 }
 

@@ -1,13 +1,204 @@
 <p-card>
-    <p-tabView>
+    <p-tabView (onChange)="onTabChange($event)">
         <p-tabPanel header="New Users">
-           Content 1
+            <ng-template [ngIf]="isLoadingNewUsers" [ngIfElse]="notLoadingNewUsers">
+                <p class="text-center">Loading..</p>
+                <p-progressBar mode="indeterminate"></p-progressBar>
+            </ng-template>
+            <ng-template #notLoadingNewUsers>
+                <p-table [value]="newUsers" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th class="text-center">Type</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user let-i="rowIndex">
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ user.firstName + ' ' + user.lastName }}</td>
+                            <td>{{ user.gender }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone }}</td>
+                            <td class="text-center">
+                                <p-badge [value]="user.role === 'D' ? 'Doctor' : 'Patient'"
+                                    [severity]="user.role === 'D' ? 'success' : 'info'"></p-badge>
+                            </td>
+                            <td class="text-right">
+                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
+                                    (onClick)="setActiveUser(i); newUserPMenu.toggle($event);"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <p-menu #newUserPMenu [popup]="true" [model]="newUserMenu"></p-menu>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Patients">
-            Content 2
+            <ng-template [ngIf]="isLoadingPatients" [ngIfElse]="notLoadingPatients">
+                <p class="text-center">Loading..</p>
+                <p-progressBar mode="indeterminate"></p-progressBar>
+            </ng-template>
+            <ng-template #notLoadingPatients>
+                <p-table [value]="patients" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-patient let-i="rowIndex">
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ patient.user.firstName + ' ' + patient.user.lastName }}</td>
+                            <td>{{ patient.user.gender }}</td>
+                            <td>{{ patient.user.email }}</td>
+                            <td>{{ patient.user.phone }}</td>
+                            <td class="text-right">
+                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
+                                    (onClick)="setActiveUser(i); patientMenu.toggle($event);"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <p-menu #patientMenu [popup]="true" [model]="patientRowMenu"></p-menu>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Doctors">
-            Content 3
+            <ng-template [ngIf]="isLoadingDoctors" [ngIfElse]="notLoadingDoctors">
+                <p class="text-center">Loading..</p>
+                <p-progressBar mode="indeterminate"></p-progressBar>
+            </ng-template>
+            <ng-template #notLoadingDoctors>
+                <p-table [value]="doctors" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-doctor let-i="rowIndex">
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ doctor.user.firstName + ' ' + doctor.user.lastName }}</td>
+                            <td>{{ doctor.user.gender }}</td>
+                            <td>{{ doctor.user.email }}</td>
+                            <td>{{ doctor.user.phone }}</td>
+                            <td class="text-right">
+                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
+                                    (onClick)="setActiveUser(i); doctorMenu.toggle($event);"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <p-menu #doctorMenu [popup]="true" [model]="doctorRowMenu"></p-menu>
+            </ng-template>
         </p-tabPanel>
     </p-tabView>
 </p-card>
+
+<!-- Create Department Dialog -->
+<p-dialog [(visible)]="dialog.show" [header]="dialog.header" [style]="{ maxWidth: '80%' }">
+    <table class="my-table">
+        <tbody>
+            <tr>
+                <th>Type:</th>
+                <td>
+                    <p-badge [value]="activeUser?.role === 'D' ? 'Doctor' : 'Patient'"
+                        [severity]="activeUser?.role === 'D' ? 'success' : 'info'"></p-badge>
+                </td>
+            </tr>
+            <tr>
+                <th>User ID:</th>
+                <td>{{ activeUser?.id }}</td>
+            </tr>
+            <tr>
+                <th>First Name:</th>
+                <td>{{ activeUser?.firstName }}</td>
+            </tr>
+            <tr>
+                <th>Last Name:</th>
+                <td>{{ activeUser?.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ activeUser?.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>{{ activeUser?.phone }}</td>
+            </tr>
+            <tr>
+                <th>Emergency Phone:</th>
+                <td>{{ activeUser?.emergencyPhone }}</td>
+            </tr>
+            <tr>
+                <th>Gender:</th>
+                <td>{{ activeUser?.gender }}</td>
+            </tr>
+            <tr>
+                <th>Date of Birth:</th>
+                <td>{{ activeUser?.dob | date:'short' }}</td>
+            </tr>
+            <tr>
+                <th>Address Line 1:</th>
+                <td>{{ activeUser?.line1 }}</td>
+            </tr>
+            <tr>
+                <th>Address Line 2:</th>
+                <td>{{ activeUser?.line2 }}</td>
+            </tr>
+            <tr>
+                <th>Address PINCODE:</th>
+                <td>{{ activeUser?.pincode }}</td>
+            </tr>
+            <tr>
+                <th>Address City:</th>
+                <td>{{ activeUser?.city }}</td>
+            </tr>
+            <tr>
+                <th>Address State:</th>
+                <td>{{ activeUser?.state }}</td>
+            </tr>
+            <ng-template [ngIf]="activeUser?.role === 'D'">
+                <p-divider></p-divider>
+                <tr>
+                    <th>Specialization:</th>
+                    <td>{{ activeUser?.specialization }}</td>
+                </tr>
+                <tr>
+                    <th>Experience:</th>
+                    <td>{{ activeUser?.experience }}</td>
+                </tr>
+            </ng-template>
+        </tbody>
+    </table>
+    <div *ngIf="dialog.mode === 'N'" class="flex justify-content-end gap-2 mt-2">
+        <p-button label="Close" icon="pi pi-times" styleClass="p-button-plain p-button-text"
+            (onClick)="dialog.show = false;">
+        </p-button>
+        <p-button label="Reject" (onClick)="commitUserStatus('R')" [icon]="commitButtonIcons['R']"
+            styleClass="p-button-danger p-button-text">
+        </p-button>
+        <p-button label="Accept" (onClick)="commitUserStatus('A')" [icon]="commitButtonIcons['A']"
+            styleClass="p-button-success p-button-text">
+        </p-button>
+    </div>
+</p-dialog>
+
+<!-- Delete Department Popup -->
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

@@ -9,7 +9,8 @@ const creationSchema = Joi.object({
 
     parentDepartmentId: Joi.number()
         .integer()
-        .min(0),
+        .min(0)
+        .allow(null),
 
     description: Joi.string().min(3).max(255).required(),
 });

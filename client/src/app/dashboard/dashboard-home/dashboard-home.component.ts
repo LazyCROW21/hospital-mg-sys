@@ -92,7 +92,7 @@ export class DashboardHomeComponent implements OnInit {
     this.doctorService.getAllNewDoctors()
     .subscribe({
       next: (result: any) => {
-        this.newDoctorCount = result.count.toString();
+        this.newDoctorCount = result.length.toString();
         console.log(result);
       },
       error: (error: any) => {

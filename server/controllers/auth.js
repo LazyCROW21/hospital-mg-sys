@@ -1,6 +1,7 @@
 require('dotenv').config({ path: '../.env' });
 const jwt = require('jsonwebtoken');
 const client = require('../config/redis');
+const Admin = require('../models/admin');
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
 const UserModel = require('../models/user');
@@ -38,6 +39,9 @@ const loginUser = async (email, pwd) => {
                 break;
             case 'D':
                 role = await Doctor.findOne(queryOption)
+                break;
+            case 'A':
+                role = await Admin.findOne(queryOption)
                 break;
             default:
                 role = null;

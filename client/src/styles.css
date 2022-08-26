@@ -49,6 +49,24 @@ body {
     padding: 0.75rem 0.25rem;
 }
 
+.my-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.my-table th, .my-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid lightgray;
+}
+
+.my-table th {
+    text-align: right;
+}
+
+.my-table td {
+    text-align: left;
+}
+
 @media only screen and (min-width: 768px) {
     .container {
         width: 720px;

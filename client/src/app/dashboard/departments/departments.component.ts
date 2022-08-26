@@ -19,10 +19,7 @@ export class DepartmentsComponent implements OnInit {
     { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
-  departments: any[] = [
-    { id: 2, name: 'Brain Cancer', parent: 'Cancer' },
-    { id: 1, name: 'Liver Cancer', parent: 'Cancer' }
-  ];
+  departments: any[] = [];
 
   newDepartmentForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(40)]),
@@ -114,7 +111,7 @@ export class DepartmentsComponent implements OnInit {
       accept: () => {
         this.departmentService.deleteDepartment(this.departments[this.activeRow].id).subscribe({
           next: (reponse: any) => {
-            this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Department deleted' });
+            this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Department deleted' });
             this.fetchDepartments();
           },
           error: (err: any) => {

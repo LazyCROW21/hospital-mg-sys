@@ -10,6 +10,15 @@ const getAllUsers = async () => {
     return users;
 }
 
+const getAllNewUsers = async () => {
+    const users = await UserModel.findAll({
+        where: {
+            status: 'N'
+        }
+    });
+    return users;
+}
+
 const addPatient = async (userData) => {
     userData.status = 'N';
     let newUser = new UserModel(userData);
@@ -39,9 +48,25 @@ const addAdmin = async (userData) => {
     return { user: newUser, admin: newAdmin };
 }
 
+const commitUser = async (id, commit) => {
+    let user = await UserModel.findByPk(id);
+    if(!user) {
+        return null;
+    }
+    user.status = commit;
+    return await user.save();
+}
+
+const deleteUser = async (id) => {
+    return await UserModel.update({ status: 'X' }, { where: { id }});
+}
+
 module.exports = {
     getAllUsers,
     addPatient,
     addDoctor,
-    addAdmin
+    addAdmin,
+    getAllNewUsers,
+    deleteUser,
+    commitUser
 }

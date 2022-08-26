@@ -12,11 +12,11 @@ const creationSchema = Joi.object({
         .max(40)
         .required(),
     phone: Joi.string()
-        .phoneNumber()
+        .pattern(/^[0-9]+$/, 'phone')
         .required(),
     emergencyPhone: Joi.string()
-        .phoneNumber()
-        .required(),
+        .pattern(/^[0-9]+$/, 'phone')
+        .required().invalid(Joi.ref('phone')),
     gender: Joi.string().valid('M', 'F').required(),
     dob: Joi.date().required(),
     line1:  Joi.string()
@@ -35,6 +35,14 @@ const creationSchema = Joi.object({
     email: Joi.string().email().required(),
     pwd: Joi.string().min(8).max(32).required(),
     role: Joi.string().valid('A', 'D', 'P').required(),
+    specialization: Joi.string().when('role',  {
+        is: 'D',
+        then: Joi.required()
+    }),
+    experience: Joi.number().min(0).max(60).when('role',  {
+        is: 'D',
+        then: Joi.required()
+    })
 });
 
 module.exports = creationSchema;
