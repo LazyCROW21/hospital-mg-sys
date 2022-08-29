@@ -26,6 +26,6 @@ export class AdminService {
   }
 
   removeAdmin(adminId: number) {
-    return this.http.delete(environment.apiURL+'/admin/'+adminId, { headers: this.baseHeader });
+    return this.http.delete(environment.apiURL+'/user/'+adminId, { headers: this.baseHeader });
   }
 }

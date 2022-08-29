@@ -7,8 +7,7 @@
     </div>
     <p-divider></p-divider>
     <ng-template [ngIf]="isLoadingAppointments" [ngIfElse]="notLoading">
-        <p class="text-center">Loading..</p>
-        <p-progressBar mode="indeterminate"></p-progressBar>
+        <app-loading-bar></app-loading-bar>
     </ng-template>
     <ng-template #notLoading>
         <p-table [value]="appointments" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-striped">
@@ -28,8 +27,8 @@
                     <td>{{ i+1 }}</td>
                     <td *ngIf="isDoctor || isAdmin">{{ appointment.patient.user.firstName +
                         appointment.patient.user.lastName }}</td>
-                    <td *ngIf="isPatient || isAdmin">{{ appointment.patient.doctor?.firstName +
-                        appointment.patient.doctor?.lastName }}</td>
+                    <td *ngIf="isPatient || isAdmin">{{ appointment.doctor?.user.firstName +
+                        appointment.doctor?.user.lastName }}</td>
                     <td>{{ appointment.subject }}</td>
                     <td>{{ appointment.preferredDateTime | date:'short' }}</td>
                     <td class="text-center">
@@ -55,24 +54,28 @@
             <label>Doctor</label>
             <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Doctor" [options]="doctorOptions"
                 formControlName="doctorId" optionLabel="label" optionValue="value"></p-dropdown>
+            <small *ngIf="newAppointmentForm.get('doctorId')?.invalid && newAppointmentForm.get('doctorId')?.touched" class="p-error">Doctor is required</small>
         </div>
         <div class="field">
             <label>Subject</label>
             <input type="text" class="w-full" pInputText placeholder="Subject" formControlName="subject" />
+            <small *ngIf="newAppointmentForm.get('subject')?.invalid && newAppointmentForm.get('subject')?.touched" class="p-error">Subject is required, must be under 80 characters</small>
         </div>
         <div class="field">
             <label>Message</label>
             <textarea pInputTextarea class="w-full" placeholder="Describe your problem here"
                 formControlName="message"></textarea>
+            <small *ngIf="newAppointmentForm.get('message')?.invalid && newAppointmentForm.get('message')?.touched" class="p-error">Message is required, must be under 255 characters</small>
         </div>
         <div class="field">
             <label>Preferred Date & Time:</label>
             <p-calendar placeholder="Appointment Date" styleClass="w-full" appendTo="body" [minDate]="minDate"
-                [showIcon]="true" formControlName="preferredDateTime">
+                [showIcon]="true" [showTime]="true" formControlName="preferredDateTime">
             </p-calendar>
+            <small *ngIf="newAppointmentForm.get('preferredDateTime')?.invalid && newAppointmentForm.get('preferredDateTime')?.touched" class="p-error">Date & Time are required</small>
         </div>
         <div class="flex justify-content-end mt-2">
-            <p-button [disabled]="!newAppointmentForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon">
+            <p-button label="SUBMIT" type="submit" [icon]="loadingIcon">
             </p-button>
         </div>
     </form>
@@ -80,10 +83,6 @@
 <p-dialog [(visible)]="showAppointmentDetails" header="Appointment Details" [style]="{ maxWidth: '80%' }">
     <table class="my-table">
         <tbody>
-            <tr>
-                <th>Appointment ID:</th>
-                <td>{{ appointmentDetails.id }}</td>
-            </tr>
             <tr *ngIf="appointmentDetails.patient">
                 <th>Patient:</th>
                 <td>{{ appointmentDetails.patient.user.firstName + appointmentDetails.patient.user.lastName }}</td>

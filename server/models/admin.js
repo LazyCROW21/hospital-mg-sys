@@ -8,7 +8,7 @@ const Admin = sequelize.define('Admin', {
     allowNull: false
   },
   access: {
-    type: DataTypes.STRING,
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
     allowNull: true
   },
   createdBy: {

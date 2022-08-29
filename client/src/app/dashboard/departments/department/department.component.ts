@@ -23,13 +23,13 @@ export class DepartmentComponent implements OnInit {
       name: 'loading..'
     }
   };
-  departmentDoctors: any[]  = [];
+  departmentDoctors: any[] = [];
   subDepartments: any[] = [];
   activeRow: number = 0;
   deptRowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment()  },
+    { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
     { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete()  },
+    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
 
   doctorRowMenu: MenuItem[] = [
@@ -43,16 +43,16 @@ export class DepartmentComponent implements OnInit {
     description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     parentDepartmentId: new FormControl(null)
   });
-  
+
   constructor(
-    private messageService: MessageService, 
-    private departmentService: DepartmentService, 
+    private messageService: MessageService,
+    private departmentService: DepartmentService,
     private doctorService: DoctorService,
     private confirmationService: ConfirmationService,
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router
   ) { }
-  
+
   fetchDepartment() {
     this.isLoadingSubDepartments = true;
     this.departmentService.getDepartment(this.departmentId).subscribe({
@@ -72,7 +72,7 @@ export class DepartmentComponent implements OnInit {
         console.error(error);
         this.subDepartments = [];
         this.isLoadingSubDepartments = false;
-        if(error.status === 404) {
+        if (error.status === 404) {
           this.router.navigateByUrl('/pagenotfound');
         }
       },
@@ -104,7 +104,7 @@ export class DepartmentComponent implements OnInit {
       }
     });
   }
-  
+
   fetchSubDepartments() {
     this.isLoadingSubDepartments = true;
     this.departmentService.getSubDepartments(this.departmentId).subscribe({
@@ -144,6 +144,36 @@ export class DepartmentComponent implements OnInit {
     this.activeRow = rowIndex;
   }
 
+  onDepartmentTableAction(event: any) {
+    console.log(event);
+    this.activeRow = event.index;
+    switch (event.event) {
+      case 'View':
+        this.goToDepartment();
+        break;
+      case 'Edit':
+        break;
+      case 'Delete':
+        this.onDelete();
+        break;
+    }
+  }
+
+  onDoctorTableAction(event: any) {
+    console.log(event);
+    this.activeRow = event.index;
+    switch (event.event) {
+      case 'View':
+        this.goToDepartment();
+        break;
+      case 'Edit':
+        break;
+      case 'Delete':
+        this.onDelete();
+        break;
+    }
+  }
+
   goToDepartment() {
     this.router.navigateByUrl(`/dashboard/departments/${this.subDepartments[this.activeRow].id}`);
   }
@@ -153,6 +183,10 @@ export class DepartmentComponent implements OnInit {
   }
 
   onSubmit() {
+    if(this.newDepartmentForm.invalid) {
+      this.newDepartmentForm.markAllAsTouched();
+      return;
+    }
     this.loadingIcon = 'pi pi-spin pi-spinner';
     this.departmentService.addDepartment(this.newDepartmentForm.value).subscribe({
       next: (result: any) => {
@@ -163,7 +197,7 @@ export class DepartmentComponent implements OnInit {
         });
         console.log(result);
       },
-      error: (error: any) => { 
+      error: (error: any) => {
         console.error(error);
         this.messageService.add({
           severity: 'error',

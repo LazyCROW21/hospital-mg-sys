@@ -7,6 +7,9 @@ DoctorModel.sync();
 
 const getAllDoctors = async () => {
     const doctors = await DoctorModel.findAll({
+        where: {
+            "$user.status$": 'A'
+        },
         include: [
             {
                 model: User,
@@ -22,7 +25,7 @@ const getAllDoctors = async () => {
 }
 
 // returns no of doctors registered in the week
-const getNewDoctorsCount = async () => {
+const getNewDoctors = async () => {
     // const d = new Date();
     // d.setDate(d.getDate() - 7);
     const doctors = await DoctorModel.findAll({
@@ -78,7 +81,7 @@ const addDoctor = async (doctorData) => {
 
 module.exports = {
     getAllDoctors,
-    getNewDoctorsCount,
+    getNewDoctors,
     getDoctorsByDepartmentId,
     getDoctorById,
     addDoctor

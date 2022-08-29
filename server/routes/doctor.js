@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/new', async (req, res) => {
-    const doctors = await doctorController.getNewDoctorsCount();
+    const doctors = await doctorController.getNewDoctors();
     res.send(doctors);
 });
 

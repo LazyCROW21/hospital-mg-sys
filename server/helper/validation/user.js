@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { accessCodes } = require('../enum');
 
 const creationSchema = Joi.object({
     firstName: Joi.string()
@@ -31,9 +32,12 @@ const creationSchema = Joi.object({
     .required(),
     pincode: Joi.string().length(6).pattern(/^[0-9]+$/).required(),
     city: Joi.string().min(3).max(40).required(),
-    state: Joi.string().min(3).max(40).required(),
+    state: Joi.string().min(2).max(40).required(),
     email: Joi.string().email().required(),
-    pwd: Joi.string().min(8).max(32).required(),
+    pwd: Joi.string().min(8).max(32).when('role',  {
+        not: 'A',
+        then: Joi.required()
+    }),
     role: Joi.string().valid('A', 'D', 'P').required(),
     specialization: Joi.string().when('role',  {
         is: 'D',
@@ -42,7 +46,8 @@ const creationSchema = Joi.object({
     experience: Joi.number().min(0).max(60).when('role',  {
         is: 'D',
         then: Joi.required()
-    })
+    }),
+    access: Joi.array().max(10).items(Joi.number().integer().valid(...accessCodes)).unique((a, b) => a === b)
 });
 
 module.exports = creationSchema;

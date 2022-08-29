@@ -38,8 +38,19 @@ export class DepartmentsComponent implements OnInit {
     this.fetchDepartments();
   }
 
-  openMenu(rowIndex: number) {
-    this.activeRow = rowIndex;
+  onDepartmentTableAction(event: any) {
+    console.log(event);
+    this.activeRow = event.index;
+    switch (event.event) {
+      case 'View':
+        this.goToDepartment();
+        break;
+      case 'Edit':
+        break;
+      case 'Delete':
+        this.onDelete();
+        break;
+    }
   }
 
   goToDepartment() {

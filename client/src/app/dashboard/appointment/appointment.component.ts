@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AppointmentService } from 'src/app/services/appointment.service';
+import { DoctorService } from 'src/app/services/doctor.service';
 
 @Component({
   selector: 'app-appointment',
@@ -19,11 +20,7 @@ export class AppointmentComponent implements OnInit {
   appointmentDetails: any = {};
   loadingIcon: string = '';
   minDate = new Date();
-  doctorOptions:{ label: string, value: number }[] = [
-    { label: 'Doctor 1', value: 1 },
-    { label: 'Doctor 2', value: 2 },
-    { label: 'Doctor 3', value: 3 }
-  ];
+  doctorOptions:{ label: string, value: number }[] = [];
 
   appointments: any[] = [];
   activeRow: number = 0;
@@ -51,12 +48,21 @@ export class AppointmentComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
+    private doctorService: DoctorService,
     private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.newAppointmentForm.patchValue({ patientId: this.holderId });
     this.fetchAppointments();
+    this.doctorService.getAllDoctors().subscribe((result) => {
+      (<any[]>result).forEach((doctor) => {
+        const label = `${doctor.user.firstName} ${doctor.user.lastName} (${doctor.department.name})`;
+        this.doctorOptions.push({
+          label, value: doctor.id
+        });
+      });
+    });
   }
 
   openMenu(rowIndex: number) {
@@ -103,6 +109,10 @@ export class AppointmentComponent implements OnInit {
   }
 
   onSubmit() {
+    if(this.newAppointmentForm.invalid) {
+      this.newAppointmentForm.markAllAsTouched();
+      return;
+    }
     this.loadingIcon = 'pi pi-spin pi-spinner';
     this.appointmentService.addAppointment(this.newAppointmentForm.value).subscribe({
       next: (result: any) => {

@@ -25,7 +25,7 @@ const _signRefreshToken = (user, role) => {
 
 const loginUser = async (email, pwd) => {
     const user = await UserModel.findOne({
-        where: { email },
+        where: { email, status: 'A' },
     });
     if (!user) {
         return null;
@@ -66,16 +66,23 @@ const generateAccessToken = async (refreshToken) => {
         return null;
     }
     const rfT = await client.get(`${payload.user}`);
-    // console.log(payload);
-    // console.log(rfT);
     if(rfT !== refreshToken) {
         return null;
     }
     return _signAccessToken(payload.user, payload.role);
 }
 
-const logoutUser = async () => {
-
+const logoutUser = async (refreshToken) => {
+    let payload = jwt.verify(refreshToken, REFRESH_SECRET);
+    if(!payload) {
+        return null;
+    }
+    const rfT = await client.get(`${payload.user}`);
+    if(rfT !== refreshToken) {
+        return null;
+    }
+    const res = await client.del(`${payload.user}`);
+    return res;
 }
 
 module.exports = {

@@ -2,8 +2,7 @@
     <h2 class="mb-2">{{ department.name }}</h2>
     <p class="mb-2">
         <strong>Parent Department: </strong>
-        <a 
-            *ngIf="department.parentDepartment"
+        <a *ngIf="department.parentDepartment"
             [routerLink]="['/', 'dashboard', 'departments', department.parentDepartment.id]">
             {{ department.parentDepartment.name }}
         </a>
@@ -15,77 +14,30 @@
     <p-tabView>
         <p-tabPanel header="Sub Departments">
             <div class="flex justify-content-end">
-                <p-button label="Add Sub-Department" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openDepartmentForm()">
+                <p-button label="Add Sub-Department" icon="pi pi-plus" styleClass="p-button-text"
+                    (onClick)="openDepartmentForm()">
                 </p-button>
             </div>
             <ng-template [ngIf]="isLoadingSubDepartments" [ngIfElse]="notLoadingSubDept">
-                <p class="text-center">Loading..</p>
-                <p-progressBar mode="indeterminate"></p-progressBar>
+                <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingSubDept>
-                <p-table [value]="subDepartments" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Parent Department</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-department let-i="rowIndex">
-                        <tr>
-                            <td>{{ i + 1 }}</td>
-                            <td>{{ department.name }}</td>
-                            <td>{{ department.parentDepartment ? department.parentDepartment.name : '' }}</td>
-                            <td class="text-right">
-                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
-                                    (onClick)="openMenu(i); subDeptMenu.toggle($event);"></p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <p-menu #subDeptMenu [popup]="true" [model]="deptRowMenu"></p-menu>
+                <app-department-table [departments]="subDepartments" (onMenuAction)="onDepartmentTableAction($event)">
+                </app-department-table>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Staff">
             <div class="flex justify-content-between">
                 <p>(Not including sub-department staff)</p>
-                <p-button label="Add Staff" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openDepartmentForm()">
+                <p-button label="Add Staff" icon="pi pi-plus" styleClass="p-button-text"
+                    (onClick)="openDepartmentForm()">
                 </p-button>
             </div>
             <ng-template [ngIf]="isLoadingDepartmentDoctors" [ngIfElse]="notLoadingDeptDoctors">
-                <p class="text-center">Loading..</p>
-                <p-progressBar mode="indeterminate"></p-progressBar>
+                <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingDeptDoctors>
-                <p-table [value]="departmentDoctors" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Gender</th>
-                            <th>Designation</th>
-                            <th>Phone</th>
-                            <th>Specialization</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-doctor let-i="rowIndex">
-                        <tr>
-                            <td>{{ i + 1 }}</td>
-                            <td>{{ doctor.user.firstName + ' ' + doctor.user.lastName }}</td>
-                            <td>{{ doctor.user.gender }}</td>
-                            <td>{{ doctor.designation }}</td>
-                            <td>{{ doctor.user.phone }}</td>
-                            <td>{{ doctor.specialization }}</td>
-                            <td>
-                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
-                                    (onClick)="openMenu(i); deptDocMenu.toggle($event);"></p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <p-menu #deptDocMenu [popup]="true" [model]="doctorRowMenu"></p-menu>
+                <app-doctor-table [doctors]="departmentDoctors" (onMenuAction)="onDoctorTableAction($event)"></app-doctor-table>
             </ng-template>
         </p-tabPanel>
     </p-tabView>
@@ -97,19 +49,25 @@
         <div class="field">
             <label>Parent Department</label>
             <input type="text" class="w-full" pInputText [value]="department.name" readonly>
+            <small
+                *ngIf="newDepartmentForm.get('parentDepartmentId')?.invalid && newDepartmentForm.get('parentDepartmentId')?.touched"
+                class="p-error">Parent department is required</small>
         </div>
         <div class="field">
             <label>New Department Name</label>
             <input type="text" class="w-full" pInputText placeholder="Name" formControlName="name" />
+            <small *ngIf="newDepartmentForm.get('name')?.invalid && newDepartmentForm.get('name')?.touched"
+                class="p-error">Department name is required</small>
         </div>
         <div class="field">
             <label>New Department Description</label>
             <textarea pInputTextarea class="w-full" placeholder="Description" formControlName="description"></textarea>
+            <small
+                *ngIf="newDepartmentForm.get('description')?.invalid && newDepartmentForm.get('description')?.touched"
+                class="p-error">Department description is required</small>
         </div>
-
         <div class="flex justify-content-end mt-2">
-            <p-button [disabled]="!newDepartmentForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon">
-            </p-button>
+            <p-button label="SUBMIT" type="submit" [icon]="loadingIcon"></p-button>
         </div>
     </form>
 </p-dialog>

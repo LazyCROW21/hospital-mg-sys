@@ -6,8 +6,7 @@
     </div>
     <p-divider></p-divider>
     <ng-template [ngIf]="isLoadingAdmins" [ngIfElse]="notLoading">
-        <p class="text-center">Loading..</p>
-        <p-progressBar mode="indeterminate"></p-progressBar>
+        <app-loading-bar></app-loading-bar>
     </ng-template>
     <ng-template #notLoading>
         <p-table [value]="admins" responsiveLayout="scroll">
@@ -23,7 +22,9 @@
                 <tr>
                     <td>{{ i + 1 }}</td>
                     <td>{{ admin.user.firstName + ' ' + admin.user.lastName }}</td>
-                    <td class="text-center">{{ admin.access }}</td>
+                    <td class="text-center">
+                        <span class="mx-2" *ngFor="let asc of admin.access">{{ getAccessName(asc) }}</span>
+                    </td>
                     <td class="text-right">
                         <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
                             (onClick)="openMenu(i); menu.toggle($event);"></p-button>
@@ -41,7 +42,7 @@
         <div class="grid">
             <div class="col-6 field">
                 <label>First Name</label>
-                <input type="text" class="w-full" pInputText formControlName="firstName">
+                <input type="text" class="w-full" pInputText formControlName="firstName" placeholder="ABC">
                 <small *ngIf="newAdminForm.get('firstName')?.invalid && newAdminForm.get('firstName')?.touched"
                     class="p-error">
                     First name is required & must be under 40 characters
@@ -49,7 +50,7 @@
             </div>
             <div class="col-6 field">
                 <label>Last Name</label>
-                <input type="text" class="w-full" pInputText formControlName="lastName">
+                <input type="text" class="w-full" pInputText formControlName="lastName" placeholder="Kumar">
                 <small *ngIf="newAdminForm.get('lastName')?.invalid && newAdminForm.get('lastName')?.touched"
                     class="p-error">
                     Last name is required & must be under 40 characters
@@ -57,14 +58,14 @@
             </div>
             <div class="col-6 field">
                 <label>Phone</label>
-                <input type="text" class="w-full" pInputText formControlName="phone">
+                <input type="text" class="w-full" pInputText formControlName="phone" placeholder="XXXXXXXXXX">
                 <small *ngIf="newAdminForm.get('phone')?.invalid && newAdminForm.get('phone')?.touched" class="p-error">
                     Contact Number is required & must be valid
                 </small>
             </div>
             <div class="col-6 field">
                 <label>Emergency Phone</label>
-                <input type="text" class="w-full" pInputText formControlName="emergencyPhone">
+                <input type="text" class="w-full" pInputText formControlName="emergencyPhone" placeholder="YYYYYYYYYY">
                 <small *ngIf="
                         (newAdminForm.errors?.['match'] && newAdminForm.get('phone')?.touched) || 
                         (newAdminForm.get('emergencyPhone')?.invalid && newAdminForm.get('emergencyPhone')?.touched)"
@@ -92,21 +93,21 @@
             </div>
             <div class="col-6 field">
                 <label>Line 1</label>
-                <input type="text" class="w-full" pInputText formControlName="line1">
+                <input type="text" class="w-full" pInputText formControlName="line1" placeholder="XYZ Society">
                 <small class="p-error" *ngIf="newAdminForm.get('line1')?.invalid && newAdminForm.get('line1')?.touched">
                     Line 1 is required, must be under 80 characters
                 </small>
             </div>
             <div class="col-6 field">
                 <label>Line 2</label>
-                <input type="text" class="w-full" pInputText formControlName="line2">
+                <input type="text" class="w-full" pInputText formControlName="line2" placeholder="Near JKL Landmark">
                 <small class="p-error" *ngIf="newAdminForm.get('line2')?.invalid && newAdminForm.get('line2')?.touched">
                     Line 2 is required, must be under 80 characters
                 </small>
             </div>
             <div class="col-4 field">
                 <label>PINCODE</label>
-                <input type="text" class="w-full" pInputText formControlName="pincode">
+                <input type="text" class="w-full" pInputText formControlName="pincode" placeholder="PINCODE">
                 <small class="p-error"
                     *ngIf="newAdminForm.get('pincode')?.invalid && newAdminForm.get('pincode')?.touched">
                     PINCODE is required, must be a 6 digit number
@@ -114,7 +115,7 @@
             </div>
             <div class="col-4 field">
                 <label>City</label>
-                <input type="text" class="w-full" pInputText formControlName="city">
+                <input type="text" class="w-full" pInputText formControlName="city" placeholder="City">
                 <small class="p-error" *ngIf="newAdminForm.get('city')?.invalid && newAdminForm.get('city')?.touched">
                     City is required, must be under 40 characters
                 </small>
@@ -130,7 +131,7 @@
             </div>
             <div class="col-6 field">
                 <label>E-mail</label>
-                <input type="email" class="w-full" pInputText formControlName="email">
+                <input type="email" class="w-full" pInputText formControlName="email" placeholder="name@example.com">
                 <small *ngIf="newAdminForm.get('email')?.invalid && newAdminForm.get('email')?.touched" class="p-error">
                     E-Mail is required & must be valid
                 </small>

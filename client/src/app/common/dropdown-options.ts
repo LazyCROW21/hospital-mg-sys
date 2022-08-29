@@ -16,7 +16,7 @@ export const specializationOptions = [
 ];
 
 export const accessOptions = [
-    { label: 'Super Admin', value: 'Super Admin' },
-    { label: 'Department Head', value: 'Department Head' },
-    { label: 'Patient Manager', value: 'Patient Manager' },
+    { label: 'Super Admin', value: 1 },
+    { label: 'Department Head', value: 2 },
+    { label: 'Patient Manager', value: 3 },
 ];

@@ -49,6 +49,10 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { AdminsComponent } from './dashboard/admins/admins.component';
 import { UsersComponent } from './dashboard/users/users.component';
+import { PatientTableComponent } from './common/patient-table/patient-table.component';
+import { DoctorTableComponent } from './common/doctor-table/doctor-table.component';
+import { LoadingBarComponent } from './common/loading-bar/loading-bar.component';
+import { DepartmentTableComponent } from './common/department-table/department-table.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +72,11 @@ import { UsersComponent } from './dashboard/users/users.component';
     DepartmentComponent,
     ReportsComponent,
     AdminsComponent,
-    UsersComponent
+    UsersComponent,
+    PatientTableComponent,
+    DoctorTableComponent,
+    LoadingBarComponent,
+    DepartmentTableComponent
   ],
   imports: [
     BrowserModule,

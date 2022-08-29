@@ -20,6 +20,7 @@ export class UserService {
   commitUser(userId: number, status: 'A' | 'R') {
     return this.http.patch(environment.apiURL+'/user/'+userId, { status }, { headers: this.baseHeader });
   }
+  
   deleteUser(userId: number) {
     return this.http.delete(environment.apiURL+'/user/'+userId, { headers: this.baseHeader });
   }

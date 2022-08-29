@@ -28,15 +28,15 @@ export class UsersComponent implements OnInit {
     { label: 'Accept', icon: 'pi pi-check', iconClass: 'text-green-400', command: () => { this.commitUserStatus('A'); } },
     { label: 'Reject', icon: 'pi pi-times', iconClass: 'text-red-400', command: () => { this.commitUserStatus('R'); } }
   ];
-  patientRowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => { this.openUserDetails('P'); } },
+  patientTableMenu: { label: string, icon: string }[] = [
+    { label: 'View', icon: 'pi pi-eye' },
     { label: 'Edit', icon: 'pi pi-cog', },
-    { label: 'Delete', icon: 'pi pi-times', command: () => { this.confirmUserDelete('P'); } }
+    { label: 'Delete', icon: 'pi pi-times' }
   ];
   doctorRowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => { this.openUserDetails('D'); } },
+    { label: 'View', icon: 'pi pi-eye' },
     { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Delete', icon: 'pi pi-times', command: () => { this.confirmUserDelete('D'); } }
+    { label: 'Delete', icon: 'pi pi-times' }
   ];
   commitButtonIcons = {
     'R': 'pi pi-ban',
@@ -58,36 +58,45 @@ export class UsersComponent implements OnInit {
     this.activeRow = rowIndex;
   }
 
+  onPatientTableAction(event: any) {
+    this.activeUser = this.patients[event.index].user;
+    switch (event.event) {
+      case 'View':
+        this.dialog.header = 'Patient Details';
+        this.dialog.mode = 'E';
+        this.dialog.show = true;
+        break;
+      case 'Edit':
+        break;
+      case 'Delete':
+        this.onDelete();
+        break;
+    }
+  }
+
+  onDoctorTableAction(event: any) {
+    this.activeUser = this.doctors[event.index].user;
+    this.activeUser.specialization = this.doctors[event.index].specialization;
+    this.activeUser.experience = this.doctors[event.index].experience;
+    switch (event.event) {
+      case 'View':
+        this.dialog.header = 'Doctor Details';
+        this.dialog.mode = 'E';
+        this.dialog.show = true;
+        break;
+      case 'Edit':
+        break;
+      case 'Delete':
+        this.onDelete();
+        break;
+    }
+  }
+
   openNewUserRequest() {
     this.dialog.header = 'New User Request';
     this.activeUser = this.newUsers[this.activeRow];
     this.dialog.mode = 'N';
     this.dialog.show = true;
-  }
-
-  openUserDetails(userType: 'P' | 'D') {
-    if(userType === 'P') {
-      this.dialog.header = 'Patient Details';
-      this.activeUser = this.patients[this.activeRow].user;
-    } else {
-      this.dialog.header = 'Doctor Details';
-      this.activeUser = this.doctors[this.activeRow].user;
-      this.activeUser.specialization = this.newUsers[this.activeRow].specialization;
-      this.activeUser.experience = this.newUsers[this.activeRow].experience;
-    }
-    this.dialog.mode = 'E';
-    this.dialog.show = true;
-  }
-
-  confirmUserDelete(userType: 'P' | 'D') {
-    if(userType === 'P') {
-      this.activeUser = this.patients[this.activeRow].user;
-    } else {
-      this.activeUser = this.doctors[this.activeRow].user;
-      this.activeUser.specialization = this.newUsers[this.activeRow].specialization;
-      this.activeUser.experience = this.newUsers[this.activeRow].experience;
-    }
-    this.onDelete();
   }
 
   onTabChange(event: any) {
@@ -112,29 +121,29 @@ export class UsersComponent implements OnInit {
     // change to loading icon
     this.commitButtonIcons[status] = 'pi pi-spin pi-spinner';
     this.userService.commitUser(this.activeUser.id, status)
-    .subscribe({
-      next: (result: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'User '+ (status === 'A' ? 'Accepted': 'Rejected'),
-          detail: 'Now the user can login'
-        });
-        this.fetchNewUsers();
-        // back to original icon
-        this.commitButtonIcons[status] = orginalIcon;
-        console.log(result);
-      },
-      error: (error: any) => { 
-        console.error(error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error!',
-          detail: 'Something went wrong'
-        });
-        // back to original icon
-        this.commitButtonIcons[status] = orginalIcon;
-      },
-    });
+      .subscribe({
+        next: (result: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'User ' + (status === 'A' ? 'Accepted' : 'Rejected'),
+            detail: 'Now the user can login'
+          });
+          this.fetchNewUsers();
+          // back to original icon
+          this.commitButtonIcons[status] = orginalIcon;
+          console.log(result);
+        },
+        error: (error: any) => {
+          console.error(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error!',
+            detail: 'Something went wrong'
+          });
+          // back to original icon
+          this.commitButtonIcons[status] = orginalIcon;
+        },
+      });
   }
 
   fetchNewUsers() {
@@ -213,7 +222,7 @@ export class UsersComponent implements OnInit {
         this.userService.deleteUser(this.activeUser.id).subscribe({
           next: (reponse: any) => {
             this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'User deleted' });
-            if(this.activeUser.role === 'D') {
+            if (this.activeUser.role === 'D') {
               this.fetchAllDoctors();
             } else {
               this.fetchAllPatients();

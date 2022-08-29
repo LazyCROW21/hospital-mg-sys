@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService, ConfirmationService, ConfirmEventType } from 'primeng/api';
 import { differentField } from 'src/app/common/custom-validators';
+import { accessCodes } from 'src/app/common/types/codes';
 import { AdminService } from 'src/app/services/admin.service';
 import { genderOptions, accessOptions, stateOptions } from '../../common/dropdown-options';
 
@@ -15,6 +16,7 @@ export class AdminsComponent implements OnInit {
   isLoadingAdmins: boolean = false;
   loadingIcon: string = '';
   showAdminForm: boolean = false;
+  activeUser: any;
   activeRow: number = 0;
   maxDate = new Date();
   genderOptions = genderOptions;
@@ -25,10 +27,7 @@ export class AdminsComponent implements OnInit {
     { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
-  admins: any[] = [
-    { id: 2, name: 'Brain Cancer', parent: 'Cancer' },
-    { id: 1, name: 'Liver Cancer', parent: 'Cancer' }
-  ];
+  admins: any[] = [];
 
   newAdminForm: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
@@ -128,22 +127,23 @@ export class AdminsComponent implements OnInit {
   }
 
   onDelete() {
+    this.activeUser = this.admins[this.activeRow].user;
     this.confirmationService.confirm({
       acceptButtonStyleClass: 'p-button-danger',
-      message: `Do you want to delete this department (${this.admins[this.activeRow].name})?`,
+      message: `Do you want to delete this admin (${this.activeUser.firstName} ${this.activeUser.lastName })?`,
       header: 'Delete Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        // this.adminService.deleteAdmin(this.departments[this.activeRow].id).subscribe({
-        //   next: (reponse: any) => {
-        //     this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Admin deleted' });
-        //     this.fetchAdmins();
-        //   },
-        //   error: (err: any) => {
-        //     console.log(err);
-        //     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
-        //   }
-        // });
+        this.adminService.removeAdmin(this.activeUser.id).subscribe({
+          next: (reponse: any) => {
+            this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Admin deleted' });
+            this.fetchAdmins();
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+          }
+        });
       },
       reject: (type: ConfirmEventType) => {
         switch (type) {
@@ -156,5 +156,9 @@ export class AdminsComponent implements OnInit {
         }
       }
     });
+  }
+
+  getAccessName(code: 0 | 1 | 2) {
+    return accessCodes[code];
   }
 }

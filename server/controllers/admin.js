@@ -7,6 +7,9 @@ AdminModel.sync();
 
 const getAllAdmins = async () => {
     const admins = await AdminModel.findAll({
+        where: {
+            "$user.status$": 'A'
+        },
         include: {
             model: User,
             as: 'user'

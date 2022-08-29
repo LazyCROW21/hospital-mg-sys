@@ -41,70 +41,18 @@
         </p-tabPanel>
         <p-tabPanel header="Patients">
             <ng-template [ngIf]="isLoadingPatients" [ngIfElse]="notLoadingPatients">
-                <p class="text-center">Loading..</p>
-                <p-progressBar mode="indeterminate"></p-progressBar>
+                <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingPatients>
-                <p-table [value]="patients" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Gender</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-patient let-i="rowIndex">
-                        <tr>
-                            <td>{{ i + 1 }}</td>
-                            <td>{{ patient.user.firstName + ' ' + patient.user.lastName }}</td>
-                            <td>{{ patient.user.gender }}</td>
-                            <td>{{ patient.user.email }}</td>
-                            <td>{{ patient.user.phone }}</td>
-                            <td class="text-right">
-                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
-                                    (onClick)="setActiveUser(i); patientMenu.toggle($event);"></p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <p-menu #patientMenu [popup]="true" [model]="patientRowMenu"></p-menu>
+                <app-patient-table [patients]="patients" (onMenuAction)="onPatientTableAction($event)"></app-patient-table>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Doctors">
             <ng-template [ngIf]="isLoadingDoctors" [ngIfElse]="notLoadingDoctors">
-                <p class="text-center">Loading..</p>
-                <p-progressBar mode="indeterminate"></p-progressBar>
+                <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingDoctors>
-                <p-table [value]="doctors" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Gender</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-doctor let-i="rowIndex">
-                        <tr>
-                            <td>{{ i + 1 }}</td>
-                            <td>{{ doctor.user.firstName + ' ' + doctor.user.lastName }}</td>
-                            <td>{{ doctor.user.gender }}</td>
-                            <td>{{ doctor.user.email }}</td>
-                            <td>{{ doctor.user.phone }}</td>
-                            <td class="text-right">
-                                <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
-                                    (onClick)="setActiveUser(i); doctorMenu.toggle($event);"></p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <p-menu #doctorMenu [popup]="true" [model]="doctorRowMenu"></p-menu>
+                <app-doctor-table [doctors]="doctors" (onMenuAction)="onDoctorTableAction($event)"></app-doctor-table>
             </ng-template>
         </p-tabPanel>
     </p-tabView>

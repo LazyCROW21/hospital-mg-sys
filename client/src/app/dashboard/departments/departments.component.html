@@ -6,32 +6,10 @@
     </div>
     <p-divider></p-divider>
     <ng-template [ngIf]="isLoadingDepartments" [ngIfElse]="notLoading">
-        <p class="text-center">Loading..</p>
-        <p-progressBar mode="indeterminate"></p-progressBar>
+        <app-loading-bar></app-loading-bar>
     </ng-template>
     <ng-template #notLoading>
-        <p-table [value]="departments" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Parent Department</th>
-                    <th></th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-department let-i="rowIndex">
-                <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ department.name }}</td>
-                    <td>{{ department.parentDepartment ? department.parentDepartment.name : '' }}</td>
-                    <td>
-                        <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
-                            (onClick)="openMenu(i); menu.toggle($event);"></p-button>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-        <p-menu #menu [popup]="true" [model]="rowMenu"></p-menu>
+        <app-department-table [departments]="departments" (onMenuAction)="onDepartmentTableAction($event)"></app-department-table>
     </ng-template>
 </p-card>
 

@@ -40,7 +40,6 @@ const addDoctor = async (userData) => {
 const addAdmin = async (userData) => {
     userData.status = 'A';
     userData.pwd = 'asdf1234';
-    userData.access = JSON.stringify(userData.access);
     let newUser = new UserModel(userData);
     await newUser.save();
     let newAdmin = new AdminModel({ userId: newUser.id, ...userData });
