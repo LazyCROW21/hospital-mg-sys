@@ -20,3 +20,10 @@ export const accessOptions = [
     { label: 'Department Head', value: 2 },
     { label: 'Patient Manager', value: 3 },
 ];
+
+export const designationOptions = [
+    { label: 'Department Head', value: 'Department Head' },
+    { label: 'Senior Doctor', value: 'Senior Doctor' },
+    { label: 'Junior Doctor', value: 'Junior Doctor' },
+    { label: 'Intern', value: 'Intern' },
+];

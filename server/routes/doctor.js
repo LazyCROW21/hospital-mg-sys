@@ -26,4 +26,14 @@ router.get('/department/:id(\\d+)', async (req, res) => {
     return res.send(doctors);
 });
 
+router.get('/user/:id(\\d+)', async (req, res) => {
+    const doctors = await doctorController.getDoctorByUserId(req.params.id);
+    return res.send(doctors);
+});
+
+router.patch('/user/:id(\\d+)/move', async (req, res) => {
+    const result = await doctorController.updateDoctorByUserId(req.params.id, req.body);
+    return res.send(result);
+});
+
 module.exports = router;

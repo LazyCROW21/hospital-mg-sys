@@ -3,8 +3,8 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Gender</th>
-            <th>Phone</th>
+            <th class="text-center">Gender</th>
+            <th class="text-center">Phone</th>
             <th>Department / Designation</th>
             <th>Specialization</th>
             <th></th>
@@ -14,9 +14,9 @@
         <tr>
             <td>{{ i + 1 }}</td>
             <td>{{ doctor.user.firstName + ' ' + doctor.user.lastName }}</td>
-            <td>{{ doctor.user.gender }}</td>
-            <td>{{ doctor.user.phone }}</td>
-            <td>{{ doctor.department }} / {{ doctor.designation }}</td>
+            <td class="text-center">{{ doctor.user.gender }}</td>
+            <td class="text-center">{{ doctor.user.phone }}</td>
+            <td>{{ doctor.department?.name }} / {{ doctor.designation }}</td>
             <td>{{ doctor.specialization }}</td>
             <td class="text-right">
                 <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"

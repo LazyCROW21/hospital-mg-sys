@@ -26,7 +26,15 @@ export class DoctorService {
     return this.http.get(environment.apiURL+'/doctor/'+doctorId, { headers: this.baseHeader });
   }
 
+  getDoctorByUserId(doctorId: number) {
+    return this.http.get(environment.apiURL+'/doctor/user/'+doctorId, { headers: this.baseHeader });
+  }
+
   getDoctorByDepartmentId(departmentId: number) {
     return this.http.get(environment.apiURL+'/doctor/department/'+departmentId, { headers: this.baseHeader });
+  }
+
+  moveDoctorByUserId(doctorId: number, data: any) {
+    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}/move/`, data, { headers: this.baseHeader });
   }
 }

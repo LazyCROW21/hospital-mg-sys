@@ -2,8 +2,7 @@
     <p-tabView (onChange)="onTabChange($event)">
         <p-tabPanel header="New Users">
             <ng-template [ngIf]="isLoadingNewUsers" [ngIfElse]="notLoadingNewUsers">
-                <p class="text-center">Loading..</p>
-                <p-progressBar mode="indeterminate"></p-progressBar>
+                <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingNewUsers>
                 <p-table [value]="newUsers" responsiveLayout="scroll">
@@ -44,7 +43,8 @@
                 <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingPatients>
-                <app-patient-table [patients]="patients" (onMenuAction)="onPatientTableAction($event)"></app-patient-table>
+                <app-patient-table [patients]="patients" (onMenuAction)="onPatientTableAction($event)">
+                </app-patient-table>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Doctors">
@@ -110,19 +110,18 @@
                 <td>{{ activeUser?.line2 }}</td>
             </tr>
             <tr>
-                <th>Address PINCODE:</th>
+                <th>PINCODE:</th>
                 <td>{{ activeUser?.pincode }}</td>
             </tr>
             <tr>
-                <th>Address City:</th>
+                <th>City:</th>
                 <td>{{ activeUser?.city }}</td>
             </tr>
             <tr>
-                <th>Address State:</th>
+                <th>State:</th>
                 <td>{{ activeUser?.state }}</td>
             </tr>
             <ng-template [ngIf]="activeUser?.role === 'D'">
-                <p-divider></p-divider>
                 <tr>
                     <th>Specialization:</th>
                     <td>{{ activeUser?.specialization }}</td>
@@ -145,6 +144,88 @@
             styleClass="p-button-success p-button-text">
         </p-button>
     </div>
+</p-dialog>
+
+<!-- Move Doctor to Department Dialog -->
+<p-dialog [(visible)]="showMoveDoctorDialog" header="Move Doctor to Department ?" [style]="{ maxWidth: '80%' }">
+    <p class="mb-2">
+        <strong>Note: </strong>
+        <span>You can always move doctors in the department area</span>
+    </p>
+    <table class="my-table">
+        <tbody>
+            <tr>
+                <th>First Name:</th>
+                <td>{{ activeUser?.firstName }}</td>
+            </tr>
+            <tr>
+                <th>Last Name:</th>
+                <td>{{ activeUser?.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ activeUser?.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>{{ activeUser?.phone }}</td>
+            </tr>
+            <tr>
+                <th>Gender:</th>
+                <td>{{ activeUser?.gender }}</td>
+            </tr>
+            <tr>
+                <th>Specialization:</th>
+                <td>{{ activeUser?.specialization }}</td>
+            </tr>
+            <tr>
+                <th>Experience:</th>
+                <td>{{ activeUser?.experience }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <form [formGroup]="moveDoctorForm" (ngSubmit)="onMoveDoctor()">
+        <div class="field mt-4">
+            <label>Move To:</label>
+            <p-dropdown
+                formControlName="departmentId"
+                styleClass="w-full" 
+                appendTo="body" 
+                placeholder="Select Department"
+                [options]="departmentOptions"
+                optionLabel="name" 
+                optionValue="id"
+            ></p-dropdown>
+            <small *ngIf="moveDoctorForm.get('departmentId')?.invalid && moveDoctorForm.get('departmentId')?.touched"
+                class="p-error">
+                Department is required
+            </small>
+        </div>
+        <div class="field mt-4">
+            <label>Designation:</label>
+            <p-dropdown
+                formControlName="designation"
+                styleClass="w-full" 
+                appendTo="body" 
+                placeholder="Select Designation"
+                [options]="designationOptions"
+                optionLabel="label" 
+                optionValue="value"
+            ></p-dropdown>
+            <small *ngIf="moveDoctorForm.get('designation')?.invalid && moveDoctorForm.get('designation')?.touched"
+                class="p-error">
+                Designation is required
+            </small>
+        </div>
+        <div class="flex justify-content-end gap-2 mt-2">
+            <p-button label="Skip" type="button" icon="pi pi-times" styleClass="p-button-plain p-button-text"
+                (onClick)="showMoveDoctorDialog = false;">
+            </p-button>
+            <p-button label="Move" type="submit" icon="pi pi-arrow-up-right" [loading]="isLoadingMoveDoctor"
+                styleClass="p-button-info p-button-text">
+            </p-button>
+        </div>
+    </form>
 </p-dialog>
 
 <!-- Delete Department Popup -->

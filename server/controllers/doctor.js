@@ -73,10 +73,35 @@ const getDoctorById = async (id) => {
     return doctor;
 }
 
+const getDoctorByUserId = async (id) => {
+    const doctor = await DoctorModel.findOne({
+        "$user.id$": id
+    }, {
+        include: [
+            {
+                model: User,
+                as: 'user'
+            },
+            {
+                model: Department,
+                as: 'department'
+            }
+        ]
+    });
+    return doctor;
+}
+
 const addDoctor = async (doctorData) => {
     let doctor = new DoctorModel(doctorData);
     await doctor.save();
     return doctor;
+}
+
+const updateDoctorByUserId = async (userId, data) => {
+    const result = await DoctorModel.update(data, {
+        where: { userId }
+    });
+    return result;
 }
 
 module.exports = {
@@ -84,5 +109,7 @@ module.exports = {
     getNewDoctors,
     getDoctorsByDepartmentId,
     getDoctorById,
-    addDoctor
+    getDoctorByUserId,
+    addDoctor,
+    updateDoctorByUserId
 }

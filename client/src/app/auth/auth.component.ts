@@ -100,7 +100,9 @@ export class AuthComponent implements OnInit {
       return;
     }
     this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.authService.createUser(this.newUserForm.value).subscribe({
+    const formData = this.newUserForm.getRawValue();
+    delete formData.confPwd;
+    this.authService.createUser(formData).subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
+import { designationOptions } from 'src/app/common/dropdown-options';
+import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { UserService } from 'src/app/services/user.service';
@@ -18,6 +21,8 @@ export class UsersComponent implements OnInit {
     header: '',
     mode: ''
   };
+  showMoveDoctorDialog = false;
+  isLoadingMoveDoctor = false;
   activeRow = 0;
   activeUser: any;
   newUsers = <any>[];
@@ -38,13 +43,23 @@ export class UsersComponent implements OnInit {
     { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Delete', icon: 'pi pi-times' }
   ];
+  departmentOptions: any[] = [];
+  designationOptions = designationOptions;
   commitButtonIcons = {
     'R': 'pi pi-ban',
     'A': 'pi pi-check',
   };
+
+  moveDoctorForm: FormGroup = new FormGroup({
+    doctorId: new FormControl(null, [Validators.required]),
+    departmentId: new FormControl(null, [Validators.required]),
+    designation: new FormControl(null, [Validators.required]),
+  });
+
   constructor(
     private doctorService: DoctorService,
     private patientService: PatientService,
+    private departmentService: DepartmentService,
     private userService: UserService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -52,6 +67,19 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchNewUsers();
+    this.departmentService.getAllDepartments().subscribe({
+      next: (result: any) => {
+        this.departmentOptions.push(...result);
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+      },
+    });
   }
 
   setActiveUser(rowIndex: number) {
@@ -76,8 +104,6 @@ export class UsersComponent implements OnInit {
 
   onDoctorTableAction(event: any) {
     this.activeUser = this.doctors[event.index].user;
-    this.activeUser.specialization = this.doctors[event.index].specialization;
-    this.activeUser.experience = this.doctors[event.index].experience;
     switch (event.event) {
       case 'View':
         this.dialog.header = 'Doctor Details';
@@ -93,8 +119,22 @@ export class UsersComponent implements OnInit {
   }
 
   openNewUserRequest() {
-    this.dialog.header = 'New User Request';
     this.activeUser = this.newUsers[this.activeRow];
+    if(this.activeUser.role === 'D') {
+      this.activeUser.specialization = 'Loading...';
+      this.activeUser.experience = 'Loading...';
+      this.doctorService.getDoctorByUserId(this.activeUser.id).subscribe({
+        next: (doctor: any) => {
+          this.activeUser.specialization = doctor.specialization;
+          this.activeUser.experience = doctor.experience;
+        },
+        error: () => {
+          this.activeUser.specialization = 'Error!';
+          this.activeUser.experience = 'Error!';
+        }
+      });
+    }
+    this.dialog.header = 'New User Request';
     this.dialog.mode = 'N';
     this.dialog.show = true;
   }
@@ -126,12 +166,15 @@ export class UsersComponent implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: 'User ' + (status === 'A' ? 'Accepted' : 'Rejected'),
-            detail: 'Now the user can login'
+            detail: status === 'A' ? 'Now the user can login' : 'Rejection mail send to user'
           });
           this.fetchNewUsers();
           // back to original icon
           this.commitButtonIcons[status] = orginalIcon;
-          console.log(result);
+          this.dialog.show = false;
+          if(this.activeUser.role === 'D' && status === 'A') {
+            this.showMoveDoctorDialog = true;
+          }
         },
         error: (error: any) => {
           console.error(error);
@@ -144,6 +187,40 @@ export class UsersComponent implements OnInit {
           this.commitButtonIcons[status] = orginalIcon;
         },
       });
+  }
+
+  onMoveDoctor() {
+    this.moveDoctorForm.patchValue({ 'doctorId': this.activeUser.id });
+    if(this.moveDoctorForm.invalid) {
+      this.moveDoctorForm.markAllAsTouched();
+      return;
+    }
+    this.isLoadingMoveDoctor = true;
+    const data = {
+      departmentId: this.moveDoctorForm.get('departmentId')?.value,
+      designation: this.moveDoctorForm.get('designation')?.value,
+    };
+    this.doctorService.moveDoctorByUserId(this.activeUser.id, data)
+    .subscribe({
+      next: (result) => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Moved',
+          detail: 'Doctor transferred!' 
+        });
+        this.isLoadingMoveDoctor = false;
+        this.showMoveDoctorDialog = false;
+      },
+      error: (error) => {
+        this.isLoadingMoveDoctor = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Cannot fetch Data'
+        });
+        console.error(error);
+      }
+    });
   }
 
   fetchNewUsers() {
