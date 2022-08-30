@@ -62,6 +62,10 @@ export class DepartmentService {
     return this.http.post(environment.apiURL + '/department', data, { headers: this.baseHeader });
   }
 
+  updateDepartment(departmentId: number, data: any) {
+    return this.http.patch(environment.apiURL + '/department/'+departmentId, data, { headers: this.baseHeader });
+  }
+
   deleteDepartment(departmentId: number) {
     return this.http.delete(environment.apiURL + '/department/' + departmentId, { headers: this.baseHeader });
   }

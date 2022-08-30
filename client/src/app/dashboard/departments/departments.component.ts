@@ -105,6 +105,7 @@ export class DepartmentsComponent implements OnInit {
   }
 
   openDepartmentForm() {
+    this.editDepartmentId = -1;
     this.departmentTree.splice(0, this.departmentTree.length)
     const rootDeptOption = {
       label: '-- Root --',
@@ -125,13 +126,24 @@ export class DepartmentsComponent implements OnInit {
       this.departmentForm.markAllAsTouched();
       return;
     }
+    const data = {
+      name: this.departmentForm.get('name')?.value,
+      description: this.departmentForm.get('description')?.value,
+      parentDepartmentId: this.departmentForm.get('parentDepartmentId')?.value.data,
+    }
     this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.departmentService.addDepartment(this.departmentForm.value).subscribe({
+    let api;
+    if(this.editDepartmentId === -1) {
+      api = this.departmentService.addDepartment(data);
+    } else {
+      api = this.departmentService.updateDepartment(this.editDepartmentId, data);
+    }
+    api.subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Department created',
-          detail: 'Now you add staff to this department!'
+          summary: this.editDepartmentId === -1 ? 'Department created' : 'Department update',
+          detail: this.editDepartmentId === -1 ? 'Now you add staff to this department!' : 'Note: sub-departments are moved along'
         });
         console.log(result);
       },
