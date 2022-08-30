@@ -13,19 +13,22 @@ import { DoctorService } from 'src/app/services/doctor.service';
 export class DepartmentComponent implements OnInit {
   isLoadingSubDepartments: boolean = false;
   isLoadingDepartmentDoctors: boolean = false;
-  loadingIcon: string = '';
-  showNewDepartmentForm: boolean = false;
+  isUpdateButtonLoading = false;
+  dialog = {
+    show: false,
+    heading: 'Add Sub Department',
+    loading: false
+  }
   departmentId: number = 0;
-  department: any = {
-    name: 'loading..',
-    description: 'loading..',
-    parentDepartment: {
-      name: 'loading..'
-    }
-  };
+  parentDepartment = {
+    id: -1,
+    name: 'loading...'
+  }
   departmentDoctors: any[] = [];
   subDepartments: any[] = [];
   activeRow: number = 0;
+  editDepartmentId = -1;
+
   deptRowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
     { label: 'Edit', icon: 'pi pi-cog' },
@@ -38,7 +41,12 @@ export class DepartmentComponent implements OnInit {
     { label: 'Remove', icon: 'pi pi-trash' },
   ];
 
-  newDepartmentForm: FormGroup = new FormGroup({
+  departmentForm: FormGroup = new FormGroup({
+    name: new FormControl('loading...', [Validators.required, Validators.maxLength(40)]),
+    description: new FormControl('loading...', [Validators.required, Validators.maxLength(255)]),
+  });
+
+  subDepartmentForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(40)]),
     description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     parentDepartmentId: new FormControl(null)
@@ -53,15 +61,32 @@ export class DepartmentComponent implements OnInit {
     private router: Router
   ) { }
 
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.departmentId = params['id'];
+      if (isNaN(this.departmentId) || Number(this.departmentId) < 1) {
+        this.router.navigateByUrl('/pagenotfound');
+      }
+      this.subDepartmentForm.patchValue({ parentDepartmentId: this.departmentId });
+      this.fetchDepartment();
+      this.fetchSubDepartments();
+      this.fetchDepartmentDoctors();
+    });
+  }
+
   fetchDepartment() {
     this.isLoadingSubDepartments = true;
     this.departmentService.getDepartment(this.departmentId).subscribe({
-      next: (result) => {
+      next: (result: any) => {
         console.log(result);
-        this.department = result;
-        this.newDepartmentForm.patchValue({
-          parentDepartmentId: this.department.id
+        this.departmentForm.patchValue(result);
+        this.subDepartmentForm.patchValue({
+          parentDepartmentId: this.departmentId
         });
+        this.parentDepartment = { 
+          id: result.parentDepartmentId, 
+          name: result.parentDepartment ? result.parentDepartment.name : '-- Root --' 
+        };
       },
       error: (error) => {
         this.messageService.add({
@@ -82,11 +107,39 @@ export class DepartmentComponent implements OnInit {
     });
   }
 
+  onUpdate() {
+    if (this.departmentForm.invalid) {
+      this.departmentForm.markAllAsTouched();
+      return;
+    }
+    this.isUpdateButtonLoading = true;
+    this.departmentService.updateDepartment(this.departmentId, this.departmentForm.value).subscribe({
+      next: (result: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Department updated',
+          detail: 'Changes saved!'
+        });
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+        this.isUpdateButtonLoading = false;
+      },
+      complete: () => {
+        this.isUpdateButtonLoading = false;
+      }
+    });
+  }
+
   fetchDepartmentDoctors() {
     this.isLoadingDepartmentDoctors = true;
     this.doctorService.getDoctorByDepartmentId(this.departmentId).subscribe({
       next: (result) => {
-        console.log(result);
         this.departmentDoctors = <any[]>result;
       },
       error: (error) => {
@@ -128,30 +181,20 @@ export class DepartmentComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.departmentId = params['id'];
-      if (isNaN(this.departmentId) || Number(this.departmentId) < 1) {
-        this.router.navigateByUrl('/pagenotfound');
-      }
-      this.fetchDepartment();
-      this.fetchSubDepartments();
-      this.fetchDepartmentDoctors();
-    });
-  }
-
-  openMenu(rowIndex: number) {
-    this.activeRow = rowIndex;
-  }
-
   onDepartmentTableAction(event: any) {
-    console.log(event);
     this.activeRow = event.index;
     switch (event.event) {
       case 'View':
         this.goToDepartment();
         break;
       case 'Edit':
+        this.editDepartmentId = event.data.id;
+        this.subDepartmentForm.patchValue({
+          name: event.data.name,
+          description: event.data.description
+        });
+        this.dialog.heading = 'Edit Department';
+        this.dialog.show = true;
         break;
       case 'Delete':
         this.onDelete();
@@ -160,7 +203,6 @@ export class DepartmentComponent implements OnInit {
   }
 
   onDoctorTableAction(event: any) {
-    console.log(event);
     this.activeRow = event.index;
     switch (event.event) {
       case 'View':
@@ -179,23 +221,29 @@ export class DepartmentComponent implements OnInit {
   }
 
   openDepartmentForm() {
-    this.showNewDepartmentForm = true;
+    this.editDepartmentId = -1;
+    this.dialog.show = true;
   }
 
   onSubmit() {
-    if(this.newDepartmentForm.invalid) {
-      this.newDepartmentForm.markAllAsTouched();
+    if (this.subDepartmentForm.invalid) {
+      this.subDepartmentForm.markAllAsTouched();
       return;
     }
-    this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.departmentService.addDepartment(this.newDepartmentForm.value).subscribe({
+    this.dialog.loading = true;
+    let api;
+    if (this.editDepartmentId === -1) {
+      api = this.departmentService.addDepartment(this.subDepartmentForm.value);
+    } else {
+      api = this.departmentService.updateDepartment(this.editDepartmentId, this.subDepartmentForm.value);
+    }
+    api.subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Department created',
-          detail: 'Now you add staff to this department!'
+          summary: this.editDepartmentId === -1 ? 'Department created' : 'Department update',
+          detail: this.editDepartmentId === -1 ? 'Now you add staff to this department!' : 'Changes saved'
         });
-        console.log(result);
       },
       error: (error: any) => {
         console.error(error);
@@ -204,12 +252,12 @@ export class DepartmentComponent implements OnInit {
           summary: 'Error!',
           detail: 'Something went wrong'
         });
-        this.loadingIcon = '';
+        this.dialog.loading = false;
       },
       complete: () => {
-        this.newDepartmentForm.reset();
-        this.loadingIcon = '';
-        this.showNewDepartmentForm = false;
+        this.subDepartmentForm.reset();
+        this.dialog.loading = false;
+        this.dialog.show = false;
         this.fetchSubDepartments();
       }
     });

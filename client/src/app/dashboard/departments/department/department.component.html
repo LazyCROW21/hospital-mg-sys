@@ -1,14 +1,38 @@
 <p-card styleClass="mb-2">
-    <h2 class="mb-2">{{ department.name }}</h2>
-    <p class="mb-2">
-        <strong>Parent Department: </strong>
-        <a *ngIf="department.parentDepartment"
-            [routerLink]="['/', 'dashboard', 'departments', department.parentDepartment.id]">
-            {{ department.parentDepartment.name }}
-        </a>
-    </p>
-    <p><strong>Department description:</strong></p>
-    <p>{{ department.description }}</p>
+    <form [formGroup]="departmentForm" (ngSubmit)="onUpdate()">
+        <div class="field">
+            <label><strong><small>Department Name</small></strong></label>
+            <input type="text" class="w-full" pInputText placeholder="Enter Department Name" formControlName="name" />
+            <small *ngIf="departmentForm.get('name')?.invalid && departmentForm.get('name')?.touched" class="p-error">
+                Department name is required, under 40 characters.
+            </small>
+        </div>
+        <div class="field">
+            <label><strong><small>Parent Department</small></strong></label>
+            <div class="p-inputgroup">
+                <input type="text" class="w-full" pInputText placeholder="Enter Parent Department" [value]="parentDepartment.name" readonly />
+                <span class="p-inputgroup-addon" *ngIf="departmentForm.get('parentDepartmentId')?.value">
+                    <a
+                        [routerLink]="['/', 'dashboard', 'departments', departmentForm.get('parentDepartmentId')?.value]">
+                        <i class="pi pi-external-link"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="field">
+            <label><strong><small>Department description</small></strong></label>
+            <textarea pInputTextarea class="w-full" placeholder="Enter Department Description"
+                formControlName="description"></textarea>
+            <small *ngIf="departmentForm.get('description')?.invalid && departmentForm.get('description')?.touched"
+                class="p-error">
+                Department description is required, under 255 characters.
+            </small>
+        </div>
+        <div class="flex justify-content-end mt-2">
+            <p-button label="UPDATE" type="submit" styleClass="p-button-text" icon="pi pi-save"
+                [loading]="isUpdateButtonLoading"></p-button>
+        </div>
+    </form>
 </p-card>
 <p-card>
     <p-tabView>
@@ -37,37 +61,38 @@
                 <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingDeptDoctors>
-                <app-doctor-table [doctors]="departmentDoctors" (onMenuAction)="onDoctorTableAction($event)"></app-doctor-table>
+                <app-doctor-table [doctors]="departmentDoctors" (onMenuAction)="onDoctorTableAction($event)">
+                </app-doctor-table>
             </ng-template>
         </p-tabPanel>
     </p-tabView>
 </p-card>
 
 <!-- Create Department Dialog -->
-<p-dialog [(visible)]="showNewDepartmentForm" header="Add New Department" [style]="{ maxWidth: '80%' }">
-    <form [formGroup]="newDepartmentForm" (ngSubmit)="onSubmit()">
+<p-dialog [(visible)]="dialog.show" [header]="dialog.heading" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="subDepartmentForm" (ngSubmit)="onSubmit()">
         <div class="field">
             <label>Parent Department</label>
-            <input type="text" class="w-full" pInputText [value]="department.name" readonly>
+            <input type="text" class="w-full" pInputText [value]="departmentForm.get('name')?.value" readonly>
             <small
-                *ngIf="newDepartmentForm.get('parentDepartmentId')?.invalid && newDepartmentForm.get('parentDepartmentId')?.touched"
+                *ngIf="subDepartmentForm.get('parentDepartmentId')?.invalid && subDepartmentForm.get('parentDepartmentId')?.touched"
                 class="p-error">Parent department is required</small>
         </div>
         <div class="field">
-            <label>New Department Name</label>
+            <label>Department Name</label>
             <input type="text" class="w-full" pInputText placeholder="Name" formControlName="name" />
-            <small *ngIf="newDepartmentForm.get('name')?.invalid && newDepartmentForm.get('name')?.touched"
+            <small *ngIf="subDepartmentForm.get('name')?.invalid && subDepartmentForm.get('name')?.touched"
                 class="p-error">Department name is required</small>
         </div>
         <div class="field">
-            <label>New Department Description</label>
+            <label>Department Description</label>
             <textarea pInputTextarea class="w-full" placeholder="Description" formControlName="description"></textarea>
             <small
-                *ngIf="newDepartmentForm.get('description')?.invalid && newDepartmentForm.get('description')?.touched"
+                *ngIf="subDepartmentForm.get('description')?.invalid && subDepartmentForm.get('description')?.touched"
                 class="p-error">Department description is required</small>
         </div>
         <div class="flex justify-content-end mt-2">
-            <p-button label="SUBMIT" type="submit" [icon]="loadingIcon"></p-button>
+            <p-button label="SUBMIT" type="submit" [loading]="dialog.loading"></p-button>
         </div>
     </form>
 </p-dialog>
