@@ -12,7 +12,10 @@ import { DepartmentService } from 'src/app/services/department.service';
 export class DepartmentsComponent implements OnInit {
   isLoadingDepartments: boolean = false;
   loadingIcon: string = '';
-  showNewDepartmentForm: boolean = false;
+  dialog = {
+    show: false,
+    heading: 'Add Department'
+  }
   activeRow: number = 0;
   rowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
@@ -20,8 +23,9 @@ export class DepartmentsComponent implements OnInit {
     { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
   departments: any[] = [];
-
-  newDepartmentForm: FormGroup = new FormGroup({
+  departmentTree: any[] = [];
+  editDepartmentId = -1;
+  departmentForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(40)]),
     description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     parentDepartmentId: new FormControl(null)
@@ -46,6 +50,27 @@ export class DepartmentsComponent implements OnInit {
         this.goToDepartment();
         break;
       case 'Edit':
+        this.editDepartmentId = event.data.id;
+        this.departmentTree.splice(0, this.departmentTree.length)
+        const rootDeptOption = {
+          label: '-- Root --',
+          data: null
+        }
+        this.departmentTree.push(rootDeptOption);
+        let parentNodeId = -2;
+        if(event.data.parentDepartmentId) {
+          parentNodeId = event.data.parentDepartmentId;
+        }
+        const { roots, selectedNode } = this.departmentService.createDepartmentTree(this.departments, event.data.id, parentNodeId);
+        this.departmentTree.push(...roots);
+        console.log(this.departmentTree);
+        this.departmentForm.patchValue({
+          name: event.data.name,
+          description: event.data.description,
+          parentDepartmentId: event.data.parentDepartmentId ? selectedNode : rootDeptOption
+        });
+        this.dialog.heading = 'Edit Department';
+        this.dialog.show = true;
         break;
       case 'Delete':
         this.onDelete();
@@ -61,8 +86,7 @@ export class DepartmentsComponent implements OnInit {
     this.isLoadingDepartments = true;
     this.departmentService.getAllDepartments().subscribe({
       next: (result) => {
-        console.log(result);
-        this.departments = <any[]>result;
+        this.departments.splice(0, this.departments.length, ...<any[]>result);
       },
       error: (error) => {
         this.messageService.add({
@@ -81,12 +105,28 @@ export class DepartmentsComponent implements OnInit {
   }
 
   openDepartmentForm() {
-    this.showNewDepartmentForm = true;
+    this.departmentTree.splice(0, this.departmentTree.length)
+    const rootDeptOption = {
+      label: '-- Root --',
+      data: null
+    }
+    this.departmentTree.push(rootDeptOption);
+    const { roots } = this.departmentService.createDepartmentTree(this.departments, -1, -2);
+    this.departmentTree.push(...roots);
+    this.departmentForm.reset({
+      parentDepartmentId: rootDeptOption
+    });
+    this.dialog.heading = 'Add Department';
+    this.dialog.show = true;
   }
 
   onSubmit() {
+    if (this.departmentForm.invalid) {
+      this.departmentForm.markAllAsTouched();
+      return;
+    }
     this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.departmentService.addDepartment(this.newDepartmentForm.value).subscribe({
+    this.departmentService.addDepartment(this.departmentForm.value).subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
@@ -105,9 +145,9 @@ export class DepartmentsComponent implements OnInit {
         this.loadingIcon = '';
       },
       complete: () => {
-        this.newDepartmentForm.reset();
+        this.departmentForm.reset();
         this.loadingIcon = '';
-        this.showNewDepartmentForm = false;
+        this.dialog.show = false;
         this.fetchDepartments();
       }
     });

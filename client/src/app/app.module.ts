@@ -28,6 +28,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { TreeSelectModule } from 'primeng/treeselect';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -107,7 +108,8 @@ import { DepartmentTableComponent } from './common/department-table/department-t
     BadgeModule,
     ConfirmDialogModule,
     CheckboxModule,
-    MultiSelectModule
+    MultiSelectModule,
+    TreeSelectModule
   ],
   providers: [
     MessageService,
