@@ -11,7 +11,9 @@
         <tr>
             <td>{{ i + 1 }}</td>
             <td>{{ department.name }}</td>
-            <td>{{ department.parentDepartment ? department.parentDepartment.name : '' }}</td>
+            <td [ngClass]="{ 'font-italic text-500': !department.parentDepartment }">
+                {{ department.parentDepartment ? department.parentDepartment.name : '-- Root --' }}
+            </td>
             <td class="text-right">
                 <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
                     (onClick)="setActiveUser(i); menu.toggle($event);"></p-button>

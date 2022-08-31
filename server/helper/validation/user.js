@@ -37,7 +37,7 @@ const creationSchema = Joi.object({
         then: Joi.required()
     }),
     role: Joi.string().valid('A', 'D', 'P').required(),
-    specialization: Joi.string().when('role', {
+    specialization: Joi.string().min(2).max(40).when('role', {
         is: 'D',
         then: Joi.required()
     }),

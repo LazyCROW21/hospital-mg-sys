@@ -72,7 +72,7 @@ export class DepartmentsComponent implements OnInit {
         this.dialog.heading = 'Edit Department';
         this.dialog.show = true;
         break;
-      case 'Delete':
+      case 'Remove':
         this.onDelete();
         break;
     }

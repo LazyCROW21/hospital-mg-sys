@@ -43,8 +43,10 @@ const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       // Doctor
       // Admins
-      { path: 'admins', component: AdminsComponent },
-      { path: 'users', component: UsersComponent },
+      { path: 'admins', component: AdminsComponent, pathMatch: 'full' },
+      { path: 'admins/:id', component: ProfileComponent, pathMatch: 'full' },
+      { path: 'users', component: UsersComponent, pathMatch: 'full' },
+      { path: 'users/:id', component: ProfileComponent, pathMatch: 'full' },
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full', }

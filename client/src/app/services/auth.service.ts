@@ -12,7 +12,7 @@ export class AuthService {
   refreshToken: BehaviorSubject<string>;
   userSubject: BehaviorSubject<any>;
   roleSubject: BehaviorSubject<any>;
-  userType: string = 'P';
+  userType: 'A' | 'D' | 'P' = 'P';
   isLoggedIn: BehaviorSubject<boolean>;
 
   baseHeader: HttpHeaders;

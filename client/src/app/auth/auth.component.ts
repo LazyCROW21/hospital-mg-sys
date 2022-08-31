@@ -102,6 +102,10 @@ export class AuthComponent implements OnInit {
     this.loadingIcon = 'pi pi-spin pi-spinner';
     const formData = this.newUserForm.getRawValue();
     delete formData.confPwd;
+    if(formData.role === 'P') {
+      delete formData.experience;
+      delete formData.specialization;
+    }
     this.authService.createUser(formData).subscribe({
       next: (result: any) => {
         this.messageService.add({

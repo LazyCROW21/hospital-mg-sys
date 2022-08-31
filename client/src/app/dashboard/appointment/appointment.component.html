@@ -1,7 +1,7 @@
 <p-card>
     <div class="flex justify-content-between">
         <h2>All Appointments</h2>
-        <p-button label="Book Appointment" styleClass="p-button-text" icon="pi pi-plus"
+        <p-button *ngIf="authService.userType === 'P'" label="Book Appointment" styleClass="p-button-text" icon="pi pi-plus"
             (onClick)="openAppointmentForm()">
         </p-button>
     </div>
@@ -14,8 +14,8 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
-                    <th *ngIf="isDoctor || isAdmin">Patient</th>
-                    <th *ngIf="isPatient || isAdmin">Doctor</th>
+                    <th *ngIf="this.authService.userType !== 'P'">Patient</th>
+                    <th *ngIf="this.authService.userType !== 'D'">Doctor</th>
                     <th>Subject</th>
                     <th>Preferred Date</th>
                     <th class="text-center">Status</th>
@@ -25,9 +25,9 @@
             <ng-template pTemplate="body" let-appointment let-i="rowIndex">
                 <tr>
                     <td>{{ i+1 }}</td>
-                    <td *ngIf="isDoctor || isAdmin">{{ appointment.patient.user.firstName +
+                    <td *ngIf="this.authService.userType !== 'P'">{{ appointment.patient.user.firstName +
                         appointment.patient.user.lastName }}</td>
-                    <td *ngIf="isPatient || isAdmin">{{ appointment.doctor?.user.firstName +
+                    <td *ngIf="this.authService.userType !== 'D'">{{ appointment.doctor?.user.firstName +
                         appointment.doctor?.user.lastName }}</td>
                     <td>{{ appointment.subject }}</td>
                     <td>{{ appointment.preferredDateTime | date:'short' }}</td>
@@ -70,7 +70,7 @@
         <div class="field">
             <label>Preferred Date & Time:</label>
             <p-calendar placeholder="Appointment Date" styleClass="w-full" appendTo="body" [minDate]="minDate"
-                [showIcon]="true" [showTime]="true" formControlName="preferredDateTime">
+                [showIcon]="true" [showOtherMonths]="false" [stepMinute]="15" [showTime]="true" formControlName="preferredDateTime">
             </p-calendar>
             <small *ngIf="newAppointmentForm.get('preferredDateTime')?.invalid && newAppointmentForm.get('preferredDateTime')?.touched" class="p-error">Date & Time are required</small>
         </div>
@@ -117,7 +117,7 @@
     <div class="flex justify-content-end gap-2 mt-2">
         <p-button label="Close" icon="pi pi-times" styleClass="p-button-plain p-button-text" (onClick)="showAppointmentDetails = false;">
         </p-button>
-        <ng-template [ngIf]="isDoctor">
+        <ng-template [ngIf]="this.authService.userType === 'D'">
             <p-button [disabled]="appointmentDetails.status !== 'applied'" label="Reject" [icon]="updateButtonIcons['rejected']"
                 (onClick)="onChangeAppointmentStatus('rejected')" styleClass="p-button-danger p-button-text">
             </p-button>
@@ -126,7 +126,7 @@
                 styleClass="p-button-success p-button-text">
             </p-button>
         </ng-template>
-        <ng-template [ngIf]="isPatient">
+        <ng-template [ngIf]="this.authService.userType === 'P'">
             <p-button [disabled]="appointmentDetails.status !== 'applied'" label="Cancel"
                 (onClick)="onChangeAppointmentStatus('cancelled')"
                 [icon]="updateButtonIcons['cancelled']" styleClass="p-button-warning p-button-text">

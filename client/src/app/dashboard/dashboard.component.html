@@ -10,22 +10,54 @@
             (click)="menu.toggle($event)"></button>
     </div>
 </div>
-<p-sidebar [(visible)]="showSidebar" styleClass="bg-purple-300">
-    <p-panelMenu [model]="sideMenuItems" [style]="{'width':'100%'}"></p-panelMenu>
+<p-sidebar [(visible)]="showSidebar" styleClass="surface-ground" [showCloseIcon]="false">
+    <div class="flex align-items-center">
+        <button pButton class="p-button-text text-purple-500 font-bold" icon="pi pi-bars" (click)="showSidebar = false;"></button>
+        <span class="text-2xl ml-4 text-purple-500 font-bold">HMS</span>
+    </div>
+    <p-divider></p-divider>
+    <div *ngFor="let sideMenuItem of sideMenuItems" class="flex align-items-center gap-2 text-xl side-nav-item"
+        [routerLink]="sideMenuItem.routerLink" routerLinkActive="side-nav-item-active"
+        [routerLinkActiveOptions]="{exact: true}" (click)="showSidebar = false;">
+        <i [class]="sideMenuItem.icon"></i>
+        <a>
+            {{ sideMenuItem.label }}
+        </a>
+    </div>
     <ng-template [ngIf]="authService.userType === 'P'">
         <p-divider></p-divider>
-        <p-panelMenu [model]="patientSideMenuItems" [style]="{'width':'100%'}">
-        </p-panelMenu>
+        <div *ngFor="let sideMenuItem of patientSideMenuItems"
+            class="flex align-items-center gap-2 text-xl side-nav-item" [routerLink]="sideMenuItem.routerLink"
+            routerLinkActive="side-nav-item-active" [routerLinkActiveOptions]="{exact: true}"
+            (click)="showSidebar = false;">
+            <i [class]="sideMenuItem.icon"></i>
+            <a>
+                {{ sideMenuItem.label }}
+            </a>
+        </div>
     </ng-template>
     <ng-template [ngIf]="authService.userType === 'D'">
         <p-divider></p-divider>
-        <p-panelMenu [model]="doctorSideMenuItems" [style]="{'width':'100%'}">
-        </p-panelMenu>
+        <div *ngFor="let sideMenuItem of doctorSideMenuItems"
+            class="flex align-items-center gap-2 text-xl side-nav-item" [routerLink]="sideMenuItem.routerLink"
+            routerLinkActive="side-nav-item-active" [routerLinkActiveOptions]="{exact: true}"
+            (click)="showSidebar = false;">
+            <i [class]="sideMenuItem.icon"></i>
+            <a>
+                {{ sideMenuItem.label }}
+            </a>
+        </div>
     </ng-template>
     <ng-template [ngIf]="authService.userType === 'A'">
         <p-divider></p-divider>
-        <p-panelMenu [model]="adminSideMenuItems" [style]="{'width':'100%'}">
-        </p-panelMenu>
+        <div *ngFor="let sideMenuItem of adminSideMenuItems" class="flex align-items-center gap-2 text-xl side-nav-item"
+            [routerLink]="sideMenuItem.routerLink" routerLinkActive="side-nav-item-active"
+            [routerLinkActiveOptions]="{exact: true}" (click)="showSidebar = false;">
+            <i [class]="sideMenuItem.icon"></i>
+            <a>
+                {{ sideMenuItem.label }}
+            </a>
+        </div>
     </ng-template>
 </p-sidebar>
 <div class="container">

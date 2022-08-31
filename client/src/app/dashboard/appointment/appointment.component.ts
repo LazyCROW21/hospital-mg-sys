@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AppointmentService } from 'src/app/services/appointment.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { DoctorService } from 'src/app/services/doctor.service';
 
 @Component({
@@ -10,9 +11,6 @@ import { DoctorService } from 'src/app/services/doctor.service';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit {
-  isDoctor: boolean = true;
-  isPatient: boolean = false;
-  isAdmin: boolean = true;
   holderId: number = 1;
   isLoadingAppointments: boolean = false;
   showNewAppointmentForm: boolean = false;
@@ -21,7 +19,6 @@ export class AppointmentComponent implements OnInit {
   loadingIcon: string = '';
   minDate = new Date();
   doctorOptions:{ label: string, value: number }[] = [];
-
   appointments: any[] = [];
   activeRow: number = 0;
   rowMenu: MenuItem[] = [
@@ -35,7 +32,7 @@ export class AppointmentComponent implements OnInit {
     doctorId: new FormControl('', [Validators.required]),
     subject: new FormControl('', [Validators.required, Validators.maxLength(80)]),
     message: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-    preferredDateTime: new FormControl('', [Validators.required]),
+    preferredDateTime: new FormControl(null, [Validators.required]),
     // status: new FormControl('', [Validators.required])
   });
 
@@ -47,13 +44,20 @@ export class AppointmentComponent implements OnInit {
   };
 
   constructor(
+    public authService: AuthService,
     private appointmentService: AppointmentService,
     private doctorService: DoctorService,
     private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
-    this.newAppointmentForm.patchValue({ patientId: this.holderId });
+    const preferredDateTime = new Date();
+    const mins = this.minDate.getMinutes();
+    preferredDateTime.setMinutes(mins - (mins % 15) + 15);
+    this.newAppointmentForm.patchValue({ 
+      patientId: this.holderId,
+      preferredDateTime
+    });
     this.fetchAppointments();
     this.doctorService.getAllDoctors().subscribe((result) => {
       (<any[]>result).forEach((doctor) => {
@@ -80,12 +84,15 @@ export class AppointmentComponent implements OnInit {
   
   fetchAppointments() {
     let allAppointments;
-    if(this.isAdmin) {
-      allAppointments = this.appointmentService.getAllAppointments()
-    } else if(this.isDoctor) {
-      allAppointments = this.appointmentService.getAppointmentByDoctorId(this.holderId);
-    } else {
-      allAppointments = this.appointmentService.getAppointmentByPatientId(this.holderId);
+    switch(this.authService.userType) {
+      case 'A':
+        allAppointments = this.appointmentService.getAllAppointments()
+        break;
+      case 'D':
+        allAppointments = this.appointmentService.getAppointmentByDoctorId(this.holderId);
+        break;
+      case 'P':
+        allAppointments = this.appointmentService.getAppointmentByPatientId(this.holderId);
     }
     this.isLoadingAppointments = true;
     allAppointments.subscribe({
@@ -152,7 +159,7 @@ export class AppointmentComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Appointment '+status,
-          detail: this.isDoctor ? 'Your patient will be notified' : 'The hospital staff will be notified'
+          detail: this.authService.userType === 'D' ? 'Your patient will be notified' : 'The hospital staff will be notified'
         });
         this.appointments[this.activeRow].status = status;
         // back to original icon

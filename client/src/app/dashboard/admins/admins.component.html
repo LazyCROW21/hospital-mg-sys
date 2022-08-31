@@ -14,6 +14,8 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th class="text-center">Gender</th>
+                    <th class="text-center">Phone</th>
                     <th class="text-center">Access</th>
                     <th></th>
                 </tr>
@@ -22,6 +24,8 @@
                 <tr>
                     <td>{{ i + 1 }}</td>
                     <td>{{ admin.user.firstName + ' ' + admin.user.lastName }}</td>
+                    <td class="text-center">{{ admin.user.gender }}</td>
+                    <td class="text-center">{{ admin.user.phone }}</td>
                     <td class="text-center">
                         <span class="mx-2" *ngFor="let asc of admin.access">{{ getAccessName(asc) }}</span>
                     </td>
@@ -37,7 +41,7 @@
 </p-card>
 
 <!-- Create Admin Dialog -->
-<p-dialog [(visible)]="showAdminForm" header="Add New Admin" [style]="{ maxWidth: '80%' }">
+<p-dialog [(visible)]="showAdminForm" header="Add Admin" [style]="{ maxWidth: '80%' }">
     <form [formGroup]="newAdminForm" (ngSubmit)="onSubmit()">
         <div class="grid">
             <div class="col-6 field">
