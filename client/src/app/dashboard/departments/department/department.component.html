@@ -1,42 +1,46 @@
-<p-card styleClass="mb-2">
-    <form [formGroup]="departmentForm" (ngSubmit)="onUpdate()">
-        <div class="field">
-            <label><strong><small>Department Name</small></strong></label>
-            <input type="text" class="w-full" pInputText placeholder="Enter Department Name" formControlName="name" />
-            <small *ngIf="departmentForm.get('name')?.invalid && departmentForm.get('name')?.touched" class="p-error">
-                Department name is required, under 40 characters.
-            </small>
-        </div>
-        <div class="field">
-            <label><strong><small>Parent Department</small></strong></label>
-            <div class="p-inputgroup">
-                <input type="text" class="w-full" pInputText placeholder="Enter Parent Department" [value]="parentDepartment.name" readonly />
-                <span class="p-inputgroup-addon" *ngIf="departmentForm.get('parentDepartmentId')?.value">
-                    <a
-                        [routerLink]="['/', 'dashboard', 'departments', departmentForm.get('parentDepartmentId')?.value]">
-                        <i class="pi pi-external-link"></i>
-                    </a>
-                </span>
-            </div>
-        </div>
-        <div class="field">
-            <label><strong><small>Department description</small></strong></label>
-            <textarea pInputTextarea class="w-full" placeholder="Enter Department Description"
-                formControlName="description"></textarea>
-            <small *ngIf="departmentForm.get('description')?.invalid && departmentForm.get('description')?.touched"
-                class="p-error">
-                Department description is required, under 255 characters.
-            </small>
-        </div>
-        <div class="flex justify-content-end mt-2">
-            <p-button label="UPDATE" type="submit" styleClass="p-button-text" icon="pi pi-save"
-                [loading]="isUpdateButtonLoading"></p-button>
-        </div>
-    </form>
-</p-card>
 <p-card>
     <p-tabView>
-        <p-tabPanel header="Sub Departments">
+        <p-tabPanel header="Details">
+            <form [formGroup]="departmentForm" (ngSubmit)="onUpdate()">
+                <div class="field">
+                    <label><strong><small>Department Name</small></strong></label>
+                    <input type="text" class="w-full" pInputText placeholder="Enter Department Name"
+                        formControlName="name" />
+                    <small *ngIf="departmentForm.get('name')?.invalid && departmentForm.get('name')?.touched"
+                        class="p-error">
+                        Department name is required, under 40 characters.
+                    </small>
+                </div>
+                <div class="field">
+                    <label><strong><small>Parent Department</small></strong></label>
+                    <div class="p-inputgroup">
+                        <input type="text" class="w-full" pInputText placeholder="Enter Parent Department"
+                            [value]="parentDepartment.name" readonly />
+                        <span class="p-inputgroup-addon" *ngIf="departmentForm.get('parentDepartmentId')?.value">
+                            <a
+                                [routerLink]="['/', 'dashboard', 'departments', departmentForm.get('parentDepartmentId')?.value]">
+                                <i class="pi pi-external-link"></i>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label><strong><small>Department description</small></strong></label>
+                    <textarea pInputTextarea class="w-full" placeholder="Enter Department Description"
+                        formControlName="description"></textarea>
+                    <small
+                        *ngIf="departmentForm.get('description')?.invalid && departmentForm.get('description')?.touched"
+                        class="p-error">
+                        Department description is required, under 255 characters.
+                    </small>
+                </div>
+                <div class="flex justify-content-end mt-2">
+                    <p-button label="UPDATE" type="submit" styleClass="p-button-text" icon="pi pi-save"
+                        [loading]="isUpdateButtonLoading"></p-button>
+                </div>
+            </form>
+        </p-tabPanel>
+        <p-tabPanel header="Sub-Departments">
             <div class="flex justify-content-end">
                 <p-button label="Add Sub-Department" icon="pi pi-plus" styleClass="p-button-text"
                     (onClick)="openDepartmentForm()">

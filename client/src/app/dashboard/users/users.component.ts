@@ -312,14 +312,14 @@ export class UsersComponent implements OnInit {
         });
       },
       reject: (type: ConfirmEventType) => {
-        switch (type) {
-          case ConfirmEventType.REJECT:
-            this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'User not removed' });
-            break;
-          case ConfirmEventType.CANCEL:
-            this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'User not removed' });
-            break;
-        }
+        // switch (type) {
+        //   case ConfirmEventType.REJECT:
+        //     this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'User not removed' });
+        //     break;
+        //   case ConfirmEventType.CANCEL:
+        //     this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'User not removed' });
+        //     break;
+        // }
       }
     });
   }

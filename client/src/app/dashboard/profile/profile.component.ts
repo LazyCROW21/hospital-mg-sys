@@ -20,8 +20,10 @@ export class ProfileComponent implements OnInit {
   stateOptions = stateOptions;
   specializationOptions = specializationOptions;
   mode: 'A'|'U'|'P'|'D'|'M'|'X' = 'X';
+  readonly = true;
   maxDate = new Date();
   user: any = {};
+  role: any = {};
   pageHeading = {
     'A': 'Admin',
     'U': 'User',
@@ -30,6 +32,11 @@ export class ProfileComponent implements OnInit {
     'M': 'My',
     'X': ''
   };
+  isSavingProfile = false;
+  isChangingPWD = false;
+  isSavingDoctorDetails = false;
+  userType = '';
+  profileStatus: 'X'|'N'|'A'|'R' = 'A'; 
   profile = {
     'X': { severity: 'danger', label: 'Deleted' },
     'N': { severity: 'info', label: 'Applied' },
@@ -43,7 +50,7 @@ export class ProfileComponent implements OnInit {
     phone: new FormControl('Loading...', [Validators.required, Validators.pattern('[0-9]{10}')]),
     emergencyPhone: new FormControl('Loading...', [Validators.required, Validators.pattern('[0-9]{10}')]),
     gender: new FormControl('Loading...', [Validators.required]),
-    dob: new FormControl('Loading...', [Validators.required]),
+    dob: new FormControl(null, [Validators.required]),
     line1: new FormControl('Loading...', [Validators.required, Validators.maxLength(80)]),
     line2: new FormControl('Loading...', [Validators.required, Validators.maxLength(80)]),
     pincode: new FormControl('Loading...', [Validators.required, Validators.pattern('[0-9]{6}')]),
@@ -52,8 +59,19 @@ export class ProfileComponent implements OnInit {
     email: new FormControl('Loading...', [Validators.required, Validators.email]),
   }, [matchField('pwd', 'confPwd'), differentField('phone', 'emergencyPhone')]);
 
+  pwdChangeForm: FormGroup = new FormGroup({
+    oldPwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)]),
+    newPwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)]),
+    confNewPwd: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(32)]),
+  }, [matchField('newPwd', 'confNewPwd')]);
+
+  doctorDetailForm: FormGroup = new FormGroup({
+    experience: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(60)]),
+    specialization: new FormControl(null, [Validators.required])
+  });
+
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
     private adminService: AdminService,
@@ -71,10 +89,13 @@ export class ProfileComponent implements OnInit {
           this.mode = 'A';
         } else if (url.path === 'users') {
           this.mode = 'U';
+          this.userType = 'User';
         } else if (url.path === 'doctors') {
           this.mode = 'D';
+          this.userType = 'Doctor';
         } else if (url.path === 'patients') {
           this.mode = 'P';
+          this.userType = 'Patient';
         } else if (url.path === 'profile') {
           this.mode = 'M';
         }
@@ -84,6 +105,24 @@ export class ProfileComponent implements OnInit {
       } else if (this.mode === 'M') {
         this.authService.userSubject.subscribe((user) => {
           this.user = user;
+          this.userForm.patchValue(user);
+          this.userForm.patchValue({
+            dob: new Date(user.dob)
+          });
+          this.profileStatus = user.status;
+          this.readonly = false;
+
+          this.authService.roleSubject.subscribe((role) => {
+            this.role = role;
+            if(this.user.role === 'A') {
+              this.userType = 'Admin';
+            } else if(this.user.role === 'P') {
+              this.userType = 'Patient';
+            } else {
+              this.userType = 'Doctor';
+              this.doctorDetailForm.patchValue(role);
+            }
+          });
         });
       } else {
         this.route.params.subscribe((params) => {
@@ -105,6 +144,14 @@ export class ProfileComponent implements OnInit {
           api?.subscribe({
             next: (reponse: any) => {
               console.log(reponse);
+              this.user = reponse;
+              this.userForm.patchValue(reponse);
+              this.doctorDetailForm.patchValue(reponse.doctor);
+              this.userForm.patchValue({
+                dob: new Date(reponse.dob)
+              });
+              this.readonly = false;
+              this.profileStatus = reponse.status;
             },
             error: (err: any) => {
               console.log(err);
@@ -113,7 +160,109 @@ export class ProfileComponent implements OnInit {
           })
         });
       }
+      if(this.authService.userType === 'A') {
+        this.readonly = false;
+      }
     });
   }
 
+  onChangePWD() {
+    console.log(this.user);
+    if(this.pwdChangeForm.invalid) {
+      this.pwdChangeForm.markAllAsTouched();
+      return;
+    }
+    this.isChangingPWD = true;
+    const data = this.pwdChangeForm.getRawValue();
+    delete data.confNewPwd;
+    this.userService.changeUserPWD(this.user.id, data).subscribe({
+      next: (resp) => {
+        this.isChangingPWD = false;
+        console.log(resp);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'password changed!'
+        });
+        this.pwdChangeForm.reset();
+      },
+      error: (err) => {
+        this.isChangingPWD = false;
+        console.log(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+        this.pwdChangeForm.reset();
+      }
+    });
+  }
+
+  onProfileSave() {
+    if(this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      return;
+    }
+    this.isSavingProfile = true;
+    this.userService.updateUser(this.user.id, this.userForm.value).subscribe({
+      next: (resp) => {
+        this.isSavingProfile = false;
+        console.log(resp);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'changes saved!'
+        });
+        this.user = { ...this.user, ...this.userForm.getRawValue() }
+        localStorage.setItem('USER', JSON.stringify(this.user));
+      },
+      error: (err) => {
+        this.isSavingProfile = false;
+        console.log(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+      }
+    });
+  }
+
+  onDoctorDetailUpdate(){
+    if(this.doctorDetailForm.invalid) {
+      this.doctorDetailForm.markAllAsTouched();
+      return;
+    }
+    this.isSavingDoctorDetails = true;
+    this.doctorService.updateDoctorById(this.role.id, this.doctorDetailForm.value).subscribe({
+      next: (resp) => {
+        this.isSavingDoctorDetails = false;
+        console.log(resp);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'changes saved!'
+        });
+        this.role = { ...this.role, ...this.doctorDetailForm.getRawValue() }
+        localStorage.setItem('ROLE', JSON.stringify(this.role));
+      },
+      error: (err) => {
+        this.isSavingDoctorDetails = false;
+        console.log(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+      }
+    });
+  }
+
+  onProfileReset() {
+    this.userForm.patchValue(this.user);
+    this.userForm.patchValue({
+      dob: new Date(this.user.dob)
+    });
+  }
 }

@@ -184,14 +184,14 @@ export class DepartmentsComponent implements OnInit {
         });
       },
       reject: (type: ConfirmEventType) => {
-        switch (type) {
-          case ConfirmEventType.REJECT:
-            this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
-            break;
-          case ConfirmEventType.CANCEL:
-            this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
-            break;
-        }
+        // switch (type) {
+        //   case ConfirmEventType.REJECT:
+        //     this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
+        //     break;
+        //   case ConfirmEventType.CANCEL:
+        //     this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
+        //     break;
+        // }
       }
     });
   }

@@ -12,7 +12,6 @@ export class DoctorService {
       'Content-Type': 'application/json'
     });
   }
-
   
   getAllDoctors() {
     return this.http.get(environment.apiURL+'/doctor', { headers: this.baseHeader });
@@ -32,6 +31,10 @@ export class DoctorService {
 
   getDoctorByDepartmentId(departmentId: number) {
     return this.http.get(environment.apiURL+'/doctor/department/'+departmentId, { headers: this.baseHeader });
+  }
+
+  updateDoctorById(doctorId: number, data: any) {
+    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}`, data, { headers: this.baseHeader });
   }
 
   moveDoctorByUserId(doctorId: number, data: any) {

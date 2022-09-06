@@ -2,18 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthInterceptor } from '../interceptor/auth.interceptor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  accessToken: BehaviorSubject<string>;
-  refreshToken: BehaviorSubject<string>;
-  userSubject: BehaviorSubject<any>;
-  roleSubject: BehaviorSubject<any>;
+  userSubject = new BehaviorSubject<any>(null);
+  roleSubject = new BehaviorSubject<any>(null);
+  isLoggedIn = new BehaviorSubject<boolean>(false);
+  accessToken = new BehaviorSubject<string>('');
+  refreshToken = new BehaviorSubject<string>('');
   userType: 'A' | 'D' | 'P' = 'P';
-  isLoggedIn: BehaviorSubject<boolean>;
 
   baseHeader: HttpHeaders;
   constructor(private http: HttpClient) {
@@ -24,24 +23,20 @@ export class AuthService {
     const role = localStorage.getItem('ROLE');
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     const refreshToken = localStorage.getItem('REFRESH_TOKEN');
-    if(user && role && accessToken && refreshToken) {
-      this.userSubject = new BehaviorSubject<any>(JSON.parse(user));
-      this.roleSubject = new BehaviorSubject<any>(JSON.parse(role));
-      this.isLoggedIn = new BehaviorSubject<boolean>(true);
-      this.accessToken = new BehaviorSubject<string>(accessToken);
-      this.refreshToken = new BehaviorSubject<string>(refreshToken);
-      this.userType = this.userSubject.value.role;
-    } else {
-      this.userSubject = new BehaviorSubject<any>(null);
-      this.roleSubject = new BehaviorSubject<any>(null);
-      this.isLoggedIn = new BehaviorSubject<boolean>(false);
-      this.accessToken = new BehaviorSubject<string>('');
-      this.refreshToken = new BehaviorSubject<string>('');
-
-      localStorage.removeItem('USER');
-      localStorage.removeItem('ROLE');
-      localStorage.removeItem('ACCESS_TOKEN');
-      localStorage.removeItem('REFRESH_TOKEN');
+    try {
+      if(user && role && accessToken && refreshToken) {
+        this.userSubject = new BehaviorSubject<any>(JSON.parse(user));
+        this.roleSubject = new BehaviorSubject<any>(JSON.parse(role));
+        this.isLoggedIn = new BehaviorSubject<boolean>(true);
+        this.accessToken = new BehaviorSubject<string>(accessToken);
+        this.refreshToken = new BehaviorSubject<string>(refreshToken);
+        this.userType = this.userSubject.value.role;
+      } else {
+        this.logout();
+      }
+    } catch (err) {
+      console.log(err);
+      this.logout();
     }
   }
 

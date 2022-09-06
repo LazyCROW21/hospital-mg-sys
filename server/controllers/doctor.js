@@ -104,6 +104,13 @@ const updateDoctorByUserId = async (userId, data) => {
     return result;
 }
 
+const updateDoctorById = async (id, data) => {
+    const result = await DoctorModel.update(data, {
+        where: { id }
+    });
+    return result;
+}
+
 module.exports = {
     getAllDoctors,
     getNewDoctors,
@@ -111,5 +118,6 @@ module.exports = {
     getDoctorById,
     getDoctorByUserId,
     addDoctor,
-    updateDoctorByUserId
+    updateDoctorByUserId,
+    updateDoctorById
 }

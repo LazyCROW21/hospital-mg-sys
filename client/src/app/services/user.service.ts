@@ -18,7 +18,15 @@ export class UserService {
   }
 
   commitUser(userId: number, status: 'A' | 'R') {
-    return this.http.patch(environment.apiURL+'/user/'+userId, { status }, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/user/commit/'+userId, { status }, { headers: this.baseHeader });
+  }
+
+  updateUser(userId: number, data: any) {
+    return this.http.patch(environment.apiURL+'/user/'+userId, data, { headers: this.baseHeader });
+  }
+
+  changeUserPWD(userId: number, data: any) {
+    return this.http.patch(environment.apiURL+'/user/changePWD/'+userId, data, { headers: this.baseHeader });
   }
   
   deleteUser(userId: number) {

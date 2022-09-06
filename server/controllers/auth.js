@@ -1,4 +1,5 @@
 require('dotenv').config({ path: '../.env' });
+const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const client = require('../config/redis');
 const Admin = require('../models/admin');
@@ -25,7 +26,7 @@ const _signRefreshToken = (user, role) => {
 
 const loginUser = async (email, pwd) => {
     const user = await UserModel.findOne({
-        where: { email, status: 'A' },
+        where: { email, status: { [Op.notIn]: ['X', 'N'] } },
     });
     if (!user) {
         return null;
@@ -47,15 +48,11 @@ const loginUser = async (email, pwd) => {
                 role = null;
         }
         const refreshToken = _signRefreshToken(user, role);
+        const accessToken = _signAccessToken(user, role);
         await client.set(`${user.id}`, refreshToken, {
             'EX': 3600
         });
-        return { 
-            accessToken: _signAccessToken(user, role), 
-            refreshToken,
-            user, 
-            role 
-        };
+        return { accessToken, refreshToken, user, role };
     }
     return null;
 }

@@ -36,4 +36,9 @@ router.patch('/user/:id(\\d+)/move', async (req, res) => {
     return res.send(result);
 });
 
+router.patch('/user/:id(\\d+)', async (req, res) => {
+    const result = await doctorController.updateDoctorById(req.params.id, req.body);
+    return res.send(result);
+});
+
 module.exports = router;

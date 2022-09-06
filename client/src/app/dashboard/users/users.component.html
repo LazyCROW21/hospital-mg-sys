@@ -58,8 +58,8 @@
     </p-tabView>
 </p-card>
 
-<!-- Create Department Dialog -->
-<p-dialog [(visible)]="dialog.show" [header]="dialog.header" [style]="{ maxWidth: '80%' }">
+<!-- View User Dialog -->
+<p-dialog [(visible)]="dialog.show" [header]="dialog.header" [style]="{ minWidth: '40%' }">
     <table class="my-table">
         <tbody>
             <tr>
@@ -147,7 +147,7 @@
 </p-dialog>
 
 <!-- Move Doctor to Department Dialog -->
-<p-dialog [(visible)]="showMoveDoctorDialog" header="Move Doctor to Department ?" [style]="{ maxWidth: '80%' }">
+<p-dialog [(visible)]="showMoveDoctorDialog" header="Move Doctor to Department ?" [style]="{ minWidth: '40%' }">
     <p class="mb-2">
         <strong>Note: </strong>
         <span>You can always move doctors in the department area</span>

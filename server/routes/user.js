@@ -36,10 +36,26 @@ router.delete('/:id(\\d+)', async (req, res) => {
 });
 
 
-router.patch('/:id(\\d+)', async (req, res) => {
+router.patch('/commit/:id(\\d+)', async (req, res) => {
     const result = await userController.commitUser(req.params.id, req.body.status);
     if(!result) {
         return res.sendStatus(404);
+    }
+    res.send(result);
+});
+
+router.patch('/:id(\\d+)', async (req, res) => {
+    const result = await userController.updateUser(req.params.id, req.body);
+    if(!result) {
+        return res.sendStatus(404);
+    }
+    res.send(result);
+});
+
+router.patch('/changePWD/:id(\\d+)', async (req, res) => {
+    const result = await userController.changePWD(req.params.id, req.body.oldPwd, req.body.newPwd);
+    if(!result) {
+        return res.sendStatus(403);
     }
     res.send(result);
 });

@@ -1,8 +1,8 @@
 <p-card>
     <div class="flex align-items-center gap-2 border-bottom-1 pb-1 mb-3">
         <h2>{{ pageHeading[mode] }} Profile</h2>
-        <p-badge value="Doctor"></p-badge>
-        <p-badge [value]="profile['N'].label" [severity]="profile['N'].severity"></p-badge>
+        <p-badge [value]="userType"></p-badge>
+        <p-badge [value]="profile[profileStatus].label" [severity]="profile[profileStatus].severity"></p-badge>
     </div>
     <div class="grid">
         <div class="col-4">
@@ -11,87 +11,184 @@
         </div>
     </div>
     <h2 class="mt-4 pb-1 mb-3 border-bottom-1">Account Informtion</h2>
-    <form></form>
-    <div class="grid">
-        <div class="field col-6">
-            <label>First Name</label>
-            <input type="text" class="w-full" pInputText placeholder="First Name" />
+    <form [formGroup]="userForm" (ngSubmit)="onProfileSave()">
+        <div class="grid">
+            <div class="field col-6">
+                <label>First Name</label>
+                <input formControlName="firstName" type="text" class="w-full" pInputText placeholder="First Name"
+                    [readonly]="readonly" />
+                <small *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="p-error">
+                    First name is required & must be under 40 characters
+                </small>
+            </div>
+            <div class="field col-6">
+                <label>Last Name</label>
+                <input formControlName="lastName" type="text" class="w-full" pInputText placeholder="Last Name"
+                    [readonly]="readonly" />
+                <small *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" class="p-error">
+                    Last name is required & must be under 40 characters
+                </small>
+            </div>
+            <div class="field col-6">
+                <label>Phone</label>
+                <input formControlName="phone" type="text" class="w-full" pInputText placeholder="Contact Number"
+                    [readonly]="readonly" />
+                <small *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched" class="p-error">
+                    Contact Number is required & must be valid
+                </small>
+            </div>
+            <div class="field col-6">
+                <label>Emergency Phone</label>
+                <input formControlName="emergencyPhone" type="text" class="w-full" pInputText
+                    placeholder="Emergency Contact Number" [readonly]="readonly" />
+                <small *ngIf="
+                        (userForm.errors?.['match'] && userForm.get('phone')?.touched) || 
+                        (userForm.get('emergencyPhone')?.invalid && userForm.get('emergencyPhone')?.touched)"
+                    class="p-error">
+                    Emergency Contact is required & must be different from Primany Contact
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>E-Mail</label>
+                <input formControlName="email" type="email" class="w-full" pInputText placeholder="E-Mail"
+                    [readonly]="readonly" />
+                <small *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="p-error">
+                    E-Mail is required & must be valid
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>Gender</label>
+                <p-dropdown formControlName="gender" styleClass="w-full" appendTo="body" placeholder="Gender"
+                    [options]="genderOptions" optionLabel="label" optionValue="value" [readonly]="readonly">
+                </p-dropdown>
+                <small *ngIf="userForm.get('gender')?.invalid && userForm.get('gender')?.touched" class="p-error">
+                    Gender is required
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>Date Of Birth</label>
+                <p-calendar *ngIf="!readonly" formControlName="dob" placeholder="Date Of Birth" styleClass="w-full"
+                    appendTo="body" [maxDate]="maxDate" [showIcon]="true">
+                </p-calendar>
+                <p *ngIf="readonly" type="text" class="w-full" pInputText>{{ user.dob | date:'mediumDate' }}</p>
+                <small class="p-error" *ngIf="userForm.get('dob')?.invalid && userForm.get('dob')?.touched">
+                    Date Of Birth is required
+                </small>
+            </div>
+            <div class="field col-6">
+                <label>Address Line 1</label>
+                <input formControlName="line1" type="text" class="w-full" pInputText placeholder="Address Line 1"
+                    [readonly]="readonly" />
+                <small class="p-error" *ngIf="userForm.get('line1')?.invalid && userForm.get('line1')?.touched">
+                    Line 1 is required, must be under 80 characters
+                </small>
+            </div>
+            <div class="field col-6">
+                <label>Address Line 2</label>
+                <input formControlName="line2" type="text" class="w-full" pInputText placeholder="Address Line 2"
+                    [readonly]="readonly" />
+                <small class="p-error" *ngIf="userForm.get('line2')?.invalid && userForm.get('line2')?.touched">
+                    Line 2 is required, must be under 80 characters
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>PINCODE</label>
+                <p-inputNumber formControlName="pincode" styleClass="w-full" placeholder="PINCODE" [min]="0"
+                    [readonly]="readonly" [max]="999999" [useGrouping]="false">
+                </p-inputNumber>
+                <small class="p-error" *ngIf="userForm.get('pincode')?.invalid && userForm.get('pincode')?.touched">
+                    PINCODE is required, must be a 6 digit number
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>City</label>
+                <input formControlName="city" type="text" class="w-full" pInputText placeholder="City"
+                    [readonly]="readonly" />
+                <small class="p-error" *ngIf="userForm.get('city')?.invalid && userForm.get('city')?.touched">
+                    City is required, must be under 40 characters
+                </small>
+            </div>
+            <div class="field col-4">
+                <label>State</label>
+                <p-dropdown formControlName="state" styleClass="w-full" appendTo="body" placeholder="State"
+                    [options]="stateOptions" optionLabel="label" optionValue="value" [readonly]="readonly">
+                </p-dropdown>
+                <small class="p-error" *ngIf="userForm.get('state')?.invalid && userForm.get('state')?.touched">
+                    State is required
+                </small>
+            </div>
         </div>
-        <div class="field col-6">
-            <label>Last Name</label>
-            <input type="text" class="w-full" pInputText placeholder="Last Name" />
+        <div class="flex justify-content-end gap-2" *ngIf="!readonly">
+            <p-button label="RESET" type="button" (onClick)="onProfileReset()" styleClass="p-button-text p-button-plain">
+            </p-button>
+            <p-button label="SAVE" type="submit" [loading]="isSavingProfile" styleClass="p-button-text"></p-button>
         </div>
-        <div class="field col-6">
-            <label>Phone</label>
-            <input type="text" class="w-full" pInputText placeholder="Contact Number">
-        </div>
-        <div class="field col-6">
-            <label>Emergency Phone</label>
-            <input type="text" class="w-full" pInputText placeholder="Emergency Contact Number">
-        </div>
-        <div class="field col-4">
-            <label>E-Mail</label>
-            <input type="email" class="w-full" pInputText placeholder="E-Mail">
-        </div>
-        <div class="field col-4">
-            <label>Gender</label>
-            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Gender" [options]="genderOptions"
-                optionLabel="label" optionValue="value">
-            </p-dropdown>
-        </div>
-        <div class="field col-4">
-            <label>Date Of Birth</label>
-            <p-calendar placeholder="Date Of Birth" styleClass="w-full" appendTo="body" [maxDate]="maxDate"
-                [showIcon]="true">
-            </p-calendar>
-        </div>
-        <div class="field col-6">
-            <label>Address Line 1</label>
-            <input type="text" class="w-full" pInputText placeholder="Address Line 1">
-        </div>
-        <div class="field col-6">
-            <label>Address Line 2</label>
-            <input type="text" class="w-full" pInputText placeholder="Address Line 2">
-        </div>
-        <div class="field col-4">
-            <label>PINCODE</label>
-            <p-inputNumber styleClass="w-full" placeholder="PINCODE" [min]="0" [max]="999999">
-            </p-inputNumber>
-        </div>
-        <div class="field col-4">
-            <label>City</label>
-            <input type="text" class="w-full" pInputText placeholder="City">
-        </div>
-        <div class="field col-4">
-            <label>State</label>
-            <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions"
-                optionLabel="label" optionValue="value">
-            </p-dropdown>
-        </div>
-    </div>
-    <div class="flex justify-content-end gap-2">
-        <p-button label="RESET" styleClass="p-button-text p-button-plain"></p-button>
-        <p-button label="SAVE" styleClass="p-button-text"></p-button>
-    </div>
-    <h2 class="mt-4 mb-3 pb-1 border-bottom-1">Change Password</h2>
-    <div class="flex flex-column gap-2">
-        <div class="field w-full md:w-6">
-            <label>Old Password</label>
-            <input type="text" class="w-full" pInputText placeholder="Old Password">
-        </div>
-        <div class="field w-full md:w-6">
-            <label>New Password</label>
-            <input type="text" class="w-full" pInputText placeholder="New Password">
-        </div>
-        <div class="field w-full md:w-6">
-            <label>Confirm New Password</label>
-            <input type="text" class="w-full" pInputText placeholder="Confirm New Password">
-        </div>
-    </div>
-    <div class="flex justify-content-end gap-2">
-        <p-button label="CANCEL" styleClass="p-button-text p-button-plain"></p-button>
-        <p-button label="SUBMIT" styleClass="p-button-text"></p-button>
-    </div>
+    </form>
+    <ng-template [ngIf]="user.role === 'D'">
+        <form [formGroup]="doctorDetailForm" (ngSubmit)="onDoctorDetailUpdate()">
+            <h2 class="mt-4 mb-3 pb-1 border-bottom-1">Change Password</h2>
+            <div class="flex flex-column gap-2">
+                <div class="field w-full md:w-6">
+                    <label>Experience</label>
+                    <p-inputNumber styleClass="w-full" placeholder="Experience (Years)" [min]="0" [max]="60"
+                        formControlName="experience" [readonly]="readonly">
+                    </p-inputNumber>
+                    <small class="p-error"
+                        *ngIf="doctorDetailForm.get('experience')?.invalid && doctorDetailForm.get('experience')?.touched">
+                        Experience is required
+                    </small>
+                </div>
+                <div class="field w-full md:w-6">
+                    <p-dropdown appendTo="body" [options]="specializationOptions" optionLabel="label"
+                        formControlName="specialization" placeholder="Specialization" styleClass="w-full"
+                        optionValue="value" [readonly]="readonly"></p-dropdown>
+                    <small class="p-error"
+                        *ngIf="doctorDetailForm.get('specialization')?.invalid && doctorDetailForm.get('specialization')?.touched">
+                        Specialization is required
+                    </small>
+                </div>
+            </div>
+            <div class="flex justify-content-end gap-2">
+                <p-button label="CANCEL" type="reset" styleClass="p-button-text p-button-plain"></p-button>
+                <p-button label="UPDATE" type="submit" [loading]="isSavingDoctorDetails" styleClass="p-button-text"></p-button>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template [ngIf]="mode === 'M'">
+        <form [formGroup]="pwdChangeForm" (ngSubmit)="onChangePWD()">
+            <h2 class="mt-4 mb-3 pb-1 border-bottom-1">Change Password</h2>
+            <div class="flex flex-column gap-2">
+                <div class="field w-full md:w-6">
+                    <label>Old Password</label>
+                    <input formControlName="oldPwd" type="password" class="w-full" pInputText
+                        placeholder="Old Password">
+                    <small class="p-error"
+                        *ngIf="pwdChangeForm.get('oldPwd')?.invalid && pwdChangeForm.get('oldPwd')?.touched">
+                        Passowrds must be 8 to 32 characters long
+                    </small>
+                </div>
+                <div class="field w-full md:w-6">
+                    <label>New Password</label>
+                    <input formControlName="newPwd" type="password" class="w-full" pInputText placeholder="New Password">
+                    <small class="p-error"
+                        *ngIf="pwdChangeForm.get('newPwd')?.invalid && pwdChangeForm.get('newPwd')?.touched">
+                        Passowrds must be 8 to 32 characters long
+                    </small>
+                </div>
+                <div class="field w-full md:w-6">
+                    <label>Confirm New Password</label>
+                    <input formControlName="confNewPwd" type="password" class="w-full" pInputText
+                        placeholder="Confirm New Password">
+                    <small class="p-error" *ngIf="pwdChangeForm.errors?.['misMatch']">Passowrds must be exactly the
+                        same</small>
+                </div>
+            </div>
+            <div class="flex justify-content-end gap-2">
+                <p-button label="CANCEL" type="reset" styleClass="p-button-text p-button-plain"></p-button>
+                <p-button label="UPDATE" type="submit" [loading]="isChangingPWD" styleClass="p-button-text"></p-button>
+            </div>
+        </form>
+    </ng-template>
 </p-card>
 
 <p-confirmDialog></p-confirmDialog>

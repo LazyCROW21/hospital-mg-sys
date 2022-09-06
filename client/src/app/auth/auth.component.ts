@@ -82,11 +82,12 @@ export class AuthComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
+          this.loginForm.get('pwd')?.reset();
           if (error.status === 401) {
             this.loginError = 'Invalid email / password';
+          } else {
+            this.loginError = 'Something went wrong!';
           }
-          this.loginForm.get('pwd')?.reset();
-          this.loginError = 'Something went wrong!';
         }
       });
     } else {

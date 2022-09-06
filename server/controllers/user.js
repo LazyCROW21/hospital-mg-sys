@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const UserModel = require('../models/user');
 const PatientModel = require('../models/patient');
 const DoctorModel = require('../models/doctor');
@@ -56,6 +57,33 @@ const commitUser = async (id, commit) => {
     return await user.save();
 }
 
+const updateUser = async (id, data) => {
+    let user = await UserModel.findByPk(id);
+    if(!user) {
+        return null;
+    }
+    const keys = Object.keys(data);
+    for(let i = 0; i<keys.length; i++) {
+        user[keys[i]] = data[keys[i]];
+    }
+    return await user.save();
+}
+
+const changePWD = async (id, oldPWD, newPWD) => {
+    const user = await UserModel.findOne({
+        where: {
+            id,
+            pwd: oldPWD,
+            status: { [Op.notIn]: ['X', 'N'] }, pwd: oldPWD 
+        }
+    });
+    if (!user) {
+        return null;
+    }
+    user.pwd = newPWD;
+    return await user.save();
+}
+
 const deleteUser = async (id) => {
     return await UserModel.update({ status: 'X' }, { where: { id }});
 }
@@ -67,5 +95,7 @@ module.exports = {
     addAdmin,
     getAllNewUsers,
     deleteUser,
-    commitUser
+    commitUser,
+    updateUser,
+    changePWD
 }
