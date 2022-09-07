@@ -1,9 +1,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Appointment = require('./appointment');
 const Doctor = require('./doctor');
 const Patient = require('./patient');
 
 const Report = sequelize.define('Report', {
+    appointmentId: {
+        type: DataTypes.INTEGER,
+        allowNull: false 
+    },
     patientId: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -43,6 +48,7 @@ const Report = sequelize.define('Report', {
     timestamps: true
 });
 
+Report.belongsTo(Appointment, { foreignKey: 'appointmentId', as: 'appointment' });
 Report.belongsTo(Patient, { foreignKey: 'patientId', as: 'patient' });
 Report.belongsTo(Doctor, { foreignKey: 'doctorId', as: 'doctor' });
 

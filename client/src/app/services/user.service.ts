@@ -17,6 +17,10 @@ export class UserService {
     return this.http.get(environment.apiURL+'/user/new', { headers: this.baseHeader });
   }
 
+  getUserById(id: number) {
+    return this.http.get(environment.apiURL+'/user/'+id, { headers: this.baseHeader });
+  }
+
   commitUser(userId: number, status: 'A' | 'R') {
     return this.http.patch(environment.apiURL+'/user/commit/'+userId, { status }, { headers: this.baseHeader });
   }

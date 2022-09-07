@@ -6,9 +6,30 @@ const AdminModel = require('../models/admin');
 
 UserModel.sync();
 
+const getUserById = async (id) => {
+    const user = await UserModel.findByPk(id);
+    let role;
+    if (user) {
+        const queryOption = { where: { userId: user.id } };
+        switch (user.role) {
+            case 'P':
+                role = await PatientModel.findOne(queryOption);
+                break;
+            case 'D':
+                role = await DoctorModel.findOne(queryOption);
+                break;
+            case 'A':
+                role = await AdminModel.findOne(queryOption)
+                break;
+            default:
+                role = null;
+        }
+    }
+    return { user, role };
+}
+
 const getAllUsers = async () => {
-    const users = await UserModel.findAll();
-    return users;
+    return await UserModel.findAll();
 }
 
 const getAllNewUsers = async () => {
@@ -89,6 +110,7 @@ const deleteUser = async (id) => {
 }
 
 module.exports = {
+    getUserById,
     getAllUsers,
     addPatient,
     addDoctor,

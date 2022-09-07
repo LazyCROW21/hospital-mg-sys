@@ -13,8 +13,8 @@ export class AuthService {
   accessToken = new BehaviorSubject<string>('');
   refreshToken = new BehaviorSubject<string>('');
   userType: 'A' | 'D' | 'P' = 'P';
-
   baseHeader: HttpHeaders;
+
   constructor(private http: HttpClient) {
     this.baseHeader = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -25,11 +25,11 @@ export class AuthService {
     const refreshToken = localStorage.getItem('REFRESH_TOKEN');
     try {
       if(user && role && accessToken && refreshToken) {
-        this.userSubject = new BehaviorSubject<any>(JSON.parse(user));
-        this.roleSubject = new BehaviorSubject<any>(JSON.parse(role));
-        this.isLoggedIn = new BehaviorSubject<boolean>(true);
-        this.accessToken = new BehaviorSubject<string>(accessToken);
-        this.refreshToken = new BehaviorSubject<string>(refreshToken);
+        this.userSubject.next(JSON.parse(user));
+        this.roleSubject.next(JSON.parse(role));
+        this.isLoggedIn.next(true);
+        this.accessToken.next(accessToken);
+        this.refreshToken.next(refreshToken);
         this.userType = this.userSubject.value.role;
       } else {
         this.logout();

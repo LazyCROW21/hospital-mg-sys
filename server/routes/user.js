@@ -10,6 +10,15 @@ router.get('/', async (req, res) => {
     res.send(users);
 });
 
+router.get('/:id(\\d+)', async (req, res) => {
+    const {user, role} = await userController.getUserById(req.params.id);
+    if(!user) {
+        return res.sendStatus(404);
+    }
+    const joinedUser = { ...user.dataValues, roleDetails: role.dataValues };
+    res.send(joinedUser);
+});
+
 router.get('/new', async (req, res) => {
     const users = await userController.getAllNewUsers();
     res.send(users);

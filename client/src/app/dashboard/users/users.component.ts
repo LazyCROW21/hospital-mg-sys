@@ -35,12 +35,12 @@ export class UsersComponent implements OnInit {
   ];
   patientTableMenu: { label: string, icon: string }[] = [
     { label: 'View', icon: 'pi pi-eye' },
-    { label: 'Edit', icon: 'pi pi-cog', },
+    // { label: 'Edit', icon: 'pi pi-cog', },
     { label: 'Delete', icon: 'pi pi-times' }
   ];
-  doctorRowMenu: MenuItem[] = [
+  doctorRowMenu: { label: string, icon: string }[] = [
     { label: 'View', icon: 'pi pi-eye' },
-    { label: 'Edit', icon: 'pi pi-cog' },
+    // { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Delete', icon: 'pi pi-times' }
   ];
   departmentOptions: any[] = [];

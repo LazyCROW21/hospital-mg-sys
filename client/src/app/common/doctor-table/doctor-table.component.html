@@ -13,7 +13,7 @@
     <ng-template pTemplate="body" let-doctor let-i="rowIndex">
         <tr>
             <td>{{ i + 1 }}</td>
-            <td>{{ doctor.user.firstName + ' ' + doctor.user.lastName }}</td>
+            <td>{{ doctor.user | fullName }}</td>
             <td class="text-center">{{ doctor.user.gender }}</td>
             <td class="text-center">{{ doctor.user.phone }}</td>
             <td>{{ doctor.department?.name }} / {{ doctor.designation }}</td>

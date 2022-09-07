@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+const appointmentJOI = require('../helper/validation/user');
 const appointmentController = require('../controllers/appointment');
+const validation = require('../middlewares/validation');
 
 router.get('/', async (req, res) => {
     const appointments = await appointmentController.getAllAppointments();
@@ -41,12 +43,12 @@ router.get('/doctor/next/:id', async (req, res) => {
     res.send(appointments);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', validation(appointmentJOI.creationSchema), async (req, res) => {
     const appointment = await appointmentController.addAppointment(req.body);
     res.send(appointment);
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validation(appointmentJOI.changeStatusSchema), async (req, res) => {
     const appointment = await appointmentController.changeAppointmentStatus(req.params.id, req.body.status);
     res.send(appointment);
 });

@@ -1,18 +1,9 @@
 const Joi = require('joi');
 
 const creationSchema = Joi.object({
-    name: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(30)
-        .required(),
-
-    patientId: Joi.number()
-        .integer()
-        .min(0),
-    doctorId: Joi.number()
-        .integer()
-        .min(0),
+    appointmentId: Joi.number().integer().min(0).required(),
+    patientId: Joi.number().integer().min(0).required(),
+    doctorId: Joi.number().integer().min(0).required(),
     dateAdmitted: Joi.date().required(),
     dateDischarged: Joi.date().required(),
     treatmentType: Joi.string().valid('opertaion', 'vaccine', 'diagonosis', 'surgory').required(),
@@ -21,4 +12,4 @@ const creationSchema = Joi.object({
     patientStatus: Joi.string().valid('unchanged', 'improved', 'cured', 'worsen').required(),
 });
 
-module.exports = creationSchema;
+module.exports = { creationSchema };

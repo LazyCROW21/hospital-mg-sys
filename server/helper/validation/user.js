@@ -45,7 +45,7 @@ const creationSchema = Joi.object({
         is: 'D',
         then: Joi.required()
     }),
-    access: Joi.array().max(10).items(Joi.number().integer().valid(...accessCodes)).unique((a, b) => a === b)
+    access: Joi.array().max(10).items(Joi.string().valid(...Object.keys(accessCodes))).unique((a, b) => a === b)
 });
 
 module.exports = creationSchema;

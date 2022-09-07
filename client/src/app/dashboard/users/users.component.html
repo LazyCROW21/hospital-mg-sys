@@ -43,7 +43,7 @@
                 <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingPatients>
-                <app-patient-table [patients]="patients" (onMenuAction)="onPatientTableAction($event)">
+                <app-patient-table [patients]="patients" [menu]="patientTableMenu" (onMenuAction)="onPatientTableAction($event)">
                 </app-patient-table>
             </ng-template>
         </p-tabPanel>
@@ -52,14 +52,26 @@
                 <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingDoctors>
-                <app-doctor-table [doctors]="doctors" (onMenuAction)="onDoctorTableAction($event)"></app-doctor-table>
+                <app-doctor-table [doctors]="doctors" [menu]="doctorRowMenu" (onMenuAction)="onDoctorTableAction($event)"></app-doctor-table>
             </ng-template>
         </p-tabPanel>
     </p-tabView>
 </p-card>
 
 <!-- View User Dialog -->
-<p-dialog [(visible)]="dialog.show" [header]="dialog.header" [style]="{ minWidth: '40%' }">
+<p-dialog [(visible)]="dialog.show"  [style]="{ minWidth: '40%' }">
+    <ng-template pTemplate="header">
+        <h3>
+            {{ dialog.header }} 
+            <a 
+                *ngIf="activeUser.status !== 'N'" 
+                class="ml-2"
+                [routerLink]="['/', 'dashboard', 'users', activeUser?.id]"
+            >
+                <i class="pi pi-external-link"></i>
+            </a>
+        </h3>
+    </ng-template>
     <table class="my-table">
         <tbody>
             <tr>

@@ -118,7 +118,7 @@
                 </small>
             </div>
         </div>
-        <div class="flex justify-content-end gap-2" *ngIf="!readonly">
+        <div *ngIf="!readonly" class="flex justify-content-end gap-2">
             <p-button label="RESET" type="button" (onClick)="onProfileReset()" styleClass="p-button-text p-button-plain">
             </p-button>
             <p-button label="SAVE" type="submit" [loading]="isSavingProfile" styleClass="p-button-text"></p-button>
@@ -126,7 +126,7 @@
     </form>
     <ng-template [ngIf]="user.role === 'D'">
         <form [formGroup]="doctorDetailForm" (ngSubmit)="onDoctorDetailUpdate()">
-            <h2 class="mt-4 mb-3 pb-1 border-bottom-1">Change Password</h2>
+            <h2 class="mt-4 mb-3 pb-1 border-bottom-1">Doctor Details</h2>
             <div class="flex flex-column gap-2">
                 <div class="field w-full md:w-6">
                     <label>Experience</label>
@@ -139,6 +139,7 @@
                     </small>
                 </div>
                 <div class="field w-full md:w-6">
+                    <label>Specialization</label>
                     <p-dropdown appendTo="body" [options]="specializationOptions" optionLabel="label"
                         formControlName="specialization" placeholder="Specialization" styleClass="w-full"
                         optionValue="value" [readonly]="readonly"></p-dropdown>
@@ -148,7 +149,7 @@
                     </small>
                 </div>
             </div>
-            <div class="flex justify-content-end gap-2">
+            <div *ngIf="!readonly" class="flex justify-content-end gap-2">
                 <p-button label="CANCEL" type="reset" styleClass="p-button-text p-button-plain"></p-button>
                 <p-button label="UPDATE" type="submit" [loading]="isSavingDoctorDetails" styleClass="p-button-text"></p-button>
             </div>

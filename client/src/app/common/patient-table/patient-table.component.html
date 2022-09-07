@@ -3,19 +3,19 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Gender</th>
+            <th class="text-center">Gender</th>
             <th>Email</th>
-            <th>Phone</th>
+            <th class="text-center">Phone</th>
             <th></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-patient let-i="rowIndex">
         <tr>
             <td>{{ i + 1 }}</td>
-            <td>{{ patient.user.firstName + ' ' + patient.user.lastName }}</td>
-            <td>{{ patient.user.gender }}</td>
+            <td>{{ patient.user | fullName }}</td>
+            <td class="text-center">{{ patient.user.gender }}</td>
             <td>{{ patient.user.email }}</td>
-            <td>{{ patient.user.phone }}</td>
+            <td class="text-center">{{ patient.user.phone }}</td>
             <td class="text-right">
                 <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
                     (onClick)="setActiveUser(i); patientMenu.toggle($event);"></p-button>

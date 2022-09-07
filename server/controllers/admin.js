@@ -1,7 +1,6 @@
 // const { Op } = require("sequelize");
 const AdminModel = require('../models/admin');
 const User = require('../models/user');
-const { use } = require('../routes/user');
 
 AdminModel.sync();
 

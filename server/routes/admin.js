@@ -19,9 +19,9 @@ router.get('/:id(\\d+)', async (req, res) => {
     res.send(admin);
 });
 
-router.post('/', async (req, res) => {
-    const admin = await adminController.addAdmin(req.body);
-    res.send(admin);
-});
+// router.post('/', async (req, res) => {
+//     const admin = await adminController.addAdmin(req.body);
+//     res.send(admin);
+// });
 
 module.exports = router;

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const reportController = require('../controllers/report');
+const reportJOI = require('../helper/validation/report');
+const validation = require('../middlewares/validation');
 
 router.get('/', async (req, res) => {
     const reports = await reportController.getAllReports();
@@ -26,7 +28,7 @@ router.get('/patient/:id', async (req, res) => {
     return res.send(reports);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', validation(reportJOI.creationSchema), async (req, res) => {
     const newReport = await reportController.addReport(req.body);
     res.send(newReport);
 });

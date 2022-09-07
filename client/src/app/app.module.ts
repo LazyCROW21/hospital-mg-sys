@@ -54,6 +54,7 @@ import { PatientTableComponent } from './common/patient-table/patient-table.comp
 import { DoctorTableComponent } from './common/doctor-table/doctor-table.component';
 import { LoadingBarComponent } from './common/loading-bar/loading-bar.component';
 import { DepartmentTableComponent } from './common/department-table/department-table.component';
+import { FullNamePipe } from './pipes/full-name.pipe';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { DepartmentTableComponent } from './common/department-table/department-t
     PatientTableComponent,
     DoctorTableComponent,
     LoadingBarComponent,
-    DepartmentTableComponent
+    DepartmentTableComponent,
+    FullNamePipe
   ],
   imports: [
     BrowserModule,

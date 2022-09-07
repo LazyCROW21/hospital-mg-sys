@@ -19,7 +19,7 @@ export class ProfileComponent implements OnInit {
   genderOptions = genderOptions;
   stateOptions = stateOptions;
   specializationOptions = specializationOptions;
-  mode: 'A'|'U'|'P'|'D'|'M'|'X' = 'X';
+  mode: 'A' | 'U' | 'M' | 'X' = 'X';
   readonly = true;
   maxDate = new Date();
   user: any = {};
@@ -27,8 +27,6 @@ export class ProfileComponent implements OnInit {
   pageHeading = {
     'A': 'Admin',
     'U': 'User',
-    'P': 'Patient',
-    'D': 'Doctor',
     'M': 'My',
     'X': ''
   };
@@ -36,7 +34,7 @@ export class ProfileComponent implements OnInit {
   isChangingPWD = false;
   isSavingDoctorDetails = false;
   userType = '';
-  profileStatus: 'X'|'N'|'A'|'R' = 'A'; 
+  profileStatus: 'X' | 'N' | 'A' | 'R' = 'A';
   profile = {
     'X': { severity: 'danger', label: 'Deleted' },
     'N': { severity: 'info', label: 'Applied' },
@@ -83,75 +81,35 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.url.subscribe((urlArray) => {
-      urlArray.forEach((url) => {
-        console.log(url);
-        if (url.path === 'admins') {
+      switch (urlArray[0].path) {
+        case 'admins':
           this.mode = 'A';
-        } else if (url.path === 'users') {
+          break;
+        case 'users':
           this.mode = 'U';
-          this.userType = 'User';
-        } else if (url.path === 'doctors') {
-          this.mode = 'D';
-          this.userType = 'Doctor';
-        } else if (url.path === 'patients') {
-          this.mode = 'P';
-          this.userType = 'Patient';
-        } else if (url.path === 'profile') {
+          break;
+        case 'profile':
           this.mode = 'M';
-        }
-      });
+          break;
+        default:
+          this.mode = 'X';
+      }
       if (this.mode === 'X') {
         this.router.navigateByUrl('/pagenotfound');
       } else if (this.mode === 'M') {
         this.authService.userSubject.subscribe((user) => {
-          this.user = user;
-          this.userForm.patchValue(user);
-          this.userForm.patchValue({
-            dob: new Date(user.dob)
-          });
-          this.profileStatus = user.status;
-          this.readonly = false;
-
+          this.setUser(user);
           this.authService.roleSubject.subscribe((role) => {
-            this.role = role;
-            if(this.user.role === 'A') {
-              this.userType = 'Admin';
-            } else if(this.user.role === 'P') {
-              this.userType = 'Patient';
-            } else {
-              this.userType = 'Doctor';
-              this.doctorDetailForm.patchValue(role);
-            }
+            this.setUserRole(role);
           });
         });
       } else {
         this.route.params.subscribe((params) => {
-          let api;
-          switch (this.mode) {
-            case 'A':
-              api = this.adminService.getAdminById(params['id']);
-              break;
-            case 'U':
-              api = this.userService.getAllNewUsers();
-              break;
-            case 'D':
-              api = this.doctorService.getDoctorById(params['id']);
-              break;
-            case 'P':
-              api = this.patientService.getPatientById(params['id']);
-              break;
-          }
-          api?.subscribe({
-            next: (reponse: any) => {
-              console.log(reponse);
-              this.user = reponse;
-              this.userForm.patchValue(reponse);
-              this.doctorDetailForm.patchValue(reponse.doctor);
-              this.userForm.patchValue({
-                dob: new Date(reponse.dob)
-              });
-              this.readonly = false;
-              this.profileStatus = reponse.status;
+          this.userService.getUserById(params['id']).subscribe({
+            next: (user: any) => {
+              console.log(user);
+              this.setUser(user);
+              this.setUserRole(user.roleDetails);
             },
             error: (err: any) => {
               console.log(err);
@@ -160,15 +118,15 @@ export class ProfileComponent implements OnInit {
           })
         });
       }
-      if(this.authService.userType === 'A') {
-        this.readonly = false;
-      }
     });
+    // user's permission to edit
+    if (this.authService.roleSubject.value.access.includes('MNG_U') || this.user.id === this.authService.userSubject.value.id) {
+      this.readonly = false;
+    }
   }
 
   onChangePWD() {
-    console.log(this.user);
-    if(this.pwdChangeForm.invalid) {
+    if (this.pwdChangeForm.invalid) {
       this.pwdChangeForm.markAllAsTouched();
       return;
     }
@@ -199,8 +157,29 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  setUser(user: any) {
+    this.user = user;
+    this.userForm.patchValue(user);
+    this.userForm.patchValue({
+      dob: new Date(user.dob)
+    });
+    this.profileStatus = user.status;
+  }
+
+  setUserRole(role: any) {
+    this.role = role;
+    if (this.user.role === 'A') {
+      this.userType = 'Admin';
+    } else if (this.user.role === 'P') {
+      this.userType = 'Patient';
+    } else {
+      this.userType = 'Doctor';
+      this.doctorDetailForm.patchValue(role);
+    } 
+  }
+
   onProfileSave() {
-    if(this.userForm.invalid) {
+    if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
     }
@@ -229,8 +208,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onDoctorDetailUpdate(){
-    if(this.doctorDetailForm.invalid) {
+  onDoctorDetailUpdate() {
+    if (this.doctorDetailForm.invalid) {
       this.doctorDetailForm.markAllAsTouched();
       return;
     }

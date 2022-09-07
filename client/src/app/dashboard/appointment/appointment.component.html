@@ -25,10 +25,8 @@
             <ng-template pTemplate="body" let-appointment let-i="rowIndex">
                 <tr>
                     <td>{{ i+1 }}</td>
-                    <td *ngIf="this.authService.userType !== 'P'">{{ appointment.patient.user.firstName +
-                        appointment.patient.user.lastName }}</td>
-                    <td *ngIf="this.authService.userType !== 'D'">{{ appointment.doctor?.user.firstName +
-                        appointment.doctor?.user.lastName }}</td>
+                    <td *ngIf="this.authService.userType !== 'P'">{{ appointment.patient.user | fullName }}</td>
+                    <td *ngIf="this.authService.userType !== 'D'">{{ appointment.doctor?.user | fullName }}</td>
                     <td>{{ appointment.subject }}</td>
                     <td>{{ appointment.preferredDateTime | date:'short' }}</td>
                     <td class="text-center">
