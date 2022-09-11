@@ -28,6 +28,20 @@ const Appointment = sequelize.define('Appointment', {
     type: DataTypes.STRING(10),
     allowNull: false,
     defaultValue: 'applied'
+  },
+  rejectMessage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  concludedByPatient: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  concludedByDoctor: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, {
     timestamps: true

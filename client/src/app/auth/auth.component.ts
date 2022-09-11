@@ -52,15 +52,21 @@ export class AuthComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  onRoleChange() {
-    if (this.roleType === 'D') {
+  onRoleChange(event: any) {
+    if (event.checked === 'D') {
+      this.roleType = 'D';
       this.newUserForm.patchValue({ 'role': 'D' });
-      this.newUserForm.get('experience')?.addValidators([Validators.required]);
-      this.newUserForm.get('specialization')?.addValidators([Validators.required]);
+      this.newUserForm.get('experience')?.setValidators([Validators.required, Validators.min(0), Validators.max(60)]);
+      this.newUserForm.get('experience')?.updateValueAndValidity();
+      this.newUserForm.get('specialization')?.setValidators([Validators.required]);
+      this.newUserForm.get('specialization')?.updateValueAndValidity();
     } else {
+      this.roleType = 'P';
       this.newUserForm.patchValue({ 'role': 'P' });
-      this.newUserForm.get('experience')?.removeValidators([Validators.required]);
-      this.newUserForm.get('specialization')?.removeValidators([Validators.required]);
+      this.newUserForm.get('experience')?.clearValidators();
+      this.newUserForm.get('experience')?.updateValueAndValidity();
+      this.newUserForm.get('specialization')?.clearValidators();
+      this.newUserForm.get('specialization')?.updateValueAndValidity();
     }
   }
 
@@ -111,8 +117,8 @@ export class AuthComponent implements OnInit {
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Account created',
-          detail: 'Now you can login!'
+          summary: 'Request Sent',
+          detail: 'You can login after verification'
         });
         console.log(result);
       },

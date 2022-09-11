@@ -120,7 +120,11 @@ export class ProfileComponent implements OnInit {
       }
     });
     // user's permission to edit
-    if (this.authService.roleSubject.value.access.includes('MNG_U') || this.user.id === this.authService.userSubject.value.id) {
+    if (
+      this.authService.roleSubject.value.access.includes('MNG_U') || 
+      this.authService.roleSubject.value.access.includes('SA') ||
+      this.user.id === this.authService.userSubject.value.id
+    ) {
       this.readonly = false;
     }
   }

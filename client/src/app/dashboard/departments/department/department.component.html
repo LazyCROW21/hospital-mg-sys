@@ -65,7 +65,7 @@
                 <app-loading-bar></app-loading-bar>
             </ng-template>
             <ng-template #notLoadingDeptDoctors>
-                <app-doctor-table [doctors]="departmentDoctors" (onMenuAction)="onDoctorTableAction($event)">
+                <app-doctor-table [doctors]="departmentDoctors" [menu]="doctorRowMenu" (onMenuAction)="onDoctorTableAction($event)">
                 </app-doctor-table>
             </ng-template>
         </p-tabPanel>

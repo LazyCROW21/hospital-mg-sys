@@ -69,8 +69,7 @@
             <div class="col-6">
                 <input type="text" class="w-full" pInputText placeholder="Emergency Contact Number"
                     formControlName="emergencyPhone">
-                <small
-                    *ngIf="
+                <small *ngIf="
                         (newUserForm.errors?.['match'] && newUserForm.get('phone')?.touched) || 
                         (newUserForm.get('emergencyPhone')?.invalid && newUserForm.get('emergencyPhone')?.touched)"
                     class="p-error">
@@ -146,8 +145,8 @@
             </div>
         </div>
         <p-divider>
-            <p-checkbox label="Register as Doctor" value="D" trueValue="D" falseValue="P" [(ngModel)]="roleType"
-                [ngModelOptions]="{standalone: true}" [binary]="true" (onChange)="onRoleChange()"></p-checkbox>
+            <p-checkbox label="Register as Doctor" value="D" trueValue="D" falseValue="P" [binary]="true"
+                (onChange)="onRoleChange($event)"></p-checkbox>
         </p-divider>
         <ng-template [ngIf]="roleType === 'D'">
             <p-divider></p-divider>

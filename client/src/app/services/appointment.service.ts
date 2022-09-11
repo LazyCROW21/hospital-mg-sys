@@ -46,6 +46,14 @@ export class AppointmentService {
   }
 
   changeAppointmentStatus(id: number, data: any) {
+    return this.http.patch(environment.apiURL+'/appointment/status/'+id, data, { headers: this.baseHeader });
+  }
+
+  concludeAppointment(role: 'doctor'|'patient', appointmentId: number, data: any) {
+    return this.http.patch(environment.apiURL+`/appointment/conclude/${role}/${appointmentId}`, data, { headers: this.baseHeader });
+  }
+
+  editAppointment(id: number, data: any) {
     return this.http.patch(environment.apiURL+'/appointment/'+id, data, { headers: this.baseHeader });
   }
 }

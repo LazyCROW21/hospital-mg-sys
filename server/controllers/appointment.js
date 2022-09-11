@@ -123,7 +123,7 @@ const getNextAppointmentsByPatientId = async (patientId) => {
 }
 
 const getAppointmentsByDoctorId = async (doctorId) => {
-    const appointments = await AppointmentModel.findAndCountAll({
+    const appointments = await AppointmentModel.findAll({
         where: {
             doctorId: doctorId,
         },
@@ -177,6 +177,8 @@ const getNextAppointmentsByDoctorId = async (doctorId) => {
 }
 
 const addAppointment = async (appointmentData) => {
+    // status: Joi.string().valid('fixed', 'cancelled', '', 'rejected').required(),
+    appointmentData.status = 'applied';
     const newAppointment = new AppointmentModel(appointmentData);
     newAppointment.save();
     return newAppointment;
@@ -190,6 +192,14 @@ const changeAppointmentStatus = async (id, status) => {
     return result;
 }
 
+const updateAppointment = async (id, data) => {
+    const result = await AppointmentModel.update(
+        data,
+        { where: { id, status: 'applied' } }
+    );
+    return result;
+}
+
 module.exports = {
     getAllAppointments,
     getAppointmentById,
@@ -199,5 +209,6 @@ module.exports = {
     changeAppointmentStatus,
     getNextAppointmentsByPatientId,
     getNextAppointmentsByDoctorId,
-    getAllNextAppointments
+    getAllNextAppointments,
+    updateAppointment
 }

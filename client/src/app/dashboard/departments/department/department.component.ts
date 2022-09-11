@@ -35,9 +35,8 @@ export class DepartmentComponent implements OnInit {
     { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
 
-  doctorRowMenu: MenuItem[] = [
+  doctorRowMenu: { label: string, icon: string }[] = [
     { label: 'View', icon: 'pi pi-eye' },
-    { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash' },
   ];
 
@@ -83,9 +82,9 @@ export class DepartmentComponent implements OnInit {
         this.subDepartmentForm.patchValue({
           parentDepartmentId: this.departmentId
         });
-        this.parentDepartment = { 
-          id: result.parentDepartmentId, 
-          name: result.parentDepartment ? result.parentDepartment.name : '-- Root --' 
+        this.parentDepartment = {
+          id: result.parentDepartmentId,
+          name: result.parentDepartment ? result.parentDepartment.name : '-- Root --'
         };
       },
       error: (error) => {
@@ -206,7 +205,7 @@ export class DepartmentComponent implements OnInit {
     this.activeRow = event.index;
     switch (event.event) {
       case 'View':
-        this.goToDepartment();
+        this.router.navigateByUrl(`/dashboard/users/${this.departmentDoctors[this.activeRow].user.id}`);
         break;
       case 'Edit':
         break;

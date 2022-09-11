@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const appointmentJOI = require('../helper/validation/user');
+const appointmentJOI = require('../helper/validation/appointment');
 const appointmentController = require('../controllers/appointment');
 const validation = require('../middlewares/validation');
 
@@ -44,12 +44,62 @@ router.get('/doctor/next/:id', async (req, res) => {
 });
 
 router.post('/', validation(appointmentJOI.creationSchema), async (req, res) => {
+    req.body.rejectMessage = null;
+    req.body.concludedByPatient = false;
+    req.body.concludedByDoctor = false;
     const appointment = await appointmentController.addAppointment(req.body);
     res.send(appointment);
 });
 
-router.patch('/:id', validation(appointmentJOI.changeStatusSchema), async (req, res) => {
-    const appointment = await appointmentController.changeAppointmentStatus(req.params.id, req.body.status);
+router.patch('/status/:id', validation(appointmentJOI.changeStatusSchema), async (req, res) => {
+    const appointment = await appointmentController.getAppointmentById(req.params.id);
+    if(!appointment) {
+        return res.sendStatus(404);
+    }
+    // check Access later
+    if(appointment.status === 'fixed' && !['concluded', 'cancelled', 'rejected'].includes(req.body.status)) {
+        console.log(appointment.status, req.body.status);
+        return res.sendStatus(400);
+    } else if(appointment.status === 'applied' && req.body.status === 'concluded') {
+        return res.sendStatus(400);
+    } else if(['cancelled', 'rejected'].includes(appointment.status)) {
+        return res.sendStatus(400);
+    }
+    appointment.status = req.body.status;
+    if(req.body.status === 'rejected') {
+        appointment.rejectMessage = req.body.rejectMessage;
+    }
+    await appointment.save();
+    res.send(appointment);
+});
+
+router.patch('/conclude/:role(patient|doctor)/:id(\\d+)', async (req, res) => {
+    const appointment = await appointmentController.getAppointmentById(req.params.id);
+    if(!appointment) {
+        return res.sendStatus(404);
+    }
+    const cond1 = Object.keys(req.body).length !== 1;
+    const cond2 = req.params.role === 'patient' && typeof req.body.concludedByPatient !== 'boolean';
+    const cond3 = req.params.role === 'doctor' && typeof req.body.concludedByDoctor !== 'boolean';
+    const cond4 = appointment.status !== 'fixed';
+    if(cond1 || cond2 || cond3 || cond4) {
+        return res.sendStatus(400);
+    }
+
+    if(req.params.role === 'patient') {
+        appointment.concludedByPatient = req.body.concludedByPatient;
+    } else {
+        appointment.concludedByDoctor = req.body.concludedByDoctor;
+    }
+    await appointment.save();
+    res.send(appointment);
+});
+
+router.patch('/:id', validation(appointmentJOI.updationSchema), async (req, res) => {
+    const appointment = await appointmentController.updateAppointment(req.params.id, req.body);
+    if(!appointment[0]) {
+        return res.sendStatus(400);
+    }
     res.send(appointment);
 });
 
