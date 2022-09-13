@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
 import { designationOptions } from 'src/app/common/dropdown-options';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -40,7 +41,8 @@ export class UsersComponent implements OnInit {
   ];
   doctorRowMenu: { label: string, icon: string }[] = [
     { label: 'View', icon: 'pi pi-eye' },
-    // { label: 'Edit', icon: 'pi pi-cog' },
+    { label: 'Edit', icon: 'pi pi-user-edit' },
+    { label: 'Transfer', icon: 'pi pi-arrow-up-right' },
     { label: 'Delete', icon: 'pi pi-times' }
   ];
   departmentOptions: any[] = [];
@@ -57,6 +59,7 @@ export class UsersComponent implements OnInit {
   });
 
   constructor(
+    private router: Router,
     private doctorService: DoctorService,
     private patientService: PatientService,
     private departmentService: DepartmentService,
@@ -113,6 +116,7 @@ export class UsersComponent implements OnInit {
         this.dialog.show = true;
         break;
       case 'Edit':
+        this.router.navigateByUrl(`/dashboard/users/${this.doctors[event.index].user.id}`);
         break;
       case 'Delete':
         this.onDelete();

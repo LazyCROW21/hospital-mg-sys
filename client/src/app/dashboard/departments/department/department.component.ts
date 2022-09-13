@@ -40,13 +40,14 @@ export class DepartmentComponent implements OnInit {
 
   deptRowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
-    { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
+    { label: 'Edit', icon: 'pi pi-pencil' },
+    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() }
   ];
 
   doctorRowMenu: { label: string, icon: string }[] = [
-    { label: 'View', icon: 'pi pi-eye' },
-    { label: 'Remove', icon: 'pi pi-trash' },
+    { label: 'View / Edit', icon: 'pi pi-eye' },
+    { label: 'Transfer', icon: 'pi pi-arrow-up-right' },
+    { label: 'Remove', icon: 'pi pi-trash' }
   ];
 
   departmentForm: FormGroup = new FormGroup({
@@ -233,13 +234,11 @@ export class DepartmentComponent implements OnInit {
   onDoctorTableAction(event: any) {
     this.activeRow = event.index;
     switch (event.event) {
-      case 'View':
+      case 'View / Edit':
         this.router.navigateByUrl(`/dashboard/users/${this.departmentDoctors[this.activeRow].user.id}`);
         break;
-      case 'Edit':
-        break;
-      case 'Delete':
-        this.onDelete();
+      case 'Remove':
+        this.onRemoveStaff();
         break;
     }
   }
@@ -300,7 +299,7 @@ export class DepartmentComponent implements OnInit {
       accept: () => {
         this.departmentService.deleteDepartment(this.subDepartments[this.activeRow].id).subscribe({
           next: (reponse: any) => {
-            this.messageService.add({ severity: 'success', summary: 'Delete', detail: 'Department deleted' });
+            this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Department deleted' });
             this.fetchSubDepartments();
           },
           error: (err: any) => {
@@ -310,14 +309,14 @@ export class DepartmentComponent implements OnInit {
         });
       },
       reject: (type: ConfirmEventType) => {
-        switch (type) {
-          case ConfirmEventType.REJECT:
-            this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
-            break;
-          case ConfirmEventType.CANCEL:
-            this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
-            break;
-        }
+        // switch (type) {
+        //   case ConfirmEventType.REJECT:
+        //     this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Department not removed' });
+        //     break;
+        //   case ConfirmEventType.CANCEL:
+        //     this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Department not removed' });
+        //     break;
+        // }
       }
     });
   }
@@ -339,6 +338,7 @@ export class DepartmentComponent implements OnInit {
         });
         this.addStaffForm.reset();
         this.staffDialog.loading = false;
+        this.staffDialog.show = false;
         this.fetchDepartmentDoctors();
       },
       error: (error: any) => {
@@ -350,6 +350,41 @@ export class DepartmentComponent implements OnInit {
         });
         this.staffDialog.loading = false;
       },
+    });
+  }
+
+  onRemoveStaff() {
+    const doctor = this.departmentDoctors[this.activeRow];
+    const fullName = doctor.user.firstName + ' ' + doctor.user.lastName;
+    const data = { departmentId: null, designation: null };
+    this.confirmationService.confirm({
+      acceptButtonStyleClass: 'p-button-danger',
+      message: `Do you want to delete this doctor (${fullName})?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.doctorService.updateDoctorById(doctor.id, data).subscribe({
+          next: (reponse: any) => {
+            this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Doctor removed from department' });
+            this.fetchDepartmentDoctors();
+            this.doctorOptions.push({label: `${fullName} (${doctor.specialization})`, value: doctor.id});
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+          }
+        });
+      },
+      reject: (type: ConfirmEventType) => {
+        // switch (type) {
+        //   case ConfirmEventType.REJECT:
+        //     this.messageService.add({ severity: 'warn', summary: 'Rejected', detail: 'Doctor not removed' });
+        //     break;
+        //   case ConfirmEventType.CANCEL:
+        //     this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Doctor not removed' });
+        //     break;
+        // }
+      }
     });
   }
 }

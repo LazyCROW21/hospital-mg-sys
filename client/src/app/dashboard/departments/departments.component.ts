@@ -42,7 +42,7 @@ export class DepartmentsComponent implements OnInit {
     this.fetchDepartments();
     if (this.authService.userType === 'A') {
       this.rowMenu.push(
-        { label: 'Edit', icon: 'pi pi-cog' },
+        { label: 'Edit', icon: 'pi pi-pencil' },
         { label: 'Remove', icon: 'pi pi-trash' }
       );
     }
