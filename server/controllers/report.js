@@ -52,8 +52,18 @@ const getReportsByDoctorId = async (doctorId) => {
     return reports
 }
 
-const addReport = async (reportData) => {
-    reportData.doctorId = 1;
+const addReport = async ({id, patientId, doctorId, preferredDateTime}) => {
+    const reportData = {
+        appointmentId: id,
+        patientId,
+        doctorId,
+        dateAdmitted: preferredDateTime,
+        dateDischarged: null,
+        treatmentType: null,
+        description: null,
+        status: 'progress',
+        patientStatus: 'unchanged'
+    };
     const newReport = new ReportModel(reportData);
     await newReport.save();
     return newReport;

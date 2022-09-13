@@ -38,11 +38,11 @@
                                 value="fixed" severity="success">
                             </p-badge>
                             <p-badge
-                                *ngIf="appointmentDetails.concludedByDoctor && !appointmentDetails.concludedByPatient"
+                                *ngIf="appointment.concludedByDoctor && !appointment.concludedByPatient"
                                 value="? concluded" severity="success">
                             </p-badge>
                             <p-badge
-                                *ngIf="!appointmentDetails.concludedByDoctor && appointmentDetails.concludedByPatient"
+                                *ngIf="!appointment.concludedByDoctor && appointment.concludedByPatient"
                                 value="? concluded" severity="success">
                             </p-badge>
                         </ng-template>

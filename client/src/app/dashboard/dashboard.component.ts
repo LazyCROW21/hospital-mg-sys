@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
       { label: 'Dashboard', icon: 'pi pi-fw pi-desktop', routerLink: '/dashboard' },
       { label: 'All Departments', icon: 'pi pi-fw pi-th-large', routerLink: '/dashboard/departments' },
       { label: 'Reports', icon: 'pi pi-fw pi-briefcase', routerLink: '/dashboard/reports' },
-      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: '/dashboard/appointment' }
+      { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: '/dashboard/appointments' }
     ];
     
     this.patientSideMenuItems = [

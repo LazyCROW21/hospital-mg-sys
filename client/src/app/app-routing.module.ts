@@ -39,7 +39,7 @@ const routes: Routes = [
       { path: 'departments/:id', component: DepartmentComponent, pathMatch: 'full' },
       { path: 'reports', component: ReportsComponent },
       // Patient
-      { path: 'appointment', component: AppointmentComponent },
+      { path: 'appointments', component: AppointmentComponent },
       { path: 'profile', component: ProfileComponent },
       // Doctor
       // Admins

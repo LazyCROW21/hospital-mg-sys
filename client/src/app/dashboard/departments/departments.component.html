@@ -1,7 +1,9 @@
 <p-card>
     <div class="flex justify-content-between align-items-center">
         <h2>All Departments</h2>
-        <p-button label="Add Department" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openDepartmentForm()">
+        <p-button 
+            *ngIf="authService.userType === 'A'"
+            label="Add Department" icon="pi pi-plus" styleClass="p-button-text" (onClick)="openDepartmentForm()">
         </p-button>
     </div>
     <p-divider></p-divider>
@@ -9,7 +11,7 @@
         <app-loading-bar></app-loading-bar>
     </ng-template>
     <ng-template #notLoading>
-        <app-department-table [departments]="departments" (onMenuAction)="onDepartmentTableAction($event)">
+        <app-department-table [departments]="departments" [menu]="rowMenu" (onMenuAction)="onDepartmentTableAction($event)">
         </app-department-table>
     </ng-template>
 </p-card>

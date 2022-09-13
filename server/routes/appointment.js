@@ -3,6 +3,7 @@ const router = express.Router();
 
 const appointmentJOI = require('../helper/validation/appointment');
 const appointmentController = require('../controllers/appointment');
+const reportController = require('../controllers/report');
 const validation = require('../middlewares/validation');
 
 router.get('/', async (req, res) => {
@@ -47,8 +48,13 @@ router.post('/', validation(appointmentJOI.creationSchema), async (req, res) => 
     req.body.rejectMessage = null;
     req.body.concludedByPatient = false;
     req.body.concludedByDoctor = false;
-    const appointment = await appointmentController.addAppointment(req.body);
-    res.send(appointment);
+    try {
+        const appointment = await appointmentController.addAppointment(req.body);
+        res.send(appointment);
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
 });
 
 router.patch('/status/:id', validation(appointmentJOI.changeStatusSchema), async (req, res) => {
@@ -82,7 +88,7 @@ router.patch('/conclude/:role(patient|doctor)/:id(\\d+)', async (req, res) => {
     const cond2 = req.params.role === 'patient' && typeof req.body.concludedByPatient !== 'boolean';
     const cond3 = req.params.role === 'doctor' && typeof req.body.concludedByDoctor !== 'boolean';
     const cond4 = appointment.status !== 'fixed';
-    if(cond1 || cond2 || cond3 || cond4) {
+    if(cond1 && (cond2 || cond3) && cond4) {
         return res.sendStatus(400);
     }
 
@@ -93,6 +99,9 @@ router.patch('/conclude/:role(patient|doctor)/:id(\\d+)', async (req, res) => {
     }
     await appointment.save();
     res.send(appointment);
+    if(appointment.concludedByPatient && appointment.concludedByDoctor) {
+        reportController.addReport(appointment);
+    }
 });
 
 router.patch('/:id', validation(appointmentJOI.updationSchema), async (req, res) => {

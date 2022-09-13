@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
+import { AuthService } from 'src/app/services/auth.service';
 import { DepartmentService } from 'src/app/services/department.service';
 
 @Component({
@@ -17,10 +18,8 @@ export class DepartmentsComponent implements OnInit {
     heading: 'Add Department'
   }
   activeRow: number = 0;
-  rowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
-    { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
+  rowMenu: { label: string; icon: string }[] = [
+    { label: 'View', icon: 'pi pi-eye' },
   ];
   departments: any[] = [];
   departmentTree: any[] = [];
@@ -32,6 +31,7 @@ export class DepartmentsComponent implements OnInit {
   });
 
   constructor(
+    public authService: AuthService,
     private departmentService: DepartmentService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -40,6 +40,12 @@ export class DepartmentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchDepartments();
+    if (this.authService.userType === 'A') {
+      this.rowMenu.push(
+        { label: 'Edit', icon: 'pi pi-cog' },
+        { label: 'Remove', icon: 'pi pi-trash' }
+      );
+    }
   }
 
   onDepartmentTableAction(event: any) {
@@ -58,7 +64,7 @@ export class DepartmentsComponent implements OnInit {
         }
         this.departmentTree.push(rootDeptOption);
         let parentNodeId = -2;
-        if(event.data.parentDepartmentId) {
+        if (event.data.parentDepartmentId) {
           parentNodeId = event.data.parentDepartmentId;
         }
         const { roots, selectedNode } = this.departmentService.createDepartmentTree(this.departments, event.data.id, parentNodeId);
@@ -133,7 +139,7 @@ export class DepartmentsComponent implements OnInit {
     }
     this.loadingIcon = 'pi pi-spin pi-spinner';
     let api;
-    if(this.editDepartmentId === -1) {
+    if (this.editDepartmentId === -1) {
       api = this.departmentService.addDepartment(data);
     } else {
       api = this.departmentService.updateDepartment(this.editDepartmentId, data);

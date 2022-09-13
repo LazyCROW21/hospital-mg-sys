@@ -177,10 +177,9 @@ const getNextAppointmentsByDoctorId = async (doctorId) => {
 }
 
 const addAppointment = async (appointmentData) => {
-    // status: Joi.string().valid('fixed', 'cancelled', '', 'rejected').required(),
     appointmentData.status = 'applied';
     const newAppointment = new AppointmentModel(appointmentData);
-    newAppointment.save();
+    await newAppointment.save();
     return newAppointment;
 }
 

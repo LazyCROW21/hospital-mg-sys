@@ -23,21 +23,20 @@ const Report = sequelize.define('Report', {
     },
     dateDischarged: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     },
     treatmentType: {
         type: DataTypes.STRING(20),
-        allowNull: false
+        allowNull: true
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
-    //   detailedReportFile (to be added later)
     status: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'planned'
+        defaultValue: 'progress'
     },
     patientStatus: {
         type: DataTypes.STRING,

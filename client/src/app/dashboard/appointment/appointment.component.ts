@@ -11,7 +11,6 @@ import { DoctorService } from 'src/app/services/doctor.service';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit, AfterContentChecked {
-  holderId: number = 1;
   isLoadingAppointments: boolean = false;
   dialog = {
     heading: '',
@@ -60,7 +59,7 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
     const mins = this.minDate.getMinutes();
     preferredDateTime.setMinutes(mins - (mins % 15) + 15);
     this.appointmentForm.patchValue({
-      patientId: this.holderId,
+      patientId: this.authService.roleSubject.value.id,
       preferredDateTime
     });
     this.fetchAppointments();
@@ -193,10 +192,10 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
         allAppointments = this.appointmentService.getAllAppointments()
         break;
       case 'D':
-        allAppointments = this.appointmentService.getAppointmentByDoctorId(this.holderId);
+        allAppointments = this.appointmentService.getAppointmentByDoctorId(this.authService.roleSubject.value.id);
         break;
       case 'P':
-        allAppointments = this.appointmentService.getAppointmentByPatientId(this.holderId);
+        allAppointments = this.appointmentService.getAppointmentByPatientId(this.authService.roleSubject.value.id);
     }
     this.isLoadingAppointments = true;
     allAppointments.subscribe({

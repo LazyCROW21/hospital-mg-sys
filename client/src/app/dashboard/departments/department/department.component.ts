@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
+import { AuthService } from 'src/app/services/auth.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
 
@@ -28,6 +29,7 @@ export class DepartmentComponent implements OnInit {
   subDepartments: any[] = [];
   activeRow: number = 0;
   editDepartmentId = -1;
+  readonly = true;
 
   deptRowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
@@ -52,6 +54,7 @@ export class DepartmentComponent implements OnInit {
   });
 
   constructor(
+    public authService: AuthService,
     private messageService: MessageService,
     private departmentService: DepartmentService,
     private doctorService: DoctorService,
@@ -71,6 +74,9 @@ export class DepartmentComponent implements OnInit {
       this.fetchSubDepartments();
       this.fetchDepartmentDoctors();
     });
+    if(this.authService.userType === 'A') {
+      this.readonly = false;
+    }
   }
 
   fetchDepartment() {

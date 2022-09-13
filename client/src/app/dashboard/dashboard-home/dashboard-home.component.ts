@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { AppointmentService } from 'src/app/services/appointment.service';
-import { DoctorService } from 'src/app/services/doctor.service';
-import { PatientService } from 'src/app/services/patient.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -10,14 +10,9 @@ import { PatientService } from 'src/app/services/patient.service';
   styleUrls: ['./dashboard-home.component.css']
 })
 export class DashboardHomeComponent implements OnInit {
-  isDoctor: boolean = true;
-  isPatient: boolean = false;
-  isAdmin: boolean = false;
-  holderId: number = 1;
-  newAppointmentCount: string = 'pi pi-spin pi-spinner';
-  newPatientCount: string = 'pi pi-spin pi-spinner';
-  newDoctorCount: string = 'pi pi-spin pi-spinner';
   loadingIcon: string = '';
+  role: 'A' | 'D' | 'P';
+  user: any;
 
   // accept, reject, cancel btn icons
   updateButtonIcons = {
@@ -27,32 +22,33 @@ export class DashboardHomeComponent implements OnInit {
   };
 
   constructor(
+    public authService: AuthService,
     private appointmentService: AppointmentService,
-    private doctorService: DoctorService,
-    private patientService: PatientService,
+    private userService: UserService,
     private messageService: MessageService
-  ) { }
+  ) {
+    this.role = this.authService.userType;
+    this.authService.userSubject.subscribe((user) => { this.user = user; });
+  }
 
   ngOnInit(): void {
     this.fetchNewAppointments();
-    if(!this.isPatient) {
-      this.fetchNewPatients();
-      this.fetchNewDoctors();
+    if(this.role === 'A') {
+      this.fetchNewUsers();
     }
   }
   
   fetchNewAppointments() {
     let newAppointments;
-    if(this.isAdmin) {
+    if(this.authService.userType === 'A') {
       newAppointments = this.appointmentService.getAllNextAppointments()
-    } else if(this.isDoctor) {
-      newAppointments = this.appointmentService.getNextAppointmentsByDoctorId(this.holderId);
+    } else if(this.authService.userType === 'D') {
+      newAppointments = this.appointmentService.getNextAppointmentsByDoctorId(this.user.id);
     } else {
-      newAppointments = this.appointmentService.getNextAppointmentsByPatientId(this.holderId);
+      newAppointments = this.appointmentService.getNextAppointmentsByPatientId(this.user.id);
     }
     newAppointments.subscribe({
       next: (result: any) => {
-        this.newAppointmentCount = result.count.toString();
         console.log(result);
       },
       error: (error: any) => { 
@@ -62,17 +58,15 @@ export class DashboardHomeComponent implements OnInit {
           summary: 'Error!',
           detail: 'Cannot fetch Data'
         });
-        this.newAppointmentCount = 'X';
       }
     });
   }
 
-  fetchNewPatients() {
+  fetchNewUsers() {
     // to add new patient my doctor department
-    this.patientService.getAllNewPatients()
+    this.userService.getAllNewUsers()
     .subscribe({
       next: (result: any) => {
-        this.newPatientCount = result.count.toString();
         console.log(result);
       },
       error: (error: any) => {
@@ -82,27 +76,6 @@ export class DashboardHomeComponent implements OnInit {
           summary: 'Error!',
           detail: 'Cannot fetch Data'
         });
-        this.newPatientCount = 'X';
-      }
-    });
-  }
-
-  fetchNewDoctors() {
-    // to add new patient my doctor department
-    this.doctorService.getAllNewDoctors()
-    .subscribe({
-      next: (result: any) => {
-        this.newDoctorCount = result.length.toString();
-        console.log(result);
-      },
-      error: (error: any) => {
-        console.error(error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error!',
-          detail: 'Cannot fetch Data'
-        });
-        this.newDoctorCount = 'X';
       }
     });
   }

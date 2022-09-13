@@ -10,80 +10,30 @@
     </p>
   </p-fieldset>
 </p-card>
-<!-- Patient -->
-<ng-template [ngIf]="isPatient">
-  <div class="grid">
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-green-500">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" value="2 New">: </p-badge>
-          <h3>Appointment:</h3>
-          <a routerLink="/dashboard/appointment">Check</a>
-        </div>
-      </p-card>
-    </div>
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-yellow-600">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" value="2 New">: </p-badge>
-          <h3>Reports:</h3>
-        </div>
-      </p-card>
-    </div>
-  </div>
-</ng-template>
-<!-- ON going treatment,
-    Future: Bill, Reminder Prescription -->
 
-<!-- Doctor -->
-<ng-template [ngIf]="isDoctor">
-  <div class="grid">
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-cyan-600">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" value="2 New">: </p-badge>
-          <h3>New Appointments:</h3>
-          <a routerLink="/dashboard/appointments">Check</a>
-        </div>
-      </p-card>
-    </div>
+<div class="grid">
+  <div class="col-3">
+    <p-card styleClass="border-left-3 border-noround-left border-green-500">
+      <div class="flex flex-column gap-2 align-items-start my-2">
+        <h1 class="text-green-500">123</h1>
+        <a routerLink="/dashboard/appointment">Planned Appointments</a>
+      </div>
+    </p-card>
   </div>
-</ng-template>
-<!-- Calender,
-    Message Admin, -->
-
-<!-- Admin -->
-<ng-template [ngIf]="isAdmin">
-  <div class="grid">
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-pink-500">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" [value]="newAppointmentCount + ' New'">: </p-badge>
-          <h3>Appointments This Week:</h3>
-          <a routerLink="/dashboard/appointments">Check</a>
-        </div>
-      </p-card>
-    </div>
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-indigo-500">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" [value]="newDoctorCount + ' New'">: </p-badge>
-          <h3>New Doctors:</h3>
-          <a routerLink="/dashboard/doctors">Check</a>
-        </div>
-      </p-card>
-    </div>
-    <div class="col">
-      <p-card styleClass="border-left-3 border-noround-left border-purple-400">
-        <div class="flex gap-2 align-items-center my-2">
-          <p-badge severity="success" [value]="newPatientCount + ' New'">: </p-badge>
-          <h3>New Patients This Week:</h3>
-          <a routerLink="/dashboard/patients">Check</a>
-        </div>
-      </p-card>
-    </div>
+  <div class="col-3">
+    <p-card styleClass="border-left-3 border-noround-left border-yellow-600">
+      <div class="flex flex-column gap-2 align-items-start my-2">
+        <h1 class="text-yellow-600">123</h1>
+        <a routerLink="/dashboard/appointment">New Reports</a>
+      </div>
+    </p-card>
   </div>
-</ng-template>
-<!-- New Messages, Patients, Leaves Application,
-    Links,
-    Stats, -->
+  <div class="col-3" *ngIf="authService.userType === 'A'">
+    <p-card styleClass="border-left-3 border-noround-left border-indigo-500">
+      <div class="flex flex-column gap-2 align-items-start my-2">
+        <h1 class="text-indigo-500">123</h1>
+        <a routerLink="/dashboard/appointment">New Users</a>
+      </div>
+    </p-card>
+  </div>
+</div>
