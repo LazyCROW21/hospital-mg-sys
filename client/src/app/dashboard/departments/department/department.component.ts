@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
+import { designationOptions } from 'src/app/common/dropdown-options';
 import { AuthService } from 'src/app/services/auth.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
@@ -15,11 +16,16 @@ export class DepartmentComponent implements OnInit {
   isLoadingSubDepartments: boolean = false;
   isLoadingDepartmentDoctors: boolean = false;
   isUpdateButtonLoading = false;
+  designationOptions = designationOptions;
   dialog = {
     show: false,
     heading: 'Add Sub Department',
     loading: false
   }
+  staffDialog = {
+    show: false,
+    loading: false
+  };
   departmentId: number = 0;
   parentDepartment = {
     id: -1,
@@ -30,6 +36,7 @@ export class DepartmentComponent implements OnInit {
   activeRow: number = 0;
   editDepartmentId = -1;
   readonly = true;
+  doctorOptions: { label: string, value: number }[] = [];
 
   deptRowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToDepartment() },
@@ -51,6 +58,11 @@ export class DepartmentComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.maxLength(40)]),
     description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     parentDepartmentId: new FormControl(null)
+  });
+
+  addStaffForm: FormGroup = new FormGroup({
+    doctorId: new FormControl(null, [Validators.required]),
+    designation: new FormControl(null, [Validators.required])
   });
 
   constructor(
@@ -76,6 +88,17 @@ export class DepartmentComponent implements OnInit {
     });
     if(this.authService.userType === 'A') {
       this.readonly = false;
+      this.doctorService.getAllDoctors().subscribe((result) => {
+        (<any[]>result).forEach((doctor) => {
+          console.log(!doctor.departmentId);
+          if(!doctor.departmentId) {
+            const label = `${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialization})`;
+            this.doctorOptions.push({
+              label, value: doctor.id
+            });
+          }
+        });
+      });
     }
   }
 
@@ -296,6 +319,37 @@ export class DepartmentComponent implements OnInit {
             break;
         }
       }
+    });
+  }
+
+  onAddStaff() {
+    if(this.addStaffForm.invalid) {
+      this.addStaffForm.markAllAsTouched();
+      return;
+    }
+    const doctorId = this.addStaffForm.get('doctorId')?.value;
+    const designation = this.addStaffForm.get('designation')?.value;
+    this.staffDialog.loading = true;
+    this.doctorService.updateDoctorById(doctorId, { departmentId: this.departmentId, designation }).subscribe({
+      next: (result: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Staff Added',
+          detail: 'Doctor added to this department'
+        });
+        this.addStaffForm.reset();
+        this.staffDialog.loading = false;
+        this.fetchDepartmentDoctors();
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+        this.staffDialog.loading = false;
+      },
     });
   }
 }

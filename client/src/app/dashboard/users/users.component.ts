@@ -104,6 +104,8 @@ export class UsersComponent implements OnInit {
 
   onDoctorTableAction(event: any) {
     this.activeUser = this.doctors[event.index].user;
+    this.activeUser.specialization = this.doctors[event.index].specialization;
+    this.activeUser.experience = this.doctors[event.index].experience;
     switch (event.event) {
       case 'View':
         this.dialog.header = 'Doctor Details';

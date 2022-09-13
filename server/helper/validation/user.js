@@ -3,12 +3,10 @@ const { accessCodes } = require('../enum');
 
 const creationSchema = Joi.object({
     firstName: Joi.string()
-        .alphanum()
         .min(1)
         .max(40)
         .required(),
     lastName: Joi.string()
-        .alphanum()
         .min(1)
         .max(40)
         .required(),

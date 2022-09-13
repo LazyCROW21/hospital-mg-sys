@@ -42,7 +42,7 @@
         </p-tabPanel>
         <p-tabPanel header="Sub-Departments">
             <div class="flex justify-content-end">
-                <p-button label="Add Sub-Department" icon="pi pi-plus" styleClass="p-button-text"
+                <p-button *ngIf="!readonly" label="Add Sub-Department" icon="pi pi-plus" styleClass="p-button-text"
                     (onClick)="openDepartmentForm()">
                 </p-button>
             </div>
@@ -57,8 +57,8 @@
         <p-tabPanel header="Staff">
             <div class="flex justify-content-between">
                 <p>(Not including sub-department staff)</p>
-                <p-button label="Add Staff" icon="pi pi-plus" styleClass="p-button-text"
-                    (onClick)="openDepartmentForm()">
+                <p-button *ngIf="!readonly" label="Add Staff" icon="pi pi-plus" styleClass="p-button-text"
+                    (onClick)="staffDialog.show = true;">
                 </p-button>
             </div>
             <ng-template [ngIf]="isLoadingDepartmentDoctors" [ngIfElse]="notLoadingDeptDoctors">
@@ -97,6 +97,33 @@
         </div>
         <div class="flex justify-content-end mt-2">
             <p-button label="SUBMIT" type="submit" [loading]="dialog.loading"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Add Staff Dialog -->
+<p-dialog [(visible)]="staffDialog.show" header="Add Staff" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="addStaffForm" (ngSubmit)="onAddStaff()">
+        <div class="field">
+            <label>Doctor:</label>
+            <p-dropdown appendTo="body" [options]="doctorOptions" optionLabel="label"
+                formControlName="doctorId" placeholder="Select Doctor" styleClass="w-full"
+                optionValue="value"></p-dropdown>
+            <small
+                *ngIf="addStaffForm.get('doctorId')?.invalid && addStaffForm.get('doctorId')?.touched"
+                class="p-error">Doctor is required</small>
+        </div>
+        <div class="field">
+            <label>Position:</label>
+            <p-dropdown appendTo="body" [options]="designationOptions" optionLabel="label"
+                formControlName="designation" placeholder="Set Designation" styleClass="w-full"
+                optionValue="value"></p-dropdown>
+            <small
+                *ngIf="addStaffForm.get('designation')?.invalid && addStaffForm.get('designation')?.touched"
+                class="p-error">Designation is required</small>
+        </div>
+        <div class="flex justify-content-end mt-2">
+            <p-button label="SUBMIT" type="submit" [loading]="staffDialog.loading"></p-button>
         </div>
     </form>
 </p-dialog>
