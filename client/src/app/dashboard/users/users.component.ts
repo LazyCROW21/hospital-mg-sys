@@ -22,6 +22,10 @@ export class UsersComponent implements OnInit {
     header: '',
     mode: ''
   };
+  transferDialog = {
+    show: false,
+    doctor: {}
+  };
   showMoveDoctorDialog = false;
   isLoadingMoveDoctor = false;
   activeRow = 0;
@@ -117,6 +121,10 @@ export class UsersComponent implements OnInit {
         break;
       case 'Edit':
         this.router.navigateByUrl(`/dashboard/users/${this.doctors[event.index].user.id}`);
+        break;
+      case 'Transfer':
+        this.transferDialog.doctor = this.doctors[event.index];
+        this.transferDialog.show = true;
         break;
       case 'Delete':
         this.onDelete();
@@ -328,5 +336,17 @@ export class UsersComponent implements OnInit {
         // }
       }
     });
+  }
+
+  onDoctorTransfer(tranferStatus: string) {
+    switch (tranferStatus) {
+      case 'transferSuccessful':
+        this.transferDialog.show = false;
+        this.messageService.add({ severity: 'success', summary: 'Tranferred', detail: 'Doctor moved!' });
+        break;
+      case 'transferFailed':
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+        break;
+    }
   }
 }

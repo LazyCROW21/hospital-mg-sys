@@ -1,0 +1,56 @@
+<p-dialog [(visible)]="show" (visibleChange)="onVisibilityChange($event)" header="Transfer Doctor" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="tranferForm" (ngSubmit)="onSubmit()">
+        <div class="grid">
+            <div class="col-12">
+                <table class="my-table">
+                    <tr *ngIf="doctor.user">
+                        <th>Name</th>
+                        <td>{{ doctor.user | fullName }}</td>
+                    </tr>
+                    <tr>
+                        <th>Experience</th>
+                        <td>{{ doctor.experience }}</td>
+                    </tr>
+                    <tr>
+                        <th>Specialization</th>
+                        <td>{{ doctor.specialization }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-6">
+                <div class="field" *ngIf="doctor.department">
+                    <label>From Department:</label>
+                    <input pInputText [value]="doctor.department.name" class="w-full" readonly>
+                </div>
+                <div class="field">
+                    <label>From Position:</label>
+                    <input pInputText [value]="doctor.designation" class="w-full" readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="field">
+                    <label>To Department:</label>
+                    <p-dropdown appendTo="body" [options]="departments" optionLabel="name"
+                        formControlName="departmentId" placeholder="Select Doctor" styleClass="w-full"
+                        optionValue="id"></p-dropdown>
+                    <small
+                        *ngIf="tranferForm.get('departmentId')?.invalid && tranferForm.get('departmentId')?.touched"
+                        class="p-error">Department is required</small>
+                </div>
+                <div class="field">
+                    <label>To Position:</label>
+                    <p-dropdown appendTo="body" [options]="designationOptions" optionLabel="label"
+                        formControlName="designation" placeholder="Set Designation" styleClass="w-full"
+                        optionValue="value"></p-dropdown>
+                    <small
+                        *ngIf="tranferForm.get('designation')?.invalid && tranferForm.get('designation')?.touched"
+                        class="p-error">Designation is required</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-content-end mt-2">
+            <p-button label="SUBMIT" type="submit" [loading]="loading"></p-button>
+        </div>
+    </form>
+</p-dialog>

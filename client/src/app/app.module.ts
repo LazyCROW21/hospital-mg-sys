@@ -55,6 +55,7 @@ import { DoctorTableComponent } from './common/doctor-table/doctor-table.compone
 import { LoadingBarComponent } from './common/loading-bar/loading-bar.component';
 import { DepartmentTableComponent } from './common/department-table/department-table.component';
 import { FullNamePipe } from './pipes/full-name.pipe';
+import { TranferDoctorDialogComponent } from './common/tranfer-doctor-dialog/tranfer-doctor-dialog.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { FullNamePipe } from './pipes/full-name.pipe';
     DoctorTableComponent,
     LoadingBarComponent,
     DepartmentTableComponent,
-    FullNamePipe
+    FullNamePipe,
+    TranferDoctorDialogComponent
   ],
   imports: [
     BrowserModule,

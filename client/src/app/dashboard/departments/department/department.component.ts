@@ -26,6 +26,12 @@ export class DepartmentComponent implements OnInit {
     show: false,
     loading: false
   };
+
+  transferDialog = {
+    show: false,
+    doctor: {}
+  };
+
   departmentId: number = 0;
   parentDepartment = {
     id: -1,
@@ -87,12 +93,11 @@ export class DepartmentComponent implements OnInit {
       this.fetchSubDepartments();
       this.fetchDepartmentDoctors();
     });
-    if(this.authService.userType === 'A') {
+    if (this.authService.userType === 'A') {
       this.readonly = false;
       this.doctorService.getAllDoctors().subscribe((result) => {
         (<any[]>result).forEach((doctor) => {
-          console.log(!doctor.departmentId);
-          if(!doctor.departmentId) {
+          if (!doctor.departmentId) {
             const label = `${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialization})`;
             this.doctorOptions.push({
               label, value: doctor.id
@@ -107,7 +112,6 @@ export class DepartmentComponent implements OnInit {
     this.isLoadingSubDepartments = true;
     this.departmentService.getDepartment(this.departmentId).subscribe({
       next: (result: any) => {
-        console.log(result);
         this.departmentForm.patchValue(result);
         this.subDepartmentForm.patchValue({
           parentDepartmentId: this.departmentId
@@ -191,7 +195,6 @@ export class DepartmentComponent implements OnInit {
     this.isLoadingSubDepartments = true;
     this.departmentService.getSubDepartments(this.departmentId).subscribe({
       next: (result) => {
-        console.log(result);
         this.subDepartments.splice(0, this.subDepartments.length, ...<any[]>result);
       },
       error: (error) => {
@@ -239,6 +242,10 @@ export class DepartmentComponent implements OnInit {
         break;
       case 'Remove':
         this.onRemoveStaff();
+        break;
+      case 'Transfer':
+        this.transferDialog.doctor = this.departmentDoctors[this.activeRow];
+        this.transferDialog.show = true;
         break;
     }
   }
@@ -322,7 +329,7 @@ export class DepartmentComponent implements OnInit {
   }
 
   onAddStaff() {
-    if(this.addStaffForm.invalid) {
+    if (this.addStaffForm.invalid) {
       this.addStaffForm.markAllAsTouched();
       return;
     }
@@ -367,7 +374,7 @@ export class DepartmentComponent implements OnInit {
           next: (reponse: any) => {
             this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Doctor removed from department' });
             this.fetchDepartmentDoctors();
-            this.doctorOptions.push({label: `${fullName} (${doctor.specialization})`, value: doctor.id});
+            this.doctorOptions.push({ label: `${fullName} (${doctor.specialization})`, value: doctor.id });
           },
           error: (err: any) => {
             console.log(err);
@@ -386,5 +393,17 @@ export class DepartmentComponent implements OnInit {
         // }
       }
     });
+  }
+
+  onDoctorTransfer(tranferStatus: string) {
+    switch (tranferStatus) {
+      case 'transferSuccessful':
+        this.transferDialog.show = false;
+        this.messageService.add({ severity: 'success', summary: 'Tranferred', detail: 'Doctor moved!' });
+        break;
+      case 'transferFailed':
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+        break;
+    }
   }
 }

@@ -62,3 +62,26 @@ export const designationOptions = [
     { label: 'Junior Doctor', value: 'Junior Doctor' },
     { label: 'Intern', value: 'Intern' },
 ];
+
+export const reportStatusOptions = [
+    { label: 'pending', value: 'pending' },
+    { label: 're-check', value: 're-check' },
+    { label: 'progress', value: 'progress' },
+    { label: 'completed', value: 'completed' }
+];
+
+export const treatmentOptions = [
+    { label: 'Check-Up', value: 'Check-Up' },
+    { label: 'Medication', value: 'Medication' },
+    { label: 'Surgory', value: 'Surgory' },
+    { label: 'Chemotherapy', value: 'Chemotherapy' },
+    { label: 'Aeromatherapy', value: 'Aeromatherapy' },
+    { label: 'Vaccine', value: 'Vaccine' }
+];
+
+export const patientStatusOptions = [
+    { label: 'unchanged', value: 'unchanged' },
+    { label: 'improved', value: 'improved' },
+    { label: 'cured', value: 'cured' },
+    { label: 'worsen', value: 'worsen' },
+  ];

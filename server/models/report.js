@@ -36,7 +36,7 @@ const Report = sequelize.define('Report', {
     status: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'progress'
+        defaultValue: 'pending'
     },
     patientStatus: {
         type: DataTypes.STRING,

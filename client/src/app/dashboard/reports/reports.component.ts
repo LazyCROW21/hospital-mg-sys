@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
+import { patientStatusOptions, reportStatusOptions, treatmentOptions } from 'src/app/common/dropdown-options';
+import { AuthService } from 'src/app/services/auth.service';
+import { PatientService } from 'src/app/services/patient.service';
 import { ReportService } from 'src/app/services/report.service';
 
 @Component({
@@ -10,47 +13,33 @@ import { ReportService } from 'src/app/services/report.service';
   styleUrls: ['./reports.component.css']
 })
 export class ReportsComponent implements OnInit {
-  isDoctor: boolean = false;
-  isPatient: boolean = false;
-  isAdmin: boolean = true;
-  holderId: number = 1;
   isLoadingReports: boolean = false;
-  loadingIcon: string = '';
-  showNewReportForm: boolean = false;
+  dialog = {
+    show: false,
+    heading: '',
+    loading: false,
+    readonly: true,
+    mode: 'N'
+  };
   activeRow: number = 0;
+
   rowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye' },
-    { label: 'Edit', icon: 'pi pi-cog' },
-    { label: 'Remove', icon: 'pi pi-trash' },
+    { label: 'View', icon: 'pi pi-eye', command: () => { this.viewReport(); } },
+    { label: 'Edit', icon: 'pi pi-cog', command: () => { this.editReport(); } },
+    { label: 'Remove', icon: 'pi pi-trash', command: () => { this.onDelete(); } },
   ];
+
   reports: any[] = [];
 
-  patientList: { label: string, value: number }[] = [
-    { label: 'Patient 1', value: 1 },
-    { label: 'Patient 2', value: 2 },
-    { label: 'Patient 3', value: 3 }
-  ];
+  patientList: any[] = [];
 
-  treatmentOptions: { label: string, value: string }[] = [
-    { label: 'Surgory', value: 'Surgory' },
-    { label: 'Aeromatherapy', value: 'Aeromatherapy' },
-    { label: 'Vaccine', value: 'Vaccine' }
-  ];
+  treatmentOptions = treatmentOptions;
 
-  statusOptions: { label: string, value: string }[] = [
-    { label: 'success', value: 'success' },
-    { label: 'fail', value: 'fail' },
-    { label: 'incomplete', value: 'incomplete' },
-  ];
+  statusOptions = reportStatusOptions;
 
-  patientStatusOptions: { label: string, value: string }[] = [
-    { label: 'unchanged', value: 'unchanged' },
-    { label: 'improved', value: 'improved' },
-    { label: 'cured', value: 'cured' },
-    { label: 'worsen', value: 'worsen' },
-  ];
+  patientStatusOptions = patientStatusOptions;
 
-  newReportForm: FormGroup = new FormGroup({
+  reportForm: FormGroup = new FormGroup({
     patientId: new FormControl(null, [Validators.required, Validators.min(0)]),
     dateAdmitted: new FormControl('', [Validators.required]),
     dateDischarged: new FormControl('', [Validators.required]),
@@ -60,10 +49,18 @@ export class ReportsComponent implements OnInit {
     patientStatus: new FormControl('', [Validators.required]),
   });
 
-  constructor(private reportService: ReportService, private messageService: MessageService, private router: Router) { }
+  constructor(
+    public authService: AuthService,
+    private reportService: ReportService, 
+    private messageService: MessageService,
+    private patientService: PatientService,
+    private confirmationService: ConfirmationService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.fetchReports();
+    this.fetchPatients();
   }
 
   openMenu(rowIndex: number) {
@@ -72,14 +69,13 @@ export class ReportsComponent implements OnInit {
 
   fetchReports() {
     let allReports;
-    if (this.isAdmin) {
+    if (this.authService.userType === 'A') {
       allReports = this.reportService.getAllReports()
-    } else if (this.isDoctor) {
-      allReports = this.reportService.getReportsByDoctorId(this.holderId);
+    } else if (this.authService.userType === 'D') {
+      allReports = this.reportService.getReportsByDoctorId(this.authService.roleSubject.value.id);
     } else {
-      allReports = this.reportService.getReportsByPatientId(this.holderId);
+      allReports = this.reportService.getReportsByPatientId(this.authService.roleSubject.value.id);
     }
-    this.isLoadingReports = true;
     this.isLoadingReports = true;
     allReports.subscribe({
       next: (result) => {
@@ -102,19 +98,59 @@ export class ReportsComponent implements OnInit {
     });
   }
 
+  fetchPatients() {
+    this.patientService.getAllPatients().subscribe({
+      next: (result) => {
+        this.patientList.splice(0, this.reports.length, ...<any[]>result);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Cannot fetch Data'
+        });
+        console.error(error);
+        this.reports.splice(0, this.reports.length);
+      }
+    });
+  }
+
   openReportForm() {
-    this.showNewReportForm = true;
+    this.reportForm.reset();
+    this.dialog.heading = 'Add Report';
+    this.dialog.readonly = false;
+    this.dialog.show = true;
   }
 
   onSubmit() {
-    this.loadingIcon = 'pi pi-spin pi-spinner';
-    this.reportService.addReport(this.newReportForm.value).subscribe({
+    if(this.reportForm.invalid) {
+      this.reportForm.markAllAsTouched();
+      return;
+    }
+    let api, summary = '', detail = 'Your patient will be notified of the report!';
+    
+    if(this.dialog.mode === 'N') {
+      api = this.reportService.addReport(this.reportForm.value);
+      summary = 'Report created';
+    } else {
+      let data = { ...this.reportForm.getRawValue() };
+      delete data.patientId;
+      delete data.dateAdmitted;
+      api = this.reportService.updateReport(this.reports[this.activeRow].id, data);
+      summary = 'Report updated';
+    }
+    this.dialog.loading = true;
+    api.subscribe({
       next: (result: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Report created',
-          detail: 'Your patient will be notified of the report!'
+          summary,
+          detail
         });
+        this.reportForm.reset();
+        this.dialog.loading = false;
+        this.dialog.show = false;
+        this.fetchReports();
         console.log(result);
       },
       error: (error: any) => {
@@ -124,15 +160,53 @@ export class ReportsComponent implements OnInit {
           summary: 'Error!',
           detail: 'Something went wrong'
         });
-        this.loadingIcon = '';
-      },
-      complete: () => {
-        this.newReportForm.reset();
-        this.loadingIcon = '';
-        this.showNewReportForm = false;
-        this.fetchReports();
+        this.dialog.loading = false;
       }
     });
   }
 
+  viewReport() {
+    this.dialog.heading = 'Report Details';
+    this.dialog.readonly = true;
+    this.reportForm.patchValue(this.reports[this.activeRow]);
+    this.dialog.show = true;
+  }
+
+  editReport() {
+    this.dialog.heading = 'Edit Report';
+    this.dialog.readonly = false;
+    this.dialog.mode = 'E';
+    this.reportForm.patchValue(this.reports[this.activeRow]);
+    this.reportForm.patchValue({
+      dateAdmitted: new Date(this.reports[this.activeRow].dateAdmitted)
+    });
+    if(this.reports[this.activeRow].dateDischarged) {
+      this.reportForm.patchValue({
+        dateDischarged: new Date(this.reports[this.activeRow].dateDischarged)
+      });
+    }
+    this.dialog.show = true;
+  }
+
+  onDelete() {
+    this.confirmationService.confirm({
+      acceptButtonStyleClass: 'p-button-danger',
+      message: `Do you want to delete this report?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.reportService.deleteReport(this.reports[this.activeRow].id).subscribe({
+          next: (reponse: any) => {
+            this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Report deleted' });
+            this.fetchReports();
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong!' });
+          }
+        });
+      },
+      reject: (type: ConfirmEventType) => { }
+    });
+  }
 }

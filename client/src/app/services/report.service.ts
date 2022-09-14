@@ -32,4 +32,12 @@ export class ReportService {
   addReport(data: any) {
     return this.http.post(environment.apiURL+'/report', data, { headers: this.baseHeader });
   }
+
+  updateReport(reportId: number, data: any) {
+    return this.http.patch(environment.apiURL+'/report/'+reportId, data, { headers: this.baseHeader });
+  }
+
+  deleteReport(reportId: number) {
+    return this.http.delete(environment.apiURL+'/report/'+reportId, { headers: this.baseHeader });
+  }
 }

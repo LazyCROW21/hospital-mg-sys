@@ -130,4 +130,9 @@
 
 <!-- Delete Department Popup -->
 <p-confirmDialog></p-confirmDialog>
+
+
+<app-tranfer-doctor-dialog [(show)]="transferDialog.show" [doctor]="transferDialog.doctor" (transferEvent)="onDoctorTransfer($event)">
+</app-tranfer-doctor-dialog>
+
 <p-toast></p-toast>

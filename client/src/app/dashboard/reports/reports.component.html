@@ -6,19 +6,18 @@
     </div>
     <p-divider></p-divider>
     <ng-template [ngIf]="isLoadingReports" [ngIfElse]="notLoading">
-        <p class="text-center">Loading..</p>
-        <p-progressBar mode="indeterminate"></p-progressBar>
+        <app-loading-bar></app-loading-bar>
     </ng-template>
     <ng-template #notLoading>
         <p-table [value]="reports" responsiveLayout="scroll">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
-                    <th *ngIf="isDoctor || isAdmin">Patient</th>
-                    <th *ngIf="isPatient || isAdmin">Doctor</th>
-                    <th>Admitted</th>
-                    <th>Discharge</th>
-                    <th>Treatment</th>
+                    <th *ngIf="authService.userType !== 'P'">Patient</th>
+                    <th *ngIf="authService.userType !== 'D'">Doctor</th>
+                    <th class="text-center">Admitted</th>
+                    <th class="text-center">Discharge</th>
+                    <th class="text-center">Treatment</th>
                     <th class="text-center">Status</th>
                     <th class="text-center"></th>
                 </tr>
@@ -26,15 +25,20 @@
             <ng-template pTemplate="body" let-report let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <td *ngIf="isDoctor || isAdmin">{{ report.patient.user.firstName }}</td>
-                    <td *ngIf="isPatient || isAdmin">{{ report.doctor.user.firstName }}</td>
-                    <td>{{ report.dateAdmitted | date:'short' }}</td>
-                    <td>{{ report.dateDischarged | date:'short' }}</td>
-                    <td>{{ report.treatmentType }}</td>
+                    <td *ngIf="authService.userType !== 'P'">{{ report.patient.user.firstName }}</td>
+                    <td *ngIf="authService.userType !== 'D'">{{ report.doctor.user.firstName }}</td>
+                    <td class="text-center">{{ report.dateAdmitted | date:'short' }}</td>
+                    <td class="text-center" [ngClass]="{ 'text-400 font-italic': !report.dateDischarged }">
+                        {{ (report.dateDischarged | date:'short') ?? '---' }}
+                    </td>
+                    <td class="text-center" [ngClass]="{ 'text-400 font-italic': !report.treatmentType }">
+                        {{ report.treatmentType ?? '---' }}
+                    </td>
                     <td class="text-center">
-                        <p-badge *ngIf="report.status === 'success'" value="success" severity="success"></p-badge>
-                        <p-badge *ngIf="report.status === 'incomplete'" value="incomplete" severity="warning"></p-badge>
-                        <p-badge *ngIf="report.status === 'fail'" value="fail" severity="danger"></p-badge>
+                        <p-badge *ngIf="report.status === 'pending'" value="pending" severity="info"></p-badge>
+                        <p-badge *ngIf="report.status === 're-check'" value="re-check" severity="danger"></p-badge>
+                        <p-badge *ngIf="report.status === 'progress'" value="progress" severity="warn"></p-badge>
+                        <p-badge *ngIf="report.status === 'completed'" value="completed" severity="success"></p-badge>
                     </td>
                     <td class="text-center">
                         <p-button styleClass="p-button-text" icon="pi pi-ellipsis-v"
@@ -48,49 +52,78 @@
 </p-card>
 
 <!-- Create Report Dialog -->
-<p-dialog [(visible)]="showNewReportForm" header="Add Report" [style]="{ maxWidth: '80%' }">
-    <form [formGroup]="newReportForm" (ngSubmit)="onSubmit()">
+<p-dialog [(visible)]="dialog.show" [header]="dialog.heading" [style]="{ maxWidth: '80%' }">
+    <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
         <div class="field">
             <label>Patient</label>
             <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Patient" [options]="patientList"
-                optionLabel="label" optionValue="value" formControlName="patientId"></p-dropdown>
+                optionValue="id" formControlName="patientId" [readonly]="dialog.readonly">
+                <ng-template let-patient pTemplate="selectedItem">
+                    {{ patient.user | fullName }}
+                </ng-template>
+                <ng-template let-patient pTemplate="item">
+                    {{ patient.user | fullName }}
+                </ng-template>
+            </p-dropdown>
         </div>
         <div class="field">
             <label>Date Admitted</label>
-            <p-calendar styleClass="w-full" placeholder="Select Date" appendTo="body" [showIcon]="true"
+            <p-calendar *ngIf="!dialog.readonly" styleClass="w-full" placeholder="Select Date" appendTo="body" [showIcon]="true"
                 formControlName="dateAdmitted" [showTime]="true"></p-calendar>
+            <p *ngIf="dialog.readonly" type="text" class="w-full" pInputText>
+                {{ reportForm.get('dateAdmitted')?.value | date:'mediumDate' }}
+            </p>
         </div>
         <div class="field">
             <label>Date Discharged</label>
-            <p-calendar styleClass="w-full" placeholder="Select Date" appendTo="body" [showIcon]="true"
+            <p-calendar *ngIf="!dialog.readonly" styleClass="w-full" placeholder="Select Date" appendTo="body" [showIcon]="true"
                 formControlName="dateDischarged" [showTime]="true"></p-calendar>
+            <p *ngIf="dialog.readonly" type="text" class="w-full" pInputText>
+                {{ (reportForm.get('dateDischarged')?.value | date:'mediumDate') ?? '---' }}
+            </p>
+            <small *ngIf="reportForm.get('dateDischarged')?.invalid && reportForm.get('dateDischarged')?.touched" class="p-error">
+                Date of discharge is required
+            </small>
         </div>
         <div class="field">
             <label>Treatment</label>
             <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Treatment" [options]="treatmentOptions"
-                optionLabel="label" optionValue="value" formControlName="treatmentType"></p-dropdown>
+                optionLabel="label" optionValue="value" formControlName="treatmentType" [readonly]="dialog.readonly"></p-dropdown>
+            <small *ngIf="reportForm.get('treatmentType')?.invalid && reportForm.get('treatmentType')?.touched" class="p-error">
+                Treatment type is required
+            </small>
         </div>
         <div class="field">
             <label>Description</label>
             <textarea pInputTextarea class="w-full" placeholder="Enter report details"
-                formControlName="description"></textarea>
-        </div>
-        <div class="field">
-            <label>Treatment Status</label>
-            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Status" [options]="statusOptions"
-                optionLabel="label" optionValue="value" formControlName="status"></p-dropdown>
+                formControlName="description" [readonly]="dialog.readonly"></textarea>
+            <small *ngIf="reportForm.get('description')?.invalid && reportForm.get('description')?.touched" class="p-error">
+                Description is required
+            </small>
         </div>
         <div class="field">
             <label>Patient Status</label>
             <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Patient Status"
                 [options]="patientStatusOptions" optionLabel="label" optionValue="value"
-                formControlName="patientStatus"></p-dropdown>
+                formControlName="patientStatus" [readonly]="dialog.readonly"></p-dropdown>
+            <small *ngIf="reportForm.get('patientStatus')?.invalid && reportForm.get('patientStatus')?.touched" class="p-error">
+                Patient status is required
+            </small>
         </div>
-
-        <div class="flex justify-content-end mt-2">
-            <p-button [disabled]="!newReportForm.valid" label="SUBMIT" type="submit" [icon]="loadingIcon">
+        <div class="field">
+            <label>Report Status</label>
+            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Status" [options]="statusOptions"
+                optionLabel="label" optionValue="value" formControlName="status" [readonly]="dialog.readonly"></p-dropdown>
+            <small *ngIf="reportForm.get('status')?.invalid && reportForm.get('status')?.touched" class="p-error">
+                Treatment status is required
+            </small>
+        </div>
+        <div *ngIf="!dialog.readonly" class="flex justify-content-end mt-2">
+            <p-button label="SUBMIT" type="submit" [loading]="dialog.loading">
             </p-button>
         </div>
     </form>
 </p-dialog>
+<!-- Delete Report Popup -->
+<p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>

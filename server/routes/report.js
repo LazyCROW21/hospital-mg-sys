@@ -33,4 +33,14 @@ router.post('/', validation(reportJOI.creationSchema), async (req, res) => {
     res.send(newReport);
 });
 
+router.patch('/:id(\\d+)', validation(reportJOI.updateSchema), async (req, res) => {
+    const updateReport = await reportController.updateReport(req.params.id, req.body);
+    return res.send(updateReport);
+});
+
+router.delete('/:id(\\d+)', async (req, res) => {
+    const deleteReport = await reportController.deleteReport(req.params.id);
+    return res.send(deleteReport);
+});
+
 module.exports = router;

@@ -69,6 +69,18 @@ const addReport = async ({id, patientId, doctorId, preferredDateTime}) => {
     return newReport;
 }
 
+const updateReport = async (id, data) => {
+    return await ReportModel.update(data, {
+        where: {
+            id
+        }
+    });
+}
+
+const deleteReport = async (id) => {
+    return await ReportModel.destroy({ where: { id }});
+}
+
 
 
 module.exports = {
@@ -76,5 +88,7 @@ module.exports = {
     getReportById,
     getReportsByPatientId,
     getReportsByDoctorId,
-    addReport
+    addReport,
+    updateReport,
+    deleteReport
 }

@@ -5,6 +5,23 @@ module.exports = {
         "MNG_H": 'MANAGE_HOSPITAL',
         "CHG_N": 'CHANGE_NOTICE'
     },
+    reportStatus: [
+        'pending',
+        're-check',
+        'progress',
+        'completed'
+    ],
+    treatmentType: [
+        'Check-Up',
+        'Medication',
+        'Surgory',
+        'Chemotherapy',
+        'Aeromatherapy',
+        'Vaccine'
+    ],
+    patientStatus: [
+        'unchanged', 'improved', 'cured', 'worsen'
+    ],
     states: {
         AP: "Andhra Pradesh",
         AR: "Arunachal Pradesh",
