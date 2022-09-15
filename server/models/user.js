@@ -46,10 +46,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  // country: {
-  //   type: DataTypes.STRING,
-  //   allowNull: false
-  // },
   email: {
     type: DataTypes.STRING(80),
     allowNull: false

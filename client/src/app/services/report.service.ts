@@ -40,4 +40,14 @@ export class ReportService {
   deleteReport(reportId: number) {
     return this.http.delete(environment.apiURL+'/report/'+reportId, { headers: this.baseHeader });
   }
+
+  getNewReports(role: 'A'|'D'|'P', userId: number) {
+    let roleURL = {
+      'A': 'admin',
+      'D': 'doctor',
+      'P': 'patient'
+    }
+    let url = `${environment.apiURL}/report/new/${roleURL[role]}/${userId}`
+    return this.http.get(url, { headers: this.baseHeader });
+  }
 }

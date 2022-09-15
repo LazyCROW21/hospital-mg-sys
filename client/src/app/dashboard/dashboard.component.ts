@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
     ];
 
     this.doctorSideMenuItems = [
-      { label: 'My Department', icon: 'pi pi-fw pi-briefcase', routerLink: ['departments', '2'] },
+      { label: 'My Department', icon: 'pi pi-fw pi-briefcase', routerLink: ['departments', this.authService.roleSubject.value.departmentId] },
     ];
 
     this.adminSideMenuItems = [
@@ -44,9 +44,7 @@ export class DashboardComponent implements OnInit {
     ]
   }
 
-  ngOnInit(): void {
-    this.userName  = this.authService.userSubject.value.firstName + ' ' + this.authService.userSubject.value.lastName;
-  }
+  ngOnInit(): void { }
 
   onLogout() {
     this.authService.logout();

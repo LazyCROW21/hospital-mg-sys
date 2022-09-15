@@ -1,13 +1,97 @@
 <p-card styleClass="mb-2">
-  <p-fieldset legend="NOTICE" [toggleable]="true">
-    <p class="text-right mb-2">Date: 24 Aug 7045</p>
-    <h3 class="text-center mb-2">Subject</h3>
-    <p class="text-justify mb-2">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus mollitia
-      quia error praesentium accusantium voluptates veritatis architecto id
-      vitae temporibus vero aliquam commodi, quisquam ad, fuga quis eaque nobis
-      nihil!
-    </p>
+  <p-fieldset legend="General NOTICE" [toggleable]="true">
+    <ng-template [ngIf]="readonly">
+      <p class="text-right mb-2">{{ generalNotice.date | date:'short' }}</p>
+      <h3 class="text-center mb-2">{{ generalNotice.subject }}</h3>
+      <p class="text-justify mb-2">{{ generalNotice.body }}</p>
+    </ng-template>
+    <ng-template [ngIf]="!readonly">
+      <div class="grid">
+        <div class="col-4 col-offset-8 text-center">
+          {{ generalNotice.date | date:'short' }}
+        </div>
+        <div class="col-12">
+          <div class="flex justify-content-center">
+            <input class="w-8 text-center" type="text" pInputText [(ngModel)]="generalNotice.subject"
+              placeholder="Enter notice subject" />
+          </div>
+        </div>
+        <div class="col-12">
+          <textarea class="w-full" [rows]="5" pInputTextarea [(ngModel)]="generalNotice.body"
+            placeholder="Enter notice body">
+          </textarea>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="!readonly" class="mt-2 flex justify-content-end gap-2">
+      <p-button label="Clear" styleClass="p-button-text" (onClick)="clearNotice('patient')"></p-button>
+      <p-button label="Save" (onClick)="putNotice('patient')"></p-button>
+    </div>
+  </p-fieldset>
+</p-card>
+
+<p-card *ngIf="role === 'D' || role === 'A'" styleClass="mb-2">
+  <p-fieldset legend="Doctor NOTICE" [toggleable]="true">
+    <ng-template [ngIf]="readonly">
+      <p class="text-right mb-2">{{ doctorNotice.date | date:'short' }}</p>
+      <h3 class="text-center mb-2">{{ doctorNotice.subject }}</h3>
+      <p class="text-justify mb-2">{{ doctorNotice.body }}</p>
+    </ng-template>
+    <ng-template [ngIf]="!readonly">
+      <div class="grid">
+        <div class="col-4 col-offset-8 text-center">
+          {{ doctorNotice.date | date:'short' }}
+        </div>
+        <div class="col-12">
+          <div class="flex justify-content-center">
+            <input class="w-8 text-center" type="text" pInputText [(ngModel)]="doctorNotice.subject"
+              placeholder="Enter notice subject" />
+          </div>
+        </div>
+        <div class="col-12">
+          <textarea class="w-full" [rows]="5" pInputTextarea [(ngModel)]="doctorNotice.body"
+            placeholder="Enter notice body">
+        </textarea>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="!readonly" class="mt-2 flex justify-content-end gap-2">
+      <p-button label="Clear" styleClass="p-button-text" (onClick)="clearNotice('doctor')"></p-button>
+      <p-button label="Save" (onClick)="putNotice('doctor')"></p-button>
+    </div>
+  </p-fieldset>
+
+</p-card>
+
+<p-card *ngIf="role === 'A'" styleClass="mb-2">
+  <p-fieldset legend="Admin NOTICE" [toggleable]="true">
+    <ng-template [ngIf]="readonly">
+      <p class="text-right mb-2">{{ adminNotice.date | date:'short' }}</p>
+      <h3 class="text-center mb-2">{{ adminNotice.subject }}</h3>
+      <p class="text-justify mb-2">{{ adminNotice.body }}</p>
+    </ng-template>
+    <ng-template [ngIf]="!readonly">
+      <div class="grid">
+        <div class="col-4 col-offset-8 text-center">
+          {{ adminNotice.date | date:'short' }}
+        </div>
+        <div class="col-12">
+          <div class="flex justify-content-center">
+            <input class="w-8 text-center" type="text" pInputText [(ngModel)]="adminNotice.subject"
+              placeholder="Enter notice subject" />
+          </div>
+        </div>
+        <div class="col-12">
+          <textarea class="w-full" [rows]="5" pInputTextarea [(ngModel)]="adminNotice.body"
+            placeholder="Enter notice body">
+        </textarea>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="!readonly" class="mt-2 flex justify-content-end gap-2">
+      <p-button label="Clear" styleClass="p-button-text" (onClick)="clearNotice('admin')"></p-button>
+      <p-button label="Save" (onClick)="putNotice('admin')"></p-button>
+    </div>
   </p-fieldset>
 </p-card>
 
@@ -15,7 +99,7 @@
   <div class="col-3">
     <p-card styleClass="border-left-3 border-noround-left border-green-500">
       <div class="flex flex-column gap-2 align-items-start my-2">
-        <h1 class="text-green-500">123</h1>
+        <h1 class="text-green-500">{{ noOfNewAppointments }}</h1>
         <a routerLink="/dashboard/appointment">Planned Appointments</a>
       </div>
     </p-card>
@@ -23,15 +107,15 @@
   <div class="col-3">
     <p-card styleClass="border-left-3 border-noround-left border-yellow-600">
       <div class="flex flex-column gap-2 align-items-start my-2">
-        <h1 class="text-yellow-600">123</h1>
+        <h1 class="text-yellow-600">{{ noOfNewReports }}</h1>
         <a routerLink="/dashboard/appointment">New Reports</a>
       </div>
     </p-card>
   </div>
-  <div class="col-3" *ngIf="authService.userType === 'A'">
+  <div class="col-3" *ngIf="role === 'A'">
     <p-card styleClass="border-left-3 border-noround-left border-indigo-500">
       <div class="flex flex-column gap-2 align-items-start my-2">
-        <h1 class="text-indigo-500">123</h1>
+        <h1 class="text-indigo-500">{{ noOfNewUsers }}</h1>
         <a routerLink="/dashboard/appointment">New Users</a>
       </div>
     </p-card>

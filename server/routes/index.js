@@ -9,6 +9,7 @@ const appointmentRouter = require('./appointment');
 const departmentRouter = require('./department');
 const reportRouter = require('./report');
 const adminRouter = require('./admin');
+const noticeRouter = require('./notice');
 
 const authMiddleware = require('../middlewares/auth');
 
@@ -21,5 +22,6 @@ router.use('/doctor', doctorRouter);
 router.use('/appointment', appointmentRouter);
 router.use('/department', departmentRouter);
 router.use('/report', reportRouter);
+router.use('/notice', noticeRouter);
 
 module.exports = router;

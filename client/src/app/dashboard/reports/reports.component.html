@@ -25,8 +25,8 @@
             <ng-template pTemplate="body" let-report let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <td *ngIf="authService.userType !== 'P'">{{ report.patient.user.firstName }}</td>
-                    <td *ngIf="authService.userType !== 'D'">{{ report.doctor.user.firstName }}</td>
+                    <td *ngIf="authService.userType !== 'P'">{{ report.patient.user | fullName }}</td>
+                    <td *ngIf="authService.userType !== 'D'">{{ report.doctor.user | fullName }}</td>
                     <td class="text-center">{{ report.dateAdmitted | date:'short' }}</td>
                     <td class="text-center" [ngClass]="{ 'text-400 font-italic': !report.dateDischarged }">
                         {{ (report.dateDischarged | date:'short') ?? '---' }}

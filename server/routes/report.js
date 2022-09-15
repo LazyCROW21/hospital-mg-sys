@@ -28,6 +28,11 @@ router.get('/patient/:id', async (req, res) => {
     return res.send(reports);
 });
 
+router.get('/new/:role(patient|doctor|admin)/:id(\\d+)', async (req, res) => {
+    const reports = await reportController.getNewReports(req.params.role, req.params.id);
+    return res.send(reports);
+});
+
 router.post('/', validation(reportJOI.creationSchema), async (req, res) => {
     const newReport = await reportController.addReport(req.body);
     res.send(newReport);
