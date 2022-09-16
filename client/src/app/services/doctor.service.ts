@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,38 +6,33 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class DoctorService {
-  baseHeader: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
   
   getAllDoctors() {
-    return this.http.get(environment.apiURL+'/doctor', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/doctor');
   }
 
   getAllNewDoctors() {
-    return this.http.get(environment.apiURL+'/doctor/new', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/doctor/new');
   }
 
   getDoctorById(doctorId: number) {
-    return this.http.get(environment.apiURL+'/doctor/'+doctorId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/doctor/'+doctorId);
   }
 
   getDoctorByUserId(doctorId: number) {
-    return this.http.get(environment.apiURL+'/doctor/user/'+doctorId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/doctor/user/'+doctorId);
   }
 
   getDoctorByDepartmentId(departmentId: number) {
-    return this.http.get(environment.apiURL+'/doctor/department/'+departmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/doctor/department/'+departmentId);
   }
 
   updateDoctorById(doctorId: number, data: any) {
-    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}`, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}`, data);
   }
 
   moveDoctorByUserId(doctorId: number, data: any) {
-    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}/move/`, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+`/doctor/user/${doctorId}/move/`, data);
   }
 }

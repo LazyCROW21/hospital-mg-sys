@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const doctorController = require('../controllers/doctor');
+const validation = require('../middlewares/validation');
+const doctorJOI = require('../helper/validation/doctor');
 
 router.get('/', async (req, res) => {
     const doctors = await doctorController.getAllDoctors();
@@ -31,12 +33,12 @@ router.get('/user/:id(\\d+)', async (req, res) => {
     return res.send(doctors);
 });
 
-router.patch('/user/:id(\\d+)/move', async (req, res) => {
+router.patch('/user/:id(\\d+)/move', validation(doctorJOI.updateSchema), async (req, res) => {
     const result = await doctorController.updateDoctorByUserId(req.params.id, req.body);
     return res.send(result);
 });
 
-router.patch('/user/:id(\\d+)', async (req, res) => {
+router.patch('/user/:id(\\d+)', validation(doctorJOI.updateSchema), async (req, res) => {
     const result = await doctorController.updateDoctorById(req.params.id, req.body);
     return res.send(result);
 });

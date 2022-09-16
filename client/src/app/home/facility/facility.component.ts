@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DepartmentService } from 'src/app/services/department.service';
+import { PublicService } from 'src/app/services/public.service';
 
 @Component({
   selector: 'app-facility',
@@ -9,10 +9,10 @@ import { DepartmentService } from 'src/app/services/department.service';
 export class FacilityComponent implements OnInit {
 
   departments: any[] = [];
-  constructor(private departmentService: DepartmentService) { }
+  constructor(private publicService: PublicService) { }
 
   ngOnInit(): void {
-    this.departmentService.getAllDepartments().subscribe((departments) => {
+    this.publicService.getAllDepartments().subscribe((departments) => {
       const depts = <any[]>departments;
       depts.forEach((dept) => {
         if(!dept.parentDepartmentId) {

@@ -24,9 +24,7 @@ export class ReportsComponent implements OnInit {
   activeRow: number = 0;
 
   rowMenu: MenuItem[] = [
-    { label: 'View', icon: 'pi pi-eye', command: () => { this.viewReport(); } },
-    { label: 'Edit', icon: 'pi pi-cog', command: () => { this.editReport(); } },
-    { label: 'Remove', icon: 'pi pi-trash', command: () => { this.onDelete(); } },
+    { label: 'View', icon: 'pi pi-eye', command: () => { this.viewReport(); } }
   ];
 
   reports: any[] = [];
@@ -54,13 +52,18 @@ export class ReportsComponent implements OnInit {
     private reportService: ReportService, 
     private messageService: MessageService,
     private patientService: PatientService,
-    private confirmationService: ConfirmationService,
-    private router: Router
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
     this.fetchReports();
     this.fetchPatients();
+    if(this.authService.userType !== 'P') {
+      this.rowMenu.push(
+        { label: 'Edit', icon: 'pi pi-cog', command: () => { this.editReport(); } },
+        { label: 'Remove', icon: 'pi pi-trash', command: () => { this.onDelete(); } }
+      );
+    }
   }
 
   openMenu(rowIndex: number) {

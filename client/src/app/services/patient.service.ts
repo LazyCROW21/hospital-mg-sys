@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -7,23 +7,17 @@ import { environment } from 'src/environments/environment';
 })
 export class PatientService {
   
-  baseHeader: HttpHeaders;
-
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
 
   getAllPatients() {
-    return this.http.get(environment.apiURL+'/patient', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/patient');
   }
 
   getAllNewPatients() {
-    return this.http.get(environment.apiURL+'/patient/new', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/patient/new');
   }
 
   getPatientById(patientId: number) {
-    return this.http.get(environment.apiURL+'/patient/'+patientId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/patient/'+patientId);
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,54 +6,49 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class AppointmentService {
-  baseHeader: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
   
   getAllAppointments() {
-    return this.http.get(environment.apiURL+'/appointment', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment');
   }
 
   getAllNextAppointments() {
-    return this.http.get(environment.apiURL+'/appointment/next', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/next');
   }
 
   getAppointmentById(appointmentId: number) {
-    return this.http.get(environment.apiURL+'/appointment/'+appointmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/'+appointmentId);
   }
 
   getAppointmentByDoctorId(doctorId: number) {
-    return this.http.get(environment.apiURL+'/appointment/doctor/'+doctorId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/doctor/'+doctorId);
   }
 
   getNextAppointmentsByDoctorId(doctorId: number) {
-    return this.http.get(environment.apiURL+'/appointment/doctor/next/'+doctorId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/doctor/next/'+doctorId);
   }
 
   getAppointmentByPatientId(patientId: number) {
-    return this.http.get(environment.apiURL+'/appointment/patient/'+patientId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/patient/'+patientId);
   }
 
   getNextAppointmentsByPatientId(patientId: number) {
-    return this.http.get(environment.apiURL+'/appointment/patient/next/'+patientId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/appointment/patient/next/'+patientId);
   }
 
   addAppointment(data: any) {
-    return this.http.post(environment.apiURL+'/appointment', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/appointment', data);
   }
 
   changeAppointmentStatus(id: number, data: any) {
-    return this.http.patch(environment.apiURL+'/appointment/status/'+id, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/appointment/status/'+id, data);
   }
 
   concludeAppointment(role: 'doctor'|'patient', appointmentId: number, data: any) {
-    return this.http.patch(environment.apiURL+`/appointment/conclude/${role}/${appointmentId}`, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+`/appointment/conclude/${role}/${appointmentId}`, data);
   }
 
   editAppointment(id: number, data: any) {
-    return this.http.patch(environment.apiURL+'/appointment/'+id, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/appointment/'+id, data);
   }
 }

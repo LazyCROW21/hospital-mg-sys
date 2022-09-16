@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DepartmentService {
-  baseHeader: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
 
   createDepartmentTree(departments: any[], excludeSubtree: number, selectedNodeId: number) {
     const departmentList = [];
@@ -47,26 +42,26 @@ export class DepartmentService {
   }
 
   getDepartment(departmentId: number) {
-    return this.http.get(environment.apiURL + '/department/' + departmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL + '/department/' + departmentId);
   }
 
   getAllDepartments() {
-    return this.http.get(environment.apiURL + '/department', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL + '/department');
   }
 
   getSubDepartments(departmentId: number) {
-    return this.http.get(environment.apiURL + '/department/sub-departments/' + departmentId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL + '/department/sub-departments/' + departmentId);
   }
 
   addDepartment(data: any) {
-    return this.http.post(environment.apiURL + '/department', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL + '/department', data);
   }
 
   updateDepartment(departmentId: number, data: any) {
-    return this.http.patch(environment.apiURL + '/department/'+departmentId, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL + '/department/'+departmentId, data);
   }
 
   deleteDepartment(departmentId: number) {
-    return this.http.delete(environment.apiURL + '/department/' + departmentId, { headers: this.baseHeader });
+    return this.http.delete(environment.apiURL + '/department/' + departmentId);
   }
 }

@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,18 +6,13 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class NoticeService {
-  baseHeader: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
   
   getNotice(nType: 'admin'|'doctor'|'patient') {
-    return this.http.get(environment.apiURL+'/notice/'+nType, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/notice/'+nType);
   }
 
   putNotice(nType: 'admin'|'doctor'|'patient', data: any) {
-    return this.http.put(environment.apiURL+'/notice/'+nType, data, { headers: this.baseHeader });
+    return this.http.put(environment.apiURL+'/notice/'+nType, data);
   }
 }

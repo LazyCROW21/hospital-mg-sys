@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,26 +6,21 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class AdminService {
-  baseHeader: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.baseHeader = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  constructor(private http: HttpClient) { }
   
   createAdmin(data: any) {
-    return this.http.post(environment.apiURL+'/user', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/user', data);
   }
 
   getAllAdmins() {
-    return this.http.get(environment.apiURL+'/admin', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/admin');
   }
 
   getAdminById(adminId: number) {
-    return this.http.get(environment.apiURL+'/admin/'+adminId, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/admin/'+adminId);
   }
 
   removeAdmin(adminId: number) {
-    return this.http.delete(environment.apiURL+'/user/'+adminId, { headers: this.baseHeader });
+    return this.http.delete(environment.apiURL+'/user/'+adminId);
   }
 }

@@ -13,7 +13,7 @@ const REFRESH_SECRET = process.env.REFRESH_SECRET;
 const _signAccessToken = (user, role) => {
     const payload = { user: user.id, email: user.email, role: user.role, roleId: role.id };
     return jwt.sign(payload, ACCESS_SECRET, {
-        expiresIn: '10s'
+        expiresIn: '10m'
     });
 }
 
@@ -50,7 +50,7 @@ const loginUser = async (email, pwd) => {
         const refreshToken = _signRefreshToken(user, role);
         const accessToken = _signAccessToken(user, role);
         await client.set(`${user.id}`, refreshToken, {
-            'EX': 3600
+            'EX': 36000
         });
         return { accessToken, refreshToken, user, role };
     }

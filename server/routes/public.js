@@ -3,12 +3,12 @@ const router = express.Router();
 
 const departmentController = require('../controllers/department');
 
-router.get('/', async (req, res) => {
+router.get('/department/', async (req, res) => {
     const departments = await departmentController.getAllDepartments();
     res.send(departments);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/department/:id', async (req, res) => {
     const department = await departmentController.getDepartmentById(req.params.id);
     if(department) {
         return res.send(department);

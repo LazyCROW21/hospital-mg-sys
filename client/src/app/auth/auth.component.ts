@@ -75,41 +75,44 @@ export class AuthComponent implements OnInit {
   }
 
   onLogin() {
-    if (this.loginForm.valid) {
-      this.authService.loginUser(this.loginForm.value).subscribe({
-        next: (response: any) => {
-          this.authService.setUser(response.user, response.role, true);
-          localStorage.setItem('ACCESS_TOKEN', response.accessToken);
-          localStorage.setItem('REFRESH_TOKEN', response.refreshToken);
-          localStorage.setItem('USER', JSON.stringify(response.user));
-          localStorage.setItem('ROLE', JSON.stringify(response.role));
-          this.loginForm.get('pwd')?.reset();
-          this.router.navigateByUrl('/dashboard');
-        },
-        error: (error: any) => {
-          console.log(error);
-          this.loginForm.get('pwd')?.reset();
-          if (error.status === 401) {
-            this.loginError = 'Invalid email / password';
-          } else {
-            this.loginError = 'Something went wrong!';
-          }
-        }
-      });
-    } else {
+    if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      return;
     }
+    this.authService.loginUser(this.loginForm.value).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.authService.setUser(response.user, response.role, true);
+        localStorage.setItem('ACCESS_TOKEN', response.accessToken);
+        localStorage.setItem('REFRESH_TOKEN', response.refreshToken);
+        localStorage.setItem('USER', JSON.stringify(response.user));
+        localStorage.setItem('ROLE', JSON.stringify(response.role));
+        this.authService.accessToken.next(response.accessToken);
+        this.authService.refreshToken.next(response.refreshToken);
+        this.authService.setUser(response.user, response.role, true);
+        this.router.navigateByUrl('/dashboard');
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.loginForm.get('pwd')?.reset();
+        if (error.status === 401) {
+          this.loginError = 'Invalid email / password';
+        } else {
+          this.loginError = 'Something went wrong!';
+        }
+      }
+    });
   }
 
   onSubmit() {
-    if(this.newUserForm.invalid) {
+    if (this.newUserForm.invalid) {
       this.newUserForm.markAllAsTouched();
       return;
     }
     this.loadingIcon = 'pi pi-spin pi-spinner';
     const formData = this.newUserForm.getRawValue();
     delete formData.confPwd;
-    if(formData.role === 'P') {
+    if (formData.role === 'P') {
       delete formData.experience;
       delete formData.specialization;
     }
@@ -137,6 +140,5 @@ export class AuthComponent implements OnInit {
         this.showNewAccountForm = false;
       }
     });
-    console.log(this.newUserForm.value);
   }
 }

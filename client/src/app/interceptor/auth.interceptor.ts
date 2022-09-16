@@ -10,13 +10,14 @@ import {
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   static accessToken = '';
   static refreshToken = '';
   refreshed = false;
-  constructor(private authService: AuthService, private http: HttpClient) {
+  constructor(private authService: AuthService, private http: HttpClient, private router: Router) {
     this.authService.accessToken.subscribe((accessToken) => {
       AuthInterceptor.accessToken = accessToken;
     });
@@ -31,10 +32,10 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     const req = request.clone({
       setHeaders: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${AuthInterceptor.accessToken}`
       }
     });
-    console.log(AuthInterceptor.accessToken);
     return next.handle(req).pipe(
       catchError(
         (err: HttpErrorResponse) => {
@@ -53,6 +54,8 @@ export class AuthInterceptor implements HttpInterceptor {
               }));
           }
           this.refreshed = false;
+          this.authService.logout();
+          this.router.navigateByUrl('/login');
           return throwError(() => err);
         }
       )

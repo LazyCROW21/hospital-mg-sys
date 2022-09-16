@@ -32,6 +32,7 @@ export class AuthService {
         this.refreshToken.next(refreshToken);
         this.userType = this.userSubject.value.role;
       } else {
+        console.log('Logging out');
         this.logout();
       }
     } catch (err) {
