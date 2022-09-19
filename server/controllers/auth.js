@@ -11,7 +11,7 @@ const ACCESS_SECRET = process.env.ACCESS_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 const _signAccessToken = (user, role) => {
-    const payload = { user: user.id, email: user.email, role: user.role, roleId: role.id };
+    const payload = { user: user.id, email: user.email, role: user.role, roleDetails: role };
     return jwt.sign(payload, ACCESS_SECRET, {
         expiresIn: '10m'
     });

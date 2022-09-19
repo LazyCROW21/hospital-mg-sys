@@ -4,6 +4,7 @@ const router = express.Router();
 const departmentValidationSchema = require('../helper/validation/department');
 const departmentController = require('../controllers/department');
 const validation = require('../middlewares/validation');
+const access = require('../middlewares/access');
 
 router.get('/', async (req, res) => {
     const departments = await departmentController.getAllDepartments();
@@ -24,18 +25,29 @@ router.get('/sub-departments/:id(\\d+)', async (req, res) => {
 });
 
 
-router.post('/', validation(departmentValidationSchema), async (req, res) => {
+router.post(
+    '/', 
+    access(['A'], null, null, null, ['SA', 'MNG_H']), 
+    validation(departmentValidationSchema), 
+    async (req, res) => {
     const department = await departmentController.addDepartment(req.body);
     res.send(department);
 });
 
-router.patch('/:id(\\d+)', validation(departmentValidationSchema), async (req, res) => {
+router.patch(
+    '/:id(\\d+)', 
+    access(['A'], null, null, null, ['SA', 'MNG_H']), 
+    validation(departmentValidationSchema), 
+    async (req, res) => {
     const result = await departmentController.updateDepartment(req.params.id, req.body);
     res.send(result);
 });
 
 
-router.delete('/:id(\\d+)', async (req, res) => {
+router.delete(
+    '/:id(\\d+)',
+    access(['A'], null, null, null, ['SA', 'MNG_H']), 
+    async (req, res) => {
     await departmentController.removeDepartment(req.params.id);
     res.sendStatus(204);
 });

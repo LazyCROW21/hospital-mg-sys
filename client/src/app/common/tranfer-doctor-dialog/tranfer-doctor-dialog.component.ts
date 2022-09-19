@@ -67,13 +67,13 @@ export class TranferDoctorDialogComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.doctorService.updateDoctorById(this.doctor.id, this.tranferForm.value).subscribe({
+    this.doctorService.moveDoctorByUserId(this.doctor.userId, this.tranferForm.value).subscribe({
       next: (result: any) => {
-        this.tranferForm.reset();
         this.loading = false;
         this.transferEvent.emit('transferSuccessful');
         this.doctor.departmentId = this.tranferForm.get('departmentId')?.value;
         this.doctor.designation = this.tranferForm.get('designation')?.value; 
+        this.tranferForm.reset();
       },
       error: (error: any) => {
         console.error(error);
@@ -84,6 +84,7 @@ export class TranferDoctorDialogComponent implements OnInit {
   }
 
   onVisibilityChange(event: any) {
+    console.log(this.doctor);
     this.showChange.emit(event);
   }
 }

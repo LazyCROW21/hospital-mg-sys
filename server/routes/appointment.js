@@ -5,13 +5,14 @@ const appointmentJOI = require('../helper/validation/appointment');
 const appointmentController = require('../controllers/appointment');
 const reportController = require('../controllers/report');
 const validation = require('../middlewares/validation');
+const access = require('../middlewares/access');
 
-router.get('/', async (req, res) => {
+router.get('/', access(['A']), async (req, res) => {
     const appointments = await appointmentController.getAllAppointments();
     res.send(appointments);
 });
 
-router.get('/next', async (req, res) => {
+router.get('/next', access(['A']), async (req, res) => {
     const appointments = await appointmentController.getAllNextAppointments();
     res.send(appointments);
 });
@@ -24,27 +25,51 @@ router.get('/:id', async (req, res) => {
     return res.sendStatus(404);
 });
 
-router.get('/patient/:id', async (req, res) => {
+router.get(
+    '/patient/:id', 
+    access(['A', 'P'], 'params', 'id', 'roleId', ['SA', 'MNG_H']),
+    async (req, res) => {
     const appointments = await appointmentController.getAppointmentsByPatientId(req.params.id);
     res.send(appointments);
 });
 
-router.get('/patient/next/:id', async (req, res) => {
+router.get(
+    '/patient/next/:id', 
+    access(['A', 'P'], 'params', 'id', 'roleId', ['SA', 'MNG_H']),
+    async (req, res) => {
     const appointments = await appointmentController.getNextAppointmentsByPatientId(req.params.id);
     res.send(appointments);
 });
 
-router.get('/doctor/:id', async (req, res) => {
+router.get(
+    '/doctor/:id', 
+    access(['A', 'D'], 'params', 'id', 'roleId', ['SA', 'MNG_H']),
+    async (req, res) => {
     const appointments = await appointmentController.getAppointmentsByDoctorId(req.params.id);
     res.send(appointments);
 });
 
-router.get('/doctor/next/:id', async (req, res) => {
+router.get(
+    '/doctor/next/:id', 
+    access(['A', 'D'], 'params', 'id', 'roleId', ['SA', 'MNG_H']),
+    async (req, res) => {
     const appointments = await appointmentController.getNextAppointmentsByDoctorId(req.params.id);
     res.send(appointments);
 });
 
-router.post('/', validation(appointmentJOI.creationSchema), async (req, res) => {
+router.post(
+    '/', 
+    validation(appointmentJOI.creationSchema), 
+    async (req, res) => {
+    switch(req.role) {
+        case 'P':
+            if(req.body.patientId != req.roleId) {
+                return res.sendStatus(401);
+            }
+            break;
+        default:
+            return res.sendStatus(403);
+    }
     req.body.rejectMessage = null;
     req.body.concludedByPatient = false;
     req.body.concludedByDoctor = false;

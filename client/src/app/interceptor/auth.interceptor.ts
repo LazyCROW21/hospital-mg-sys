@@ -39,23 +39,26 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError(
         (err: HttpErrorResponse) => {
-          if (err.status === 401 && !this.refreshed) {
-            this.refreshed = true;
-            return this.http.post(environment.apiURL + '/auth/refresh', { refreshToken: AuthInterceptor.refreshToken })
-              .pipe(switchMap((res: any) => {
-                this.authService.accessToken.next(res.accessToken);
-                AuthInterceptor.accessToken = res.accessToken;
-                const reReq = request.clone({
-                  setHeaders: {
-                    Authorization: `Bearer ${AuthInterceptor.accessToken}`
-                  }
-                });
-                return next.handle(reReq);
-              }));
+          if (err.status === 401 ) {
+            if(!this.refreshed) {
+              this.refreshed = true;
+              return this.http.post(environment.apiURL + '/auth/refresh', { refreshToken: AuthInterceptor.refreshToken })
+                .pipe(switchMap((res: any) => {
+                  this.authService.accessToken.next(res.accessToken);
+                  AuthInterceptor.accessToken = res.accessToken;
+                  const reReq = request.clone({
+                    setHeaders: {
+                      Authorization: `Bearer ${AuthInterceptor.accessToken}`
+                    }
+                  });
+                  return next.handle(reReq);
+                }));
+            } else {
+              this.refreshed = false;
+              this.authService.logout();
+              this.router.navigateByUrl('/login');
+            }
           }
-          this.refreshed = false;
-          this.authService.logout();
-          this.router.navigateByUrl('/login');
           return throwError(() => err);
         }
       )

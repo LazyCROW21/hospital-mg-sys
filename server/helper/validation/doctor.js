@@ -21,14 +21,14 @@ const creationSchema = Joi.object({
 });
 
 const updateSchema = Joi.object({
-    departmentId: Joi.number()
-        .integer()
-        .min(0).required(),
-    designation: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(40)
-        .required(),
+    // departmentId: Joi.number()
+    //     .integer()
+    //     .min(0).required(),
+    // designation: Joi.string()
+    //     .alphanum()
+    //     .min(3)
+    //     .max(40)
+    //     .required(),
     specialization: Joi.string()
         .alphanum()
         .min(3)
@@ -37,4 +37,14 @@ const updateSchema = Joi.object({
     experience: Joi.number().integer().min(0).required(),
 });
 
-module.exports = { creationSchema, updateSchema };
+const moveSchema = Joi.object({
+    departmentId: Joi.number()
+        .integer()
+        .min(0).required(),
+    designation: Joi.string()
+        .min(3)
+        .max(40)
+        .required()
+});
+
+module.exports = { creationSchema, updateSchema, moveSchema };
