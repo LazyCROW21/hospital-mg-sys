@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AppointmentService } from 'src/app/services/appointment.service';
@@ -10,7 +10,7 @@ import { DoctorService } from 'src/app/services/doctor.service';
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.css']
 })
-export class AppointmentComponent implements OnInit, AfterContentChecked {
+export class AppointmentComponent implements OnInit {
   isLoadingAppointments: boolean = false;
   dialog = {
     heading: '',
@@ -35,8 +35,7 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
     doctorId: new FormControl('', [Validators.required]),
     subject: new FormControl('', [Validators.required, Validators.maxLength(80)]),
     message: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-    preferredDateTime: new FormControl(null, [Validators.required]),
-    // status: new FormControl('', [Validators.required])
+    preferredDateTime: new FormControl(new Date(), [Validators.required]),
   });
 
   // accept, reject, cancel btn icons
@@ -55,8 +54,8 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
   ) { }
 
   ngOnInit(): void {
-    const preferredDateTime = new Date();
-    const mins = this.minDate.getMinutes();
+    let preferredDateTime = new Date();
+    let mins = preferredDateTime.getMinutes();
     preferredDateTime.setMinutes(mins - (mins % 15) + 15);
     this.appointmentForm.patchValue({
       patientId: this.authService.roleSubject.value.id,
@@ -84,16 +83,6 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
         { label: 'Reject', icon: 'pi pi-times', iconClass: 'text-red-400', command: () => { this.onRejectAppointment(); } }
       ]);
     }
-  }
-
-  ngAfterContentChecked(): void {
-    this.minDate = new Date();
-    const preferredDateTime = new Date();
-    const mins = this.minDate.getMinutes();
-    preferredDateTime.setMinutes(mins - (mins % 15) + 15);
-    this.appointmentForm.patchValue({
-      preferredDateTime
-    });
   }
 
   openMenu(rowIndex: number) {
@@ -174,7 +163,7 @@ export class AppointmentComponent implements OnInit, AfterContentChecked {
       return;
     }
     this.appointmentForm.patchValue(this.appointmentDetails);
-    this.appointmentForm.patchValue({ preferredDateTime: new Date(this.appointmentDetails.preferredDateTime) });
+    // this.appointmentForm.patchValue({ preferredDateTime: new Date(this.appointmentDetails.preferredDateTime) });
     this.dialog.heading = 'Edit Appointment';
     this.dialog.mode = 'E';
     this.dialog.show = true;

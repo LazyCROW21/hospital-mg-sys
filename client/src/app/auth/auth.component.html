@@ -136,7 +136,7 @@
                 </small>
             </div>
             <div class="col-6">
-                <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions"
+                <p-dropdown styleClass="w-full" appendTo="body" placeholder="State" [options]="stateOptions" [filter]="true"
                     formControlName="state" optionLabel="label" optionValue="value">
                 </p-dropdown>
                 <small class="p-error" *ngIf="newUserForm.get('state')?.invalid && newUserForm.get('state')?.touched">

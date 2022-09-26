@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const userValidationSchema = require('../helper/validation/user');
-const validation = require('../middlewares/validation');
 const userController = require('../controllers/user');
 const access = require('../middlewares/access');
+const mailer = require('../helper/mailer');
 
 router.get('/', async (req, res) => {
     const users = await userController.getAllUsers();
@@ -25,18 +24,6 @@ router.get('/new', async (req, res) => {
     res.send(users);
 });
 
-router.post('/', validation(userValidationSchema), async (req, res) => {
-    let user;
-    if (req.body.role === 'P') {
-        user = await userController.addPatient(req.body);
-    } else if (req.body.role === 'D') {
-        user = await userController.addDoctor(req.body);
-    } else if (req.body.role === 'A') {
-        user = await userController.addAdmin(req.body);
-    }
-    res.send(user);
-});
-
 router.delete('/:id(\\d+)',
     access(['A'], null, null, null, ['SA', 'MNG_U']),
     async (req, res) => {
@@ -52,11 +39,15 @@ router.patch(
     '/commit/:id(\\d+)',
     access(['A'], null, null, null, ['SA', 'MNG_U']),
     async (req, res) => {
-        const result = await userController.commitUser(req.params.id, req.body.status);
-        if (!result) {
+        if(!['A', 'R', 'N', 'X'].includes(req.body.status)) {
+            return res.sendStatus(400);
+        }
+        const user = await userController.commitUser(req.params.id, req.body.status);
+        if (!user) {
             return res.sendStatus(404);
         }
-        res.send(result);
+        mailer.commitAccountGreeting(user);
+        res.send(user);
     });
 
 router.patch('/:id(\\d+)', async (req, res) => {

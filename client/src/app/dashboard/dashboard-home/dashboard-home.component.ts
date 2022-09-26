@@ -60,13 +60,22 @@ export class DashboardHomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchNewAppointments();
     this.fetchNewReports();
-    if (this.role === 'A') {
-      this.fetchNewUsers();
-      this.readonly = false;
+    switch(this.role) {
+      case 'A':
+        this.fetchNewUsers();
+        this.fetchNotice('admin');
+        this.fetchNotice('doctor');
+        this.fetchNotice('patient');
+        this.readonly = false;
+        break;
+      case 'D':
+        this.fetchNotice('doctor');
+        this.fetchNotice('patient');
+        break;
+      case 'P':
+        this.fetchNotice('patient');
+        break;
     }
-    this.fetchNotice('admin');
-    this.fetchNotice('doctor');
-    this.fetchNotice('patient');
   }
 
   fetchNotice(nType: 'patient' | 'doctor' | 'admin') {
@@ -170,11 +179,11 @@ export class DashboardHomeComponent implements OnInit {
   fetchNewAppointments() {
     let newAppointments;
     if (this.authService.userType === 'A') {
-      newAppointments = this.appointmentService.getAllNextAppointments()
+      newAppointments = this.appointmentService.getAllNextAppointments();
     } else if (this.authService.userType === 'D') {
-      newAppointments = this.appointmentService.getNextAppointmentsByDoctorId(this.user.id);
+      newAppointments = this.appointmentService.getNextAppointmentsByDoctorId(this.authService.roleSubject.value.id);
     } else {
-      newAppointments = this.appointmentService.getNextAppointmentsByPatientId(this.user.id);
+      newAppointments = this.appointmentService.getNextAppointmentsByPatientId(this.authService.roleSubject.value.id);
     }
     newAppointments.subscribe({
       next: (result: any) => {

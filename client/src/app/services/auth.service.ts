@@ -63,6 +63,6 @@ export class AuthService {
   }
 
   createUser(data: any) {
-    return this.http.post(environment.apiURL+'/user', data, { headers: this.baseHeader });
+    return this.http.post(environment.apiURL+'/auth/create', data, { headers: this.baseHeader });
   }
 }

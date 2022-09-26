@@ -6,6 +6,10 @@ const appointmentController = require('../controllers/appointment');
 const reportController = require('../controllers/report');
 const validation = require('../middlewares/validation');
 const access = require('../middlewares/access');
+const mailer = require('../helper/mailer');
+const Doctor = require('../models/doctor');
+const Patient = require('../models/patient');
+const User = require('../models/user');
 
 router.get('/', access(['A']), async (req, res) => {
     const appointments = await appointmentController.getAllAppointments();
@@ -74,7 +78,20 @@ router.post(
     req.body.concludedByPatient = false;
     req.body.concludedByDoctor = false;
     try {
+        const doctor = await Doctor.findByPk(req.body.doctorId, {
+            include: {
+                model: User,
+                as: 'user'
+            }
+        });
+        const patient = await Patient.findByPk(req.body.patientId, {
+            include: {
+                model: User,
+                as: 'user'
+            }
+        });
         const appointment = await appointmentController.addAppointment(req.body);
+        mailer.appointmentAlert(doctor, patient, appointment);
         res.send(appointment);
     } catch (err) {
         console.log(err);
@@ -101,6 +118,19 @@ router.patch('/status/:id', validation(appointmentJOI.changeStatusSchema), async
         appointment.rejectMessage = req.body.rejectMessage;
     }
     await appointment.save();
+    const doctor = await Doctor.findByPk(req.body.doctorId, {
+        include: {
+            model: User,
+            as: 'user'
+        }
+    });
+    const patient = await Patient.findByPk(req.body.patientId, {
+        include: {
+            model: User,
+            as: 'user'
+        }
+    });
+    mailer.appointmentAlert(doctor, patient, appointment);
     res.send(appointment);
 });
 
@@ -123,6 +153,19 @@ router.patch('/conclude/:role(patient|doctor)/:id(\\d+)', async (req, res) => {
         appointment.concludedByDoctor = req.body.concludedByDoctor;
     }
     await appointment.save();
+    const doctor = await Doctor.findByPk(appointment.doctorId, {
+        include: {
+            model: User,
+            as: 'user'
+        }
+    });
+    const patient = await Patient.findByPk(appointment.patientId, {
+        include: {
+            model: User,
+            as: 'user'
+        }
+    });
+    mailer.appointmentAlert(doctor, patient, appointment);
     res.send(appointment);
     if(appointment.concludedByPatient && appointment.concludedByDoctor) {
         reportController.addReport(appointment);
