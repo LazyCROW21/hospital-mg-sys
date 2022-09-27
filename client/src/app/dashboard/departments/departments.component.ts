@@ -41,13 +41,15 @@ export class DepartmentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchDepartments();
-    const fnd = this.authService.roleSubject.value.access.findIndex((access: string) => access === 'SA' || access === 'MNG_H');
-    if (this.authService.userType === 'A' && fnd !== -1) {
-      this.canManage = true;
-      this.rowMenu.push(
-        { label: 'Edit', icon: 'pi pi-pencil' },
-        { label: 'Remove', icon: 'pi pi-trash' }
-      );
+    if (this.authService.userType === 'A') {
+      const fnd = this.authService.roleSubject.value.access.findIndex((access: string) => access === 'SA' || access === 'MNG_H');
+      if (fnd !== -1) {
+        this.canManage = true;
+        this.rowMenu.push(
+          { label: 'Edit', icon: 'pi pi-pencil' },
+          { label: 'Remove', icon: 'pi pi-trash' }
+        );
+      }
     }
   }
 

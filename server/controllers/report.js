@@ -1,4 +1,5 @@
 const { Op, col } = require('sequelize');
+const Appointment = require('../models/appointment');
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
 const ReportModel = require('../models/report');
@@ -151,11 +152,35 @@ const addReport = async ({ id, patientId, doctorId, preferredDateTime }) => {
 }
 
 const updateReport = async (id, data) => {
-    return await ReportModel.update(data, {
-        where: {
-            id
-        }
+    const report = await ReportModel.findByPk(id, {
+        include: [
+            {
+                model: Appointment,
+                as: 'appointment'
+            },
+            {
+                model: Doctor,
+                as: 'doctor',
+                include: {
+                    model: User,
+                    as: 'user'
+                }
+            },
+            {
+                model: Patient,
+                as: 'patient',
+                include: {
+                    model: User,
+                    as: 'user'
+                }
+            }
+        ]
     });
+    if(!report) {
+        return null;
+    }
+    report.set(data);
+    return await report.save();
 }
 
 const deleteReport = async (id) => {

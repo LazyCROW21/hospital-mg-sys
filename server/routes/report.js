@@ -5,6 +5,7 @@ const reportController = require('../controllers/report');
 const reportJOI = require('../helper/validation/report');
 const validation = require('../middlewares/validation');
 const access = require('../middlewares/access');
+const mailer = require('../helper/mailer');
 
 router.get('/', async (req, res) => {
     const reports = await reportController.getAllReports();
@@ -53,6 +54,10 @@ router.patch(
     access(['D']),
     validation(reportJOI.updateSchema), async (req, res) => {
         const updateReport = await reportController.updateReport(req.params.id, req.body);
+        if(!updateReport) {
+            return res.sendStatus(404);
+        }
+        mailer.updateReportAlert(updateReport);
         return res.send(updateReport);
     });
 

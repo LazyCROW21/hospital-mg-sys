@@ -28,6 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if(request.url.includes('login')) {
+      this.refreshed = false;
       return next.handle(request);
     }
     const req = request.clone({
@@ -48,16 +49,15 @@ export class AuthInterceptor implements HttpInterceptor {
                   AuthInterceptor.accessToken = res.accessToken;
                   const reReq = request.clone({
                     setHeaders: {
+                      'Content-Type': 'application/json',
                       Authorization: `Bearer ${AuthInterceptor.accessToken}`
                     }
                   });
                   return next.handle(reReq);
                 }));
-            } else {
-              this.refreshed = false;
-              this.authService.logout();
-              this.router.navigateByUrl('/login');
             }
+            this.authService.logout();
+            this.router.navigateByUrl('/login');
           }
           return throwError(() => err);
         }

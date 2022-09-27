@@ -1,9 +1,9 @@
 const { Sequelize } = require('sequelize');
-
-const DATABASE = 'hospital_mng_sys';
-const DB_USER = 'postgres';
-const DB_PWD = 'root';
-const DB_HOST = 'localhost';
+require('dotenv').config({ path: '../.env' });
+const DATABASE = process.env.DATABASE;
+const DB_USER = process.env.DB_USER;
+const DB_PWD = process.env.DB_PWD;
+const DB_HOST = process.env.DB_HOST;
 
 const sequelize = new Sequelize(DATABASE, DB_USER, DB_PWD, {
     host: DB_HOST,
