@@ -58,10 +58,14 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
     this.fetchReports();
     this.fetchPatients();
-    if(this.authService.userType !== 'P') {
+    if(this.authService.userType === 'A') {
+      this.rowMenu.push(
+        { label: 'Remove', icon: 'pi pi-trash', command: () => { this.onDelete(); } }
+      );
+    }
+    else if(this.authService.userType === 'D') {
       this.rowMenu.push(
         { label: 'Edit', icon: 'pi pi-cog', command: () => { this.editReport(); } },
-        { label: 'Remove', icon: 'pi pi-trash', command: () => { this.onDelete(); } }
       );
     }
   }

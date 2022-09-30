@@ -1,14 +1,6 @@
 <p-card>
   <div class="flex justify-content-between">
     <h2>All Reports</h2>
-    <p-button
-      *ngIf="authService.userType !== 'P'"
-      label="Add Report"
-      icon="pi pi-plus"
-      styleClass="p-button-text"
-      (onClick)="openReportForm()"
-    >
-    </p-button>
   </div>
   <p-divider></p-divider>
   <ng-template [ngIf]="isLoadingReports" [ngIfElse]="notLoading">

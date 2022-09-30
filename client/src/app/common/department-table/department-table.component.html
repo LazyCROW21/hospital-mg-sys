@@ -36,5 +36,10 @@
       </td>
     </tr>
   </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td class="text-center text-500 py-4" colspan="7">No departments found.</td>
+    </tr>
+  </ng-template>
 </p-table>
 <p-menu #menu [popup]="true" [model]="departmentRowMenu"></p-menu>

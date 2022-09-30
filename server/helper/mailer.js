@@ -1,3 +1,5 @@
+const path = require('path');
+const ejs = require('ejs');
 const transporter = require('../config/mail');
 
 module.exports = {
@@ -6,7 +8,8 @@ module.exports = {
             from: 'app@hms.com', 
             to: email, 
             subject: 'Welcome to HMS', 
-            text: 'Thankyou for creating a account, please wait until your details are verified, then you will be able to login.' 
+            text: 'Thankyou for creating a account, please wait until your details are verified, then you will be able to login.',
+            html: await ejs.renderFile(path.join(__dirname, './email-template/welcome.js'))
         };
         return await transporter.sendMail(mailOptions);
     },
