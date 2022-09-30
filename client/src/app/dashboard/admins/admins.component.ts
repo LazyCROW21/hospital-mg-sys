@@ -3,7 +3,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService, ConfirmationService, ConfirmEventType } from 'primeng/api';
 import { differentField } from 'src/app/common/custom-validators';
-import { accessCodes } from 'src/app/common/types/codes';
 import { AdminService } from 'src/app/services/admin.service';
 import { genderOptions, accessOptions, stateOptions } from '../../common/dropdown-options';
 
@@ -24,7 +23,7 @@ export class AdminsComponent implements OnInit {
   accessOptions = accessOptions;
   rowMenu: MenuItem[] = [
     { label: 'View', icon: 'pi pi-eye', command: () => this.goToAdmin() },
-    { label: 'Edit', icon: 'pi pi-cog' },
+    // { label: 'Edit', icon: 'pi pi-cog' },
     { label: 'Remove', icon: 'pi pi-trash', command: () => this.onDelete() },
   ];
   admins: any[] = [];
@@ -62,7 +61,7 @@ export class AdminsComponent implements OnInit {
   }
 
   goToAdmin() {
-    this.router.navigateByUrl(`/dashboard/admins/${this.admins[this.activeRow].id}`);
+    this.router.navigateByUrl(`/dashboard/admins/${this.admins[this.activeRow].user.id}`);
   }
 
   fetchAdmins() {
@@ -158,7 +157,13 @@ export class AdminsComponent implements OnInit {
     });
   }
 
-  getAccessName(code: 0 | 1 | 2) {
-    return accessCodes[code];
+  getAccessName(code: string) {
+    const accessCodes = {
+      'SA': 'SUPER_ADMIN',
+      'MNG_U': 'MANAGE_USER',
+      'MNG_H': 'MANAGE_HOSPITAL',
+      'CHG_N': 'CHANGE_NOTICE'
+    };
+    return accessCodes[<'SA'|'MNG_U'|'MNG_H'|'CHG_N'>code];
   }
 }

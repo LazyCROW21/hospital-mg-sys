@@ -91,6 +91,7 @@ module.exports = {
                     text += `The appointment request on ${appointment.preferredDateTime} has been rejected by the doctor\n`;
                     text += `Doctor: ${doctor.user.firstName} ${doctor.user.lastName} (${doctor.user.phone})\n`;
                     text += `Appointment subject: ${appointment.subject}\n`;
+                    text += `Reason for rejection: ${appointment.rejectMessage}\n`;
                     break;
             }
         }

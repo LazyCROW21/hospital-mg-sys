@@ -51,9 +51,7 @@ export class DepartmentComponent implements OnInit {
   ];
 
   doctorRowMenu: { label: string, icon: string }[] = [
-    { label: 'View / Edit', icon: 'pi pi-eye' },
-    { label: 'Transfer', icon: 'pi pi-arrow-up-right' },
-    { label: 'Remove', icon: 'pi pi-trash' }
+    { label: 'View / Edit', icon: 'pi pi-eye' }
   ];
 
   departmentForm: FormGroup = new FormGroup({
@@ -94,17 +92,25 @@ export class DepartmentComponent implements OnInit {
       this.fetchDepartmentDoctors();
     });
     if (this.authService.userType === 'A') {
-      this.readonly = false;
-      this.doctorService.getAllDoctors().subscribe((result) => {
-        (<any[]>result).forEach((doctor) => {
-          if (!doctor.departmentId) {
-            const label = `${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialization})`;
-            this.doctorOptions.push({
-              label, value: doctor.id
-            });
-          }
+      const fnd = this.authService.roleSubject.value.access.findIndex((access: string) => access === 'SA' || access === 'MNG_H');
+      if (fnd !== -1) {
+        this.readonly = false;
+        this.readonly = true;
+        this.doctorRowMenu.push(
+          { label: 'Transfer', icon: 'pi pi-arrow-up-right' },
+          { label: 'Remove', icon: 'pi pi-trash' }
+        );
+        this.doctorService.getAllDoctors().subscribe((result) => {
+          (<any[]>result).forEach((doctor) => {
+            if (!doctor.departmentId) {
+              const label = `${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialization})`;
+              this.doctorOptions.push({
+                label, value: doctor.id
+              });
+            }
+          });
         });
-      });
+      }
     }
   }
 

@@ -1,221 +1,444 @@
 <p-card>
-    <div class="flex justify-content-between">
-        <h2>All Appointments</h2>
-        <p-button *ngIf="authService.userType === 'P'" label="Book Appointment" styleClass="p-button-text"
-            icon="pi pi-plus" (onClick)="openAppointmentForm()">
-        </p-button>
-    </div>
-    <p-divider></p-divider>
-    <ng-template [ngIf]="isLoadingAppointments" [ngIfElse]="notLoading">
-        <app-loading-bar></app-loading-bar>
-    </ng-template>
-    <ng-template #notLoading>
-        <p-table [value]="appointments" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-striped">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>#</th>
-                    <th *ngIf="this.authService.userType !== 'P'">Patient</th>
-                    <th *ngIf="this.authService.userType !== 'D'">Doctor</th>
-                    <th>Subject</th>
-                    <th>Preferred Date</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center"></th>
-                </tr>
+  <div class="flex justify-content-between">
+    <h2>All Appointments</h2>
+    <p-button
+      *ngIf="authService.userType === 'P'"
+      label="Book Appointment"
+      styleClass="p-button-text"
+      icon="pi pi-plus"
+      (onClick)="openAppointmentForm()"
+    >
+    </p-button>
+  </div>
+  <p-divider></p-divider>
+  <ng-template [ngIf]="isLoadingAppointments" [ngIfElse]="notLoading">
+    <app-loading-bar></app-loading-bar>
+  </ng-template>
+  <ng-template #notLoading>
+    <p-table
+      [value]="appointments"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm p-datatable-striped"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10, 25, 50]"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th *ngIf="this.authService.userType !== 'P'">Patient</th>
+          <th *ngIf="this.authService.userType !== 'D'">Doctor</th>
+          <th>Subject</th>
+          <th>Preferred Date</th>
+          <th class="text-center">Status</th>
+          <th class="text-center"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-appointment let-i="rowIndex">
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td *ngIf="this.authService.userType !== 'P'">
+            {{ appointment.patient.user | fullName }}
+          </td>
+          <td *ngIf="this.authService.userType !== 'D'">
+            {{ appointment.doctor?.user | fullName }}
+          </td>
+          <td>{{ appointment.subject }}</td>
+          <td>{{ appointment.preferredDateTime | date: "short" }}</td>
+          <td class="text-center">
+            <ng-template [ngIf]="appointment.status === 'fixed'">
+              <p-badge
+                *ngIf="
+                  appointment.concludedByDoctor &&
+                  appointment.concludedByPatient
+                "
+                value="concluded"
+                severity="success"
+              >
+              </p-badge>
+              <p-badge
+                *ngIf="
+                  !appointment.concludedByDoctor &&
+                  !appointment.concludedByPatient
+                "
+                value="fixed"
+                severity="success"
+              >
+              </p-badge>
+              <p-badge
+                *ngIf="
+                  appointment.concludedByDoctor &&
+                  !appointment.concludedByPatient
+                "
+                value="? concluded"
+                severity="success"
+              >
+              </p-badge>
+              <p-badge
+                *ngIf="
+                  !appointment.concludedByDoctor &&
+                  appointment.concludedByPatient
+                "
+                value="? concluded"
+                severity="success"
+              >
+              </p-badge>
             </ng-template>
-            <ng-template pTemplate="body" let-appointment let-i="rowIndex">
-                <tr>
-                    <td>{{ i+1 }}</td>
-                    <td *ngIf="this.authService.userType !== 'P'">{{ appointment.patient.user | fullName }}</td>
-                    <td *ngIf="this.authService.userType !== 'D'">{{ appointment.doctor?.user | fullName }}</td>
-                    <td>{{ appointment.subject }}</td>
-                    <td>{{ appointment.preferredDateTime | date:'short' }}</td>
-                    <td class="text-center">
-                        <ng-template [ngIf]="appointment.status === 'fixed'">
-                            <p-badge *ngIf="appointment.concludedByDoctor && appointment.concludedByPatient"
-                                value="concluded" severity="success">
-                            </p-badge>
-                            <p-badge *ngIf="!appointment.concludedByDoctor && !appointment.concludedByPatient"
-                                value="fixed" severity="success">
-                            </p-badge>
-                            <p-badge
-                                *ngIf="appointment.concludedByDoctor && !appointment.concludedByPatient"
-                                value="? concluded" severity="success">
-                            </p-badge>
-                            <p-badge
-                                *ngIf="!appointment.concludedByDoctor && appointment.concludedByPatient"
-                                value="? concluded" severity="success">
-                            </p-badge>
-                        </ng-template>
-                        <p-badge *ngIf="appointment.status === 'applied'" value="applied" severity="info"></p-badge>
-                        <p-badge *ngIf="appointment.status === 'rejected'" value="rejected" severity="danger"></p-badge>
-                        <p-badge *ngIf="appointment.status === 'cancelled'" value="cancelled" severity="warning">
-                        </p-badge>
-                    </td>
-                    <td class="text-center">
-                        <p-button styleClass="p-button-text" icon="pi pi pi-ellipsis-v"
-                            (onClick)="openMenu(i); menu.toggle($event)"></p-button>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-        <p-menu #menu [popup]="true" [model]="rowMenu"></p-menu>
-    </ng-template>
+            <p-badge
+              *ngIf="appointment.status === 'applied'"
+              value="applied"
+              severity="info"
+            ></p-badge>
+            <p-badge
+              *ngIf="appointment.status === 'rejected'"
+              value="rejected"
+              severity="danger"
+            ></p-badge>
+            <p-badge
+              *ngIf="appointment.status === 'cancelled'"
+              value="cancelled"
+              severity="warning"
+            >
+            </p-badge>
+          </td>
+          <td class="text-center">
+            <p-button
+              styleClass="p-button-text"
+              icon="pi pi pi-ellipsis-v"
+              (onClick)="openMenu(i); menu.toggle($event)"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <p-menu #menu [popup]="true" [model]="rowMenu"></p-menu>
+  </ng-template>
 </p-card>
 
 <!-- Create Appointment Dialog -->
-<p-dialog [(visible)]="dialog.show" [header]="dialog.heading" [style]="{ maxWidth: '80%' }">
-    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
-        <div class="field">
-            <label>Doctor</label>
-            <p-dropdown styleClass="w-full" appendTo="body" placeholder="Select Doctor" [options]="doctorOptions"
-                formControlName="doctorId" optionLabel="label" optionValue="value"></p-dropdown>
-            <small *ngIf="appointmentForm.get('doctorId')?.invalid && appointmentForm.get('doctorId')?.touched"
-                class="p-error">Doctor is required</small>
-        </div>
-        <div class="field">
-            <label>Subject</label>
-            <input type="text" class="w-full" pInputText placeholder="Subject" formControlName="subject" />
-            <small *ngIf="appointmentForm.get('subject')?.invalid && appointmentForm.get('subject')?.touched"
-                class="p-error">Subject is required, must be under 80 characters</small>
-        </div>
-        <div class="field">
-            <label>Message</label>
-            <textarea pInputTextarea class="w-full" placeholder="Describe your problem here"
-                formControlName="message"></textarea>
-            <small *ngIf="appointmentForm.get('message')?.invalid && appointmentForm.get('message')?.touched"
-                class="p-error">Message is required, must be under 255 characters</small>
-        </div>
-        <div class="field">
-            <label>Preferred Date & Time:</label>
-            <p-calendar placeholder="Appointment Date" styleClass="w-full" appendTo="body" [minDate]="minDate"
-                [showIcon]="true" [showOtherMonths]="false" [stepMinute]="15" [showTime]="true"
-                formControlName="preferredDateTime">
-            </p-calendar>
-            <small
-                *ngIf="appointmentForm.get('preferredDateTime')?.invalid && appointmentForm.get('preferredDateTime')?.touched"
-                class="p-error">Date & Time are required</small>
-        </div>
-        <div class="flex justify-content-end mt-2">
-            <p-button label="SUBMIT" type="submit" [loading]="isSavingAppointment">
-            </p-button>
-        </div>
-    </form>
-</p-dialog>
-<p-dialog [(visible)]="showAppointmentDetails" header="Appointment Details" [style]="{ maxWidth: '80%' }">
-    <table class="my-table">
-        <tbody>
-            <tr *ngIf="appointmentDetails.patient">
-                <th>Patient:</th>
-                <td>{{ appointmentDetails.patient.user | fullName }}</td>
-            </tr>
-            <tr *ngIf="appointmentDetails.doctor">
-                <th>Doctor:</th>
-                <td>{{ appointmentDetails.doctor.user | fullName }}</td>
-            </tr>
-            <tr>
-                <th>Subject:</th>
-                <td>{{ appointmentDetails.subject }}</td>
-            </tr>
-            <tr>
-                <th>Message:</th>
-                <td>{{ appointmentDetails.message }}</td>
-            </tr>
-            <tr>
-                <th>Preferred Date & Time:</th>
-                <td>{{ appointmentDetails.preferredDateTime | date:'short' }}</td>
-            </tr>
-            <tr>
-                <th>Status:</th>
-                <td>
-                    <ng-template [ngIf]="appointmentDetails.status === 'fixed'">
-                        <p-badge *ngIf="appointmentDetails.concludedByDoctor && appointmentDetails.concludedByPatient"
-                            value="concluded" severity="success">
-                        </p-badge>
-                        <p-badge *ngIf="!appointmentDetails.concludedByDoctor && !appointmentDetails.concludedByPatient"
-                            value="fixed" severity="success">
-                        </p-badge>
-                        <p-badge *ngIf="appointmentDetails.concludedByDoctor && !appointmentDetails.concludedByPatient"
-                            value="? concluded" severity="success">
-                        </p-badge>
-                        <p-badge *ngIf="!appointmentDetails.concludedByDoctor && appointmentDetails.concludedByPatient"
-                            value="? concluded" severity="success">
-                        </p-badge>
-                    </ng-template>
-                    <p-badge *ngIf="appointmentDetails.status === 'applied'" value="applied" severity="info"></p-badge>
-                    <p-badge *ngIf="appointmentDetails.status === 'rejected'" value="rejected" severity="danger">
-                    </p-badge>
-                    <p-badge *ngIf="appointmentDetails.status === 'cancelled'" value="cancelled" severity="warning">
-                    </p-badge>
-                </td>
-            </tr>
-            <tr *ngIf="appointmentDetails.status === 'rejected'">
-                <th>Reason for Rejection:</th>
-                <td>{{ appointmentDetails.rejectMessage }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <p *ngIf="appointmentDetails.status === 'fixed' && !isAppointmentConcludedByOpposite"
-        class="text-center text-orange-400 my-2">
-        Confirmation pending from opposite party
-    </p>
-    <div class="flex justify-content-end gap-2 mt-2">
-        <p-button label="Close" icon="pi pi-times" styleClass="p-button-plain p-button-text"
-            (onClick)="showAppointmentDetails = false;">
-        </p-button>
-        <ng-template [ngIf]="this.authService.userType === 'D'">
-            <p-button *ngIf="appointmentDetails.status === 'applied' || appointmentDetails.status === 'fixed'"
-                label="Reject" icon="pi pi-ban" (onClick)="onRejectAppointment()" styleClass="p-button-danger">
-            </p-button>
-            <p-button *ngIf="appointmentDetails.status === 'applied'" label="Accept"
-                (onClick)="onChangeAppointmentStatus('fixed')" [icon]="updateButtonIcons['fixed']"
-                styleClass="p-button-success">
-            </p-button>
-            <p-button *ngIf="appointmentDetails.status === 'fixed' && !isAppointmentConcludedByUser" label="Conclude"
-                (onClick)="onConclude()" [icon]="updateButtonIcons['concluded']" styleClass="p-button-success">
-            </p-button>
-        </ng-template>
-        <ng-template [ngIf]="this.authService.userType === 'P'">
-            <p-button *ngIf="appointmentDetails.status === 'applied' || appointmentDetails.status === 'fixed'"
-                label="Cancel" (onClick)="onChangeAppointmentStatus('cancelled')"
-                [icon]="updateButtonIcons['cancelled']" styleClass="p-button-warning">
-            </p-button>
-            <p-button *ngIf="appointmentDetails.status === 'fixed' && !isAppointmentConcludedByUser" label="Conclude"
-                [icon]="updateButtonIcons['concluded']" styleClass="p-button-success" (onClick)="onConclude()">
-            </p-button>
-        </ng-template>
+<p-dialog
+  [(visible)]="dialog.show"
+  [header]="dialog.heading"
+  [style]="{ maxWidth: '80%' }"
+>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label>Doctor</label>
+      <p-dropdown
+        styleClass="w-full"
+        appendTo="body"
+        placeholder="Select Doctor"
+        [options]="doctorOptions"
+        formControlName="doctorId"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+      ></p-dropdown>
+      <small
+        *ngIf="
+          appointmentForm.get('doctorId')?.invalid &&
+          appointmentForm.get('doctorId')?.touched
+        "
+        class="p-error"
+        >Doctor is required</small
+      >
     </div>
+    <div class="field">
+      <label>Subject</label>
+      <input
+        type="text"
+        class="w-full"
+        pInputText
+        placeholder="Subject"
+        formControlName="subject"
+      />
+      <small
+        *ngIf="
+          appointmentForm.get('subject')?.invalid &&
+          appointmentForm.get('subject')?.touched
+        "
+        class="p-error"
+        >Subject is required, must be under 80 characters</small
+      >
+    </div>
+    <div class="field">
+      <label>Message</label>
+      <textarea
+        pInputTextarea
+        class="w-full"
+        placeholder="Describe your problem here"
+        formControlName="message"
+      ></textarea>
+      <small
+        *ngIf="
+          appointmentForm.get('message')?.invalid &&
+          appointmentForm.get('message')?.touched
+        "
+        class="p-error"
+        >Message is required, must be under 255 characters</small
+      >
+    </div>
+    <div class="field">
+      <label>Preferred Date & Time:</label>
+      <p-calendar
+        placeholder="Appointment Date"
+        styleClass="w-full"
+        appendTo="body"
+        [minDate]="minDate"
+        [showIcon]="true"
+        [showOtherMonths]="false"
+        [stepMinute]="15"
+        [showTime]="true"
+        formControlName="preferredDateTime"
+      >
+      </p-calendar>
+      <small
+        *ngIf="
+          appointmentForm.get('preferredDateTime')?.invalid &&
+          appointmentForm.get('preferredDateTime')?.touched
+        "
+        class="p-error"
+        >Date & Time are required</small
+      >
+    </div>
+    <div class="flex justify-content-end mt-2">
+      <p-button label="SUBMIT" type="submit" [loading]="isSavingAppointment">
+      </p-button>
+    </div>
+  </form>
+</p-dialog>
+<p-dialog
+  [(visible)]="showAppointmentDetails"
+  header="Appointment Details"
+  [style]="{ maxWidth: '80%' }"
+>
+  <table class="my-table">
+    <tbody>
+      <tr *ngIf="appointmentDetails.patient">
+        <th>Patient:</th>
+        <td>{{ appointmentDetails.patient.user | fullName }}</td>
+      </tr>
+      <tr *ngIf="appointmentDetails.doctor">
+        <th>Doctor:</th>
+        <td>{{ appointmentDetails.doctor.user | fullName }}</td>
+      </tr>
+      <tr>
+        <th>Subject:</th>
+        <td>{{ appointmentDetails.subject }}</td>
+      </tr>
+      <tr>
+        <th>Message:</th>
+        <td>{{ appointmentDetails.message }}</td>
+      </tr>
+      <tr>
+        <th>Preferred Date & Time:</th>
+        <td>{{ appointmentDetails.preferredDateTime | date: "short" }}</td>
+      </tr>
+      <tr>
+        <th>Status:</th>
+        <td>
+          <ng-template [ngIf]="appointmentDetails.status === 'fixed'">
+            <p-badge
+              *ngIf="
+                appointmentDetails.concludedByDoctor &&
+                appointmentDetails.concludedByPatient
+              "
+              value="concluded"
+              severity="success"
+            >
+            </p-badge>
+            <p-badge
+              *ngIf="
+                !appointmentDetails.concludedByDoctor &&
+                !appointmentDetails.concludedByPatient
+              "
+              value="fixed"
+              severity="success"
+            >
+            </p-badge>
+            <p-badge
+              *ngIf="
+                appointmentDetails.concludedByDoctor &&
+                !appointmentDetails.concludedByPatient
+              "
+              value="? concluded"
+              severity="success"
+            >
+            </p-badge>
+            <p-badge
+              *ngIf="
+                !appointmentDetails.concludedByDoctor &&
+                appointmentDetails.concludedByPatient
+              "
+              value="? concluded"
+              severity="success"
+            >
+            </p-badge>
+          </ng-template>
+          <p-badge
+            *ngIf="appointmentDetails.status === 'applied'"
+            value="applied"
+            severity="info"
+          ></p-badge>
+          <p-badge
+            *ngIf="appointmentDetails.status === 'rejected'"
+            value="rejected"
+            severity="danger"
+          >
+          </p-badge>
+          <p-badge
+            *ngIf="appointmentDetails.status === 'cancelled'"
+            value="cancelled"
+            severity="warning"
+          >
+          </p-badge>
+        </td>
+      </tr>
+      <tr *ngIf="appointmentDetails.status === 'rejected'">
+        <th>Reason for Rejection:</th>
+        <td>{{ appointmentDetails.rejectMessage }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p
+    *ngIf="
+      appointmentDetails.status === 'fixed' && !isAppointmentConcludedByOpposite
+    "
+    class="text-center text-orange-400 my-2"
+  >
+    Confirmation pending from opposite party
+  </p>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <p-button
+      label="Close"
+      icon="pi pi-times"
+      styleClass="p-button-plain p-button-text"
+      (onClick)="showAppointmentDetails = false"
+    >
+    </p-button>
+    <ng-template [ngIf]="this.authService.userType === 'D'">
+      <p-button
+        *ngIf="
+          appointmentDetails.status === 'applied' ||
+          appointmentDetails.status === 'fixed'
+        "
+        label="Reject"
+        icon="pi pi-ban"
+        (onClick)="onRejectAppointment()"
+        styleClass="p-button-danger"
+      >
+      </p-button>
+      <p-button
+        *ngIf="appointmentDetails.status === 'applied'"
+        label="Accept"
+        (onClick)="onChangeAppointmentStatus('fixed')"
+        [icon]="updateButtonIcons['fixed']"
+        styleClass="p-button-success"
+      >
+      </p-button>
+      <p-button
+        *ngIf="
+          appointmentDetails.status === 'fixed' && !isAppointmentConcludedByUser
+        "
+        label="Conclude"
+        (onClick)="onConclude()"
+        [icon]="updateButtonIcons['concluded']"
+        styleClass="p-button-success"
+      >
+      </p-button>
+    </ng-template>
+    <ng-template [ngIf]="this.authService.userType === 'P'">
+      <p-button
+        *ngIf="
+          appointmentDetails.status === 'applied' ||
+          appointmentDetails.status === 'fixed'
+        "
+        label="Cancel"
+        (onClick)="onChangeAppointmentStatus('cancelled')"
+        [icon]="updateButtonIcons['cancelled']"
+        styleClass="p-button-warning"
+      >
+      </p-button>
+      <p-button
+        *ngIf="
+          appointmentDetails.status === 'fixed' && !isAppointmentConcludedByUser
+        "
+        label="Conclude"
+        [icon]="updateButtonIcons['concluded']"
+        styleClass="p-button-success"
+        (onClick)="onConclude()"
+      >
+      </p-button>
+    </ng-template>
+  </div>
 </p-dialog>
 
 <!-- Reject Message Dialog -->
-<p-dialog [(visible)]="showRejectDialog" header="Reject Appointment Request" [style]="{ maxWidth: '80%' }">
-    <div *ngIf="this.appointmentDetails.patient" class="field">
-        <label>Patient</label>
-        <input class="w-full" pInputText readonly [value]="this.appointmentDetails.patient.user | fullName" />
-    </div>
-    <div class="field">
-        <label>Subject</label>
-        <input type="text" class="w-full" pInputText [value]="this.appointmentDetails.subject" />
-    </div>
-    <div class="field">
-        <label>Preferred Date & Time:</label>
-        <input type="text" class="w-full" pInputText
-            [value]="this.appointmentDetails.preferredDateTime | date:'short'" />
-    </div>
-    <div class="field">
-        <label>Reason for rejection:</label>
-        <textarea pInputTextarea class="w-full" [(ngModel)]="reasonToReject"></textarea>
-        <small *ngIf="reasonToReject.length < 4 || reasonToReject.length > 255" class="p-error">
-            Please give proper reason to reject. (4 to 255 characters long)
-        </small>
-    </div>
-    <div class="flex justify-content-end gap-2 mt-2">
-        <p-button label="Close" styleClass="p-button-text p-button-plain" type="button"
-            (onClick)="showRejectDialog = false;">
-        </p-button>
-        <p-button label="Reject" styleClass="p-button-danger" type="submit" [icon]="updateButtonIcons['rejected']"
-            (onClick)="onChangeAppointmentStatus('rejected')">
-        </p-button>
-    </div>
+<p-dialog
+  [(visible)]="showRejectDialog"
+  header="Reject Appointment Request"
+  [style]="{ maxWidth: '80%' }"
+>
+  <div *ngIf="this.appointmentDetails.patient" class="field">
+    <label>Patient</label>
+    <input
+      class="w-full"
+      pInputText
+      readonly
+      [value]="this.appointmentDetails.patient.user | fullName"
+    />
+  </div>
+  <div class="field">
+    <label>Subject</label>
+    <input
+      type="text"
+      class="w-full"
+      pInputText
+      [value]="this.appointmentDetails.subject"
+    />
+  </div>
+  <div class="field">
+    <label>Preferred Date & Time:</label>
+    <input
+      type="text"
+      class="w-full"
+      pInputText
+      [value]="this.appointmentDetails.preferredDateTime | date: 'short'"
+    />
+  </div>
+  <div class="field">
+    <label>Reason for rejection:</label>
+    <textarea
+      pInputTextarea
+      class="w-full"
+      [(ngModel)]="reasonToReject"
+    ></textarea>
+    <small
+      *ngIf="reasonToReject.length < 4 || reasonToReject.length > 255"
+      class="p-error"
+    >
+      Please give proper reason to reject. (4 to 255 characters long)
+    </small>
+  </div>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <p-button
+      label="Close"
+      styleClass="p-button-text p-button-plain"
+      type="button"
+      (onClick)="showRejectDialog = false"
+    >
+    </p-button>
+    <p-button
+      label="Reject"
+      styleClass="p-button-danger"
+      type="submit"
+      [icon]="updateButtonIcons['rejected']"
+      (onClick)="onChangeAppointmentStatus('rejected')"
+    >
+    </p-button>
+  </div>
 </p-dialog>
 
 <p-toast></p-toast>

@@ -56,7 +56,7 @@
         </p-tabPanel>
         <p-tabPanel header="Staff">
             <div class="flex justify-content-between">
-                <p>(Not including sub-department staff)</p>
+                <p class="p-error my-2"><strong>*Note:</strong> Not including sub-department staff</p>
                 <p-button *ngIf="!readonly" label="Add Staff" icon="pi pi-plus" styleClass="p-button-text"
                     (onClick)="staffDialog.show = true;">
                 </p-button>

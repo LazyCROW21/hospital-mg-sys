@@ -25,7 +25,12 @@ body {
     width: 100%;
 }
 
-.p-inputwrapper {
+.p-inputwrapper input {
+    width: 100%;
+}
+
+p-inputnumber, .p-inputnumber {
+    display: block !important;
     width: 100%;
 }
 

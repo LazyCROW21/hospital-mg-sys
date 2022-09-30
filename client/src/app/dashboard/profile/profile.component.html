@@ -110,7 +110,7 @@
             </div>
             <div class="field col-4">
                 <label>State</label>
-                <p-dropdown formControlName="state" styleClass="w-full" appendTo="body" placeholder="State"
+                <p-dropdown formControlName="state" styleClass="w-full" appendTo="body" placeholder="State" [filter]="true"
                     [options]="stateOptions" optionLabel="label" optionValue="value" [readonly]="readonly">
                 </p-dropdown>
                 <small class="p-error" *ngIf="userForm.get('state')?.invalid && userForm.get('state')?.touched">
@@ -130,7 +130,7 @@
             <div class="flex flex-column gap-2">
                 <div class="field w-full md:w-6">
                     <label>Experience</label>
-                    <p-inputNumber styleClass="w-full" placeholder="Experience (Years)" [min]="0" [max]="60"
+                    <p-inputNumber placeholder="Experience (Years)" [min]="0" [max]="60"
                         formControlName="experience" [readonly]="readonly">
                     </p-inputNumber>
                     <small class="p-error"
