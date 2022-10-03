@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .concluded, .fixed, .applied, .rejected, .cancelled {
+            text-align: center; 
+            padding-top: 1rem; 
+            padding-bottom: 1rem;
+        }
+        .concluded {
+            background-color: rgba(144, 238, 144, 0.4); 
+        }
+        .fixed {
+            background-color: rgba(87, 204, 87, 0.4); 
+        }
+        .applied {
+            background-color: rgba(61, 191, 214, 0.4); 
+        }
+        .rejected {
+            background-color: rgba(229, 54, 38, 0.4); 
+        }
+        .cancelled {
+            background-color: rgba(234, 109, 36, 0.4); 
+        }
+
+        th, td {
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <%
+    var headLine = '';
+    var msg = '';
+    var img = '';
+    var patientLine = patient.user.firstName + ' ' + patient.user.lastName + ' (' + patient.user.phone + ')';
+    var doctorLine = doctor.user.firstName + ' ' + doctor.user.lastName + ' (' + doctor.user.phone + ')';
+    var showP = false, showD = false;
+    var cls = '';
+    if (appointment.concludedByPatient && !appointment.concludedByDoctor) {
+        showP = true;
+        headLine += 'Appointment Concluded';
+        msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>concluded</strong> by the patient`;
+        cls += 'concluded';
+        img += 'https://img.icons8.com/fluency/64/000000/ok.png';
+    } else if (!appointment.concludedByPatient && appointment.concludedByDoctor) {
+        headLine += 'Appointment Concluded';
+        msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>concluded</strong> by the doctor`;
+        showD = true;
+        cls += 'concluded';
+        img += 'https://img.icons8.com/fluency/64/000000/ok.png';
+    } else if (appointment.concludedByPatient && appointment.concludedByDoctor) {
+        headLine += 'Appointment Concluded';
+        msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>concluded</strong> by both patient & doctor.`;
+        msg += `Appointment report will be available soon.`;
+        showP = true;
+        showD = true;
+        cls += 'concluded';
+        img += 'https://img.icons8.com/fluency/64/000000/ok.png';
+    } else {
+        switch (appointment.status) {
+            case 'fixed':
+                headLine += 'Appointment Fixed';
+                msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>confirmed</strong> by the doctor`;
+                showD = true;
+                cls += 'fixed';
+                img += 'https://img.icons8.com/fluency/64/000000/checked.png';
+                break;
+            case 'cancelled':
+                headLine += 'Appointment Cancelled';
+                msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>cancelled</strong> by the patient`;
+                showP = true;
+                cls += 'cancelled';
+                img += 'https://img.icons8.com/fluency/64/000000/cancel-2.png';
+                break;
+            case 'applied':
+                headLine += 'New Appointment';
+                msg += 'A new appointment request';
+                showP = true;
+                cls += 'applied';
+                img += 'https://img.icons8.com/fluency/64/000000/add.png';
+                break;
+            case 'rejected':
+                headLine += 'Appointment Rejected';
+                msg += `The appointment request on ${appointment.preferredDateTime} has been <strong>rejected</strong> by the doctor`;
+                showD = true;
+                cls += 'rejected';
+                img += 'https://img.icons8.com/fluency/64/000000/cancel.png';
+                break;
+        }
+    }
+    %>
+    <div class="<%= cls %>">
+        <table style="width: 100%; text-align: center;">
+            <tr>
+                <td><img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/FA5252/external-appointment-inhome-service-flaticons-lineal-color-flat-icons.png"/></td>
+                <td>
+                    <img src="<%= img %>"/>
+                </td>
+            </tr>
+        </table>
+        <h1 style="text-align: center;"><%= headLine %></h1>
+    </div>
+    <p><%- msg %></p>
+    <h4>Appointment Details: </h4>
+    <hr>
+    <table style="text-align: left;">
+        <tr>
+            <th>Date & Time</th>
+            <td><%= appointment.preferredDateTime %></td>
+        </tr>
+        <% if(showD) { %>
+        <tr>
+            <th>Doctor</th>
+            <td><%= doctorLine %></td>
+        </tr>
+        <% } %>
+        <% if(showP) { %>
+        <tr>
+            <th>Patient</th>
+            <td><%= patientLine %></td>
+        </tr>
+        <% } %>
+        <tr>
+            <th>Appointment subject</th>
+            <td><%= appointment.subject %></td>
+        </tr>
+        <% if(appointment.rejectMessage || appointment.status == 'rejected') { %>
+            <tr>
+                <th>Reject Message</th>
+                <td><%= appointment.rejectMessage %></td>
+            </tr>
+        <% } %>
+    </table>
+    <hr>
+    <p>For anyother query you can mail us at: <a href="mailto:hkexperiment786@gmail.com">support@hms.com</a></p>
+</body>
+</html>

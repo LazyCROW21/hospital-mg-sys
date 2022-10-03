@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .completed, .progress, .re-check {
+            text-align: center; 
+            padding-top: 1rem; 
+            padding-bottom: 1rem;
+        }
+        .completed {
+            background-color: rgba(144, 238, 144, 0.4); 
+        }
+        .progress {
+            background-color: rgba(61, 191, 214, 0.4); 
+        }
+        .re-check {
+            background-color: rgba(234, 109, 36, 0.4); 
+        }
+        th, td {
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <%
+    var headLine = '';
+    var msg = '';
+    var img = '';
+    var doctorLine = 
+        report.doctor.user.firstName + ' ' 
+        + report.doctor.user.lastName + ' (' 
+        + report.doctor.user.phone + ')';
+    var showP = false, showD = false;
+    var cls = '';
+    switch (report.status) {
+        case 're-check':
+            headLine += 'Report under rechecking';
+            msg += 'Your report is being <strong>re-checked</strong>, contact your doctor for details';
+            showD = true;
+            cls += 're-check';
+            img += 'https://img.icons8.com/color/64/000000/process--v1.png';
+            break;
+        case 'progress':
+            headLine += 'Report in progress';
+            msg += 'Your report is under <strong>progress</strong>';
+            showP = true;
+            cls += 'progress';
+            img += 'https://img.icons8.com/color/64/000000/in-progress--v1.png';
+            break;
+        case 'completed':
+            headLine += 'Report Completed';
+            msg += 'Your report is completed, login to HMS to see the details';
+            cls += 'completed';
+            img += 'https://img.icons8.com/color/64/000000/approval--v1.png';
+            break;
+    }
+    %>
+    <div class="<%= cls %>">
+        <table style="width: 100%; text-align: center;">
+            <tr>
+                <td><img src="https://img.icons8.com/external-line-rakhmat-setiawan/64/000000/external-healthcare-hospital-line-rakhmat-setiawan-3.png"/></td>
+                <td>
+                    <img src="<%= img %>"/>
+                </td>
+            </tr>
+        </table>
+        <h1 style="text-align: center;"><%= headLine %></h1>
+    </div>
+    <p><%- msg %></p>
+    <h4>Report Details: </h4>
+    <hr>
+    <table style="text-align: left;">
+        <tr>
+            <th>Appointment Date & Time</th>
+            <td><%= report.appointment.preferredDateTime %></td>
+        </tr>
+        <tr>
+            <th>Appointment subject</th>
+            <td><%= report.appointment.subject %></td>
+        </tr>
+        <tr>
+            <th>Doctor</th>
+            <td><%= doctorLine %></td>
+        </tr>
+    </table>
+    <hr>
+    <p>For anyother query you can mail us at: <a href="mailto:hkexperiment786@gmail.com">support@hms.com</a></p>
+</body>
+</html>

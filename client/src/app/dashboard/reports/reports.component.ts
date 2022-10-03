@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
 import { patientStatusOptions, reportStatusOptions, treatmentOptions } from 'src/app/common/dropdown-options';
 import { AuthService } from 'src/app/services/auth.service';
