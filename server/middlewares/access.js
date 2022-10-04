@@ -1,8 +1,9 @@
 module.exports = function checkAccess(roles, reqFieldLoc, reqField, matchField, adminAccess) {
     return (req, res, next) => {
         try {
+            console.log(roles, req.role, req.roleDetails);
             if(!roles.includes(req.role) ) {
-                return res.sendStatus(401);
+                return res.sendStatus(403);
             }
             if(req.role === 'A' && adminAccess) {
                 let fnd = false;
@@ -13,20 +14,20 @@ module.exports = function checkAccess(roles, reqFieldLoc, reqField, matchField, 
                     }
                 }
                 if(!fnd) {
-                    return res.sendStatus(401);
+                    return res.sendStatus(403);
                 } else {
                     return next();
                 }
             }
             if(reqFieldLoc && reqField && matchField) {
                 if(req[matchField] != req[reqFieldLoc][reqField]) {
-                    return res.sendStatus(401);
+                    return res.sendStatus(403);
                 }
             }
             next();
         } catch (err) {
             console.log(err);
-            return res.sendStatus(401);
+            return res.sendStatus(403);
         }
     }
 }

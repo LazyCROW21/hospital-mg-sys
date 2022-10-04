@@ -169,7 +169,6 @@ export class UsersComponent implements OnInit {
 
   commitUserStatus(status: 'A' | 'R') {
     this.activeUser = this.newUsers[this.activeRow];
-    console.log(this.activeUser);
     // original icon
     let orginalIcon = this.commitButtonIcons[status];
     // change to loading icon
@@ -241,7 +240,6 @@ export class UsersComponent implements OnInit {
     this.isLoadingNewUsers = true;
     this.userService.getAllNewUsers().subscribe({
       next: (result) => {
-        console.log(result);
         this.newUsers.splice(0, this.newUsers.length, ...<any[]>result);
       },
       error: (error) => {
@@ -263,7 +261,6 @@ export class UsersComponent implements OnInit {
     this.isLoadingDoctors = true;
     this.doctorService.getAllDoctors().subscribe({
       next: (result) => {
-        console.log(result);
         this.doctors.splice(0, this.doctors.length, ...<any[]>result);
       },
       error: (error) => {
@@ -285,7 +282,6 @@ export class UsersComponent implements OnInit {
     this.isLoadingPatients = true;
     this.patientService.getAllPatients().subscribe({
       next: (result) => {
-        console.log(result);
         this.patients.splice(0, this.patients.length, ...<any[]>result);
       },
       error: (error) => {

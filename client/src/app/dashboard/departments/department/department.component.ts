@@ -77,7 +77,7 @@ export class DepartmentComponent implements OnInit {
     private doctorService: DoctorService,
     private confirmationService: ConfirmationService,
     private route: ActivatedRoute,
-    private router: Router
+    public router: Router
   ) { }
 
   ngOnInit(): void {

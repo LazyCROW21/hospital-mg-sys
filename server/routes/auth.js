@@ -30,11 +30,16 @@ router.post('/login', validation(authJOI.loginSchema), async (req, res) => {
 });
 
 router.post('/refresh', validation(authJOI.refreshSchema), async (req, res) => {
-    const accessToken = await authController.generateAccessToken(req.body.refreshToken);
-    if(!accessToken) {
-        return res.sendStatus(401);
+    try {
+        const accessToken = await authController.generateAccessToken(req.body.refreshToken);
+        if(!accessToken) {
+            return res.sendStatus(401);
+        }
+        res.send({ accessToken });
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(401);
     }
-    res.send({ accessToken });
 });
 
 router.post('/logout', validation(authJOI.refreshSchema), async (req, res) => {

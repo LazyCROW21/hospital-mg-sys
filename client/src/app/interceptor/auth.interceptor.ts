@@ -5,19 +5,20 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
-  HttpClient
 } from '@angular/common/http';
-import { catchError, Observable, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, Observable, switchMap, take, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   static accessToken = '';
   static refreshToken = '';
-  refreshed = false;
-  constructor(private authService: AuthService, private http: HttpClient, private router: Router) {
+
+  refreshing = false;
+  refreshTokenSubject = new BehaviorSubject<string>('');
+
+  constructor(private authService: AuthService, private router: Router) {
     this.authService.accessToken.subscribe((accessToken) => {
       AuthInterceptor.accessToken = accessToken;
     });
@@ -27,8 +28,8 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.url.includes('login')) {
-      this.refreshed = false;
+    if(request.url.includes('login') || request.url.includes('refresh')) {
+      this.refreshing = false;
       return next.handle(request);
     }
     const req = request.clone({
@@ -40,29 +41,54 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError(
         (err: HttpErrorResponse) => {
-          if (err.status === 401 ) {
-            if(!this.refreshed) {
-              this.refreshed = true;
-              return this.http.post(environment.apiURL + '/auth/refresh', { refreshToken: AuthInterceptor.refreshToken })
-                .pipe(switchMap((res: any) => {
-                  this.authService.accessToken.next(res.accessToken);
-                  AuthInterceptor.accessToken = res.accessToken;
-                  const reReq = request.clone({
-                    setHeaders: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${AuthInterceptor.accessToken}`
-                    }
-                  });
-                  return next.handle(reReq);
-                }));
-            } else {
-              this.authService.logout();
-              this.router.navigateByUrl('/login');
-            }
+          if(err.status === 401) {
+            console.log('401 Error');
+            return this.handle401Error(request, next);
           }
           return throwError(() => err);
         }
       )
+    );
+  }
+
+  handle401Error(request: HttpRequest<unknown>, next: HttpHandler) {
+    if(!this.refreshing) {
+      this.refreshing = true;
+      this.refreshTokenSubject.next('');
+      return this.authService.refreshAccessToken().pipe(
+        switchMap((result: any) => {
+          this.refreshing = false;
+          this.authService.accessToken.next(result.accessToken);
+          AuthInterceptor.accessToken = result.accessToken;
+          this.refreshTokenSubject.next(result.accessToken);
+          const req = request.clone({
+            setHeaders: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${AuthInterceptor.accessToken}`
+            }
+          });
+          return next.handle(req);
+        }),
+        catchError((err) => {
+          console.log('Log OUT');
+          this.authService.logout();
+          this.router.navigateByUrl('/login');
+          return throwError(() => err);
+        })
+      );
+    }
+    return this.refreshTokenSubject.pipe(
+      filter(token => token !== ''),
+      take(1),
+      switchMap((token) => {
+        const req = request.clone({
+          setHeaders: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${AuthInterceptor.accessToken}`
+          }
+        });
+        return next.handle(req); 
+      })
     );
   }
 }

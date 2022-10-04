@@ -24,6 +24,8 @@ router.put(
             'EX': 84000
         });
         res.send(notice);
+        const io = await req.app.get("socket");
+        io.emit('notice-' + req.params.role, notice);
     });
 
 module.exports = router;

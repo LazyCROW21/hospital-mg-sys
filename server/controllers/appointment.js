@@ -25,7 +25,8 @@ const getAllAppointments = async () => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }
@@ -76,7 +77,8 @@ const getAppointmentsByPatientId = async (patientId) => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }
@@ -88,6 +90,7 @@ const getAllNextAppointments = async () => {
                 [Op.gt]: new Date()
             }
         },
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }
@@ -100,24 +103,7 @@ const getNextAppointmentsByPatientId = async (patientId) => {
                 [Op.gt]: new Date()
             }
         },
-        // include: [
-        //     {
-        //         model: Doctor,
-        //         as: 'doctor',
-        //         include: {
-        //             model: User,
-        //             as: 'user'
-        //         }
-        //     },
-        //     {
-        //         model: Patient,
-        //         as: 'patient',
-        //         include: {
-        //             model: User,
-        //             as: 'user'
-        //         }
-        //     }
-        // ]
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }
@@ -144,7 +130,8 @@ const getAppointmentsByDoctorId = async (doctorId) => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }
@@ -154,24 +141,7 @@ const getNextAppointmentsByDoctorId = async (doctorId) => {
         where: {
             doctorId: doctorId
         },
-        // include: [
-        //     {
-        //         model: Doctor,
-        //         as: 'doctor',
-        //         include: {
-        //             model: User,
-        //             as: 'user'
-        //         }
-        //     },
-        //     {
-        //         model: Patient,
-        //         as: 'patient',
-        //         include: {
-        //             model: User,
-        //             as: 'user'
-        //         }
-        //     }
-        // ]
+        order: [['createdAt', 'DESC']]
     });
     return appointments;
 }

@@ -29,8 +29,11 @@ body {
     width: 100%;
 }
 
-p-inputnumber, .p-inputnumber {
+p-inputnumber, .p-inputnumber, p-treeselect {
     display: block !important;
+    width: 100%;
+}
+.p-treeselect {
     width: 100%;
 }
 

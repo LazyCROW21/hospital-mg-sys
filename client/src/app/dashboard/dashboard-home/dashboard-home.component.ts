@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
+import { Notice } from 'src/app/common/models/notice';
 import { AppointmentService } from 'src/app/services/appointment.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { NoticeService } from 'src/app/services/notice.service';
@@ -11,7 +13,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.css']
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent implements OnInit, OnDestroy {
   loadingIcon: string = '';
   role: 'A' | 'D' | 'P';
   user: any;
@@ -20,30 +22,26 @@ export class DashboardHomeComponent implements OnInit {
   noOfNewReports = 0;
   readonly = true;
 
-  // accept, reject, cancel btn icons
-  updateButtonIcons = {
-    'rejected': 'pi pi-ban',
-    'fixed': 'pi pi-check',
-    'cancelled': 'pi pi-ban'
-  };
-
-  generalNotice = {
+  generalNotice: Notice = {
     date: new Date(),
     subject: '',
     body: ''
   };
+  generalNoticeSub: Subscription | undefined;
 
-  doctorNotice = {
+  doctorNotice: Notice = {
     date: new Date(),
     subject: '',
     body: ''
   };
+  doctorNoticeSub: Subscription | undefined;
 
-  adminNotice = {
+  adminNotice: Notice = {
     date: new Date(),
     subject: '',
     body: ''
   };
+  adminNoticeSub: Subscription | undefined;
 
   constructor(
     private authService: AuthService,
@@ -78,6 +76,12 @@ export class DashboardHomeComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.generalNoticeSub?.unsubscribe();
+    this.doctorNoticeSub?.unsubscribe();
+    this.adminNoticeSub?.unsubscribe();
+  }
+
   fetchNotice(nType: 'patient' | 'doctor' | 'admin') {
     this.noticeService.getNotice(nType).subscribe({
       next: (result: any) => {
@@ -87,16 +91,31 @@ export class DashboardHomeComponent implements OnInit {
               this.adminNotice.subject = result.subject;
               this.adminNotice.body = result.body;
               this.adminNotice.date = new Date(result.date);
+              this.adminNoticeSub = this.noticeService.liveAdminNotice.subscribe((notice: Notice) => {
+                this.adminNotice.subject = notice.subject;
+                this.adminNotice.body = notice.body;
+                this.adminNotice.date = notice.date;
+              });
               break;
             case 'doctor':
               this.doctorNotice.subject = result.subject;
               this.doctorNotice.body = result.body;
               this.doctorNotice.date = new Date(result.date);
+              this.doctorNoticeSub = this.noticeService.liveDoctorNotice.subscribe((notice: Notice) => {
+                this.doctorNotice.subject = notice.subject;
+                this.doctorNotice.body = notice.body;
+                this.doctorNotice.date = notice.date;
+              });
               break;
             case 'patient':
               this.generalNotice.subject = result.subject;
               this.generalNotice.body = result.body;
               this.generalNotice.date = new Date(result.date);
+              this.generalNoticeSub = this.noticeService.liveGeneralNotice.subscribe((notice: Notice) => {
+                this.generalNotice.subject = notice.subject;
+                this.generalNotice.body = notice.body;
+                this.generalNotice.date = notice.date;
+              });
               break;
           }
         }

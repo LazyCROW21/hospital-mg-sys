@@ -10,17 +10,19 @@ const UserModel = require('../models/user');
 const ACCESS_SECRET = process.env.ACCESS_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
-const _signAccessToken = (user, role) => {
-    const payload = { user: user.id, email: user.email, role: user.role, roleDetails: role };
+const _signAccessToken = (
+        user, email, role, roleDetails
+    ) => {
+    const payload = { user, email, role, roleDetails };
     return jwt.sign(payload, ACCESS_SECRET, {
         expiresIn: '10m'
     });
 }
 
-const _signRefreshToken = (user, role) => {
-    const payload = { user: user.id, email: user.email, role: user.role, roleId: role.id };
+const _signRefreshToken = (user, email, role, roleDetails) => {
+    const payload = { user, email, role, roleDetails };
     return jwt.sign(payload, REFRESH_SECRET, {
-        expiresIn: '1y'
+        expiresIn: '120m'
     });
 }
 
@@ -47,8 +49,8 @@ const loginUser = async (email, pwd) => {
             default:
                 role = null;
         }
-        const refreshToken = _signRefreshToken(user, role);
-        const accessToken = _signAccessToken(user, role);
+        const refreshToken = _signRefreshToken(user.id, user.email, user.role, role);
+        const accessToken = _signAccessToken(user.id, user.email, user.role, role);
         await client.set(`${user.id}`, refreshToken, {
             'EX': 36000
         });
@@ -66,7 +68,8 @@ const generateAccessToken = async (refreshToken) => {
     if(rfT !== refreshToken) {
         return null;
     }
-    return _signAccessToken(payload.user, payload.role);
+    console.log(payload);
+    return _signAccessToken(payload.user, payload.email, payload.role, payload.roleDetails);
 }
 
 const logoutUser = async (refreshToken) => {

@@ -32,7 +32,6 @@ export class AuthService {
         this.refreshToken.next(refreshToken);
         this.userType = this.userSubject.value.role;
       } else {
-        console.log('Logging out');
         this.logout();
       }
     } catch (err) {
@@ -43,6 +42,10 @@ export class AuthService {
 
   loginUser(data: any) {
     return this.http.post(environment.apiURL+'/auth/login', data, { headers: this.baseHeader });
+  }
+
+  refreshAccessToken() {
+    return this.http.post(environment.apiURL+'/auth/refresh', { refreshToken: this.refreshToken.value });
   }
 
   setUser(user: any, role: any, isLoggedIn: boolean) {

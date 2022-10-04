@@ -27,12 +27,9 @@ try {
 // ----------------------- LIVE SERVER CODE -----------------------
 io.on('connection', (socket) => {
     console.log('Connected');
-    let i = 0;
-    setInterval(()=>{
-        socket.emit('notice', `${i} SOMENOTICE`);
-        i++;
-    }, 2000);
 });
+
+app.set("socket", io);
 // ----------------------- LIVE SERVER CODE END -----------------------
 
 

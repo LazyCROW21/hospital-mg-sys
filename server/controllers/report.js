@@ -26,7 +26,8 @@ const getAllReports = async () => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return reports;
 }
@@ -50,7 +51,8 @@ const getReportById = async (id) => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     })
     return report
 }
@@ -77,7 +79,8 @@ const getReportsByPatientId = async (patientId) => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return reports
 }
@@ -104,7 +107,8 @@ const getReportsByDoctorId = async (doctorId) => {
                     as: 'user'
                 }
             }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
     });
     return reports
 }
@@ -119,7 +123,8 @@ const getNewReports = async (role, id) => {
                 },
                 createdAt: { [Op.eq]: col('updatedAt') }
             }
-        }
+        },
+        order: [['createdAt', 'DESC']]
     };
     switch (role) {
         case 'admin':

@@ -1,4 +1,5 @@
 <p-card>
+    <p-button icon="pi pi-angle-left" label="All Departments" styleClass="p-button-text" (onClick)="router.navigateByUrl('/dashboard/departments')"></p-button>
     <p-tabView>
         <p-tabPanel header="Details">
             <form [formGroup]="departmentForm" (ngSubmit)="onUpdate()">
