@@ -17,6 +17,7 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminsComponent } from './dashboard/admins/admins.component';
 import { UsersComponent } from './dashboard/users/users.component';
+import { DoctorsComponent } from './dashboard/doctors/doctors.component';
 
 const routes: Routes = [
   { 
@@ -42,6 +43,7 @@ const routes: Routes = [
       { path: 'appointments', component: AppointmentComponent },
       { path: 'profile', component: ProfileComponent },
       // Doctor
+      { path: 'doctors', component: DoctorsComponent },
       // Admins
       { path: 'admins', component: AdminsComponent, pathMatch: 'full' },
       { path: 'admins/:id', component: ProfileComponent, pathMatch: 'full' },

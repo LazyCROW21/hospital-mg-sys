@@ -6,6 +6,7 @@ import { differentField, matchField } from 'src/app/common/custom-validators';
 import { genderOptions, stateOptions, specializationOptions } from 'src/app/common/dropdown-options';
 import { AdminService } from 'src/app/services/admin.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { UserService } from 'src/app/services/user.service';
@@ -24,6 +25,7 @@ export class ProfileComponent implements OnInit {
   maxDate = new Date();
   user: any = {};
   role: any = {};
+  department: any = {};
   pageHeading = {
     'A': 'Admin',
     'U': 'User',
@@ -68,13 +70,14 @@ export class ProfileComponent implements OnInit {
     specialization: new FormControl(null, [Validators.required])
   });
 
+  profileMenuIndex = 'BD';
+
   constructor(
     public authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private adminService: AdminService,
     private doctorService: DoctorService,
-    private patientService: PatientService,
+    private departmentService: DepartmentService,
     private userService: UserService,
     private messageService: MessageService
   ) { }
@@ -134,6 +137,10 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  onProfileMenuItemClick(menu: string) {
+    this.profileMenuIndex = menu;
+  }
+
   onChangePWD() {
     if (this.pwdChangeForm.invalid) {
       this.pwdChangeForm.markAllAsTouched();
@@ -184,6 +191,21 @@ export class ProfileComponent implements OnInit {
     } else {
       this.userType = 'Doctor';
       this.doctorDetailForm.patchValue(role);
+      this.departmentService.getDepartment(role.departmentId).subscribe({
+        next: (resp) => {
+          this.department = resp;
+          console.log(resp);
+          console.log(this.user);
+        },
+        error: (err) => {
+          console.log(err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error!',
+            detail: 'Something went wrong'
+          });
+        }
+      });
     } 
   }
 

@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
     this.sideMenuItems = [
       { label: 'Dashboard', icon: 'pi pi-fw pi-desktop', routerLink: '/dashboard' },
       { label: 'All Departments', icon: 'pi pi-fw pi-th-large', routerLink: '/dashboard/departments' },
+      { label: 'All Doctors', icon: 'pi pi-fw pi-prime', routerLink: '/dashboard/doctors' },
       { label: 'Reports', icon: 'pi pi-fw pi-briefcase', routerLink: '/dashboard/reports' },
       { label: 'Appointment', icon: 'pi pi-fw pi-envelope', routerLink: '/dashboard/appointments' }
     ];

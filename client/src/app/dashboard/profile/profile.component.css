@@ -1,0 +1,20 @@
+.profile-menu-item {
+    padding: 0.75rem;
+    border-left: 0.5rem solid;
+    border-color: var(--purple-600);
+    color: var(--purple-600);
+    background-color: var(--surface-400);	
+    margin-bottom: 0.1rem;
+}
+
+.profile-menu-item-active {
+    background-color: var(--surface-100);
+    color: var(--purple-400);	
+    transition: all linear 250ms;	
+}
+
+.profile-menu-item:hover {
+    background-color: var(--surface-100);
+    color: var(--purple-400);	
+    transition: all linear 250ms;	
+}

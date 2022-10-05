@@ -1,0 +1,99 @@
+<p-card>
+    <div class="flex justify-content-between">
+        <h2>All Doctors</h2>
+    </div>
+    <p-divider></p-divider>
+    <ng-template [ngIf]="isLoadingDoctors" [ngIfElse]="notLoading">
+        <app-loading-bar></app-loading-bar>
+    </ng-template>
+    <ng-template #notLoading>
+        <app-doctor-table [doctors]="doctors" [menu]="doctorRowMenu" (onMenuAction)="onDoctorTableAction($event)">
+        </app-doctor-table>
+    </ng-template>
+</p-card>
+
+<p-dialog [(visible)]="dialog.show" [style]="{ minWidth: '40%' }">
+    <ng-template pTemplate="header">
+        <h3>
+            {{ dialog.header }}
+            <a class="ml-2" [routerLink]="['/', 'dashboard', 'users', activeUser?.id]">
+                <i class="pi pi-external-link"></i>
+            </a>
+        </h3>
+    </ng-template>
+    <table class="my-table">
+        <tbody>
+            <tr>
+                <th>User ID:</th>
+                <td>{{ activeUser?.id }}</td>
+            </tr>
+            <tr>
+                <th>First Name:</th>
+                <td>{{ activeUser?.firstName }}</td>
+            </tr>
+            <tr>
+                <th>Last Name:</th>
+                <td>{{ activeUser?.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ activeUser?.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>{{ activeUser?.phone }}</td>
+            </tr>
+            <tr>
+                <th>Emergency Phone:</th>
+                <td>{{ activeUser?.emergencyPhone }}</td>
+            </tr>
+            <tr>
+                <th>Gender:</th>
+                <td>{{ activeUser?.gender }}</td>
+            </tr>
+            <tr>
+                <th>Date of Birth:</th>
+                <td>{{ activeUser?.dob | date: "short" }}</td>
+            </tr>
+            <tr>
+                <th>Address Line 1:</th>
+                <td>{{ activeUser?.line1 }}</td>
+            </tr>
+            <tr>
+                <th>Address Line 2:</th>
+                <td>{{ activeUser?.line2 }}</td>
+            </tr>
+            <tr>
+                <th>PINCODE:</th>
+                <td>{{ activeUser?.pincode }}</td>
+            </tr>
+            <tr>
+                <th>City:</th>
+                <td>{{ activeUser?.city }}</td>
+            </tr>
+            <tr>
+                <th>State:</th>
+                <td>{{ activeUser?.state }}</td>
+            </tr>
+            <tr>
+                <th>Specialization:</th>
+                <td>{{ activeUser?.specialization }}</td>
+            </tr>
+            <tr>
+                <th>Experience:</th>
+                <td>{{ activeUser?.experience }}</td>
+            </tr>
+        </tbody>
+    </table>
+</p-dialog>
+
+<app-tranfer-doctor-dialog
+  [(show)]="transferDialog.show"
+  [doctor]="transferDialog.doctor"
+  (transferEvent)="onDoctorTransfer($event)"
+>
+</app-tranfer-doctor-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+
+<p-toast></p-toast>

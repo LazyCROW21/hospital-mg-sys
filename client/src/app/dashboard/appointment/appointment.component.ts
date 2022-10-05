@@ -11,7 +11,7 @@ import { DoctorService } from 'src/app/services/doctor.service';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent implements OnInit {
-  isLoadingAppointments: boolean = false;
+  isLoadingAppointments = false;
   dialog = {
     heading: '',
     show: false,
