@@ -16,7 +16,6 @@ module.exports = function verifyToken(req, res, next) {
         if(!payload) {
             return res.sendStatus(401);
         }
-        console.log(payload);
         req.user = payload.user;
         req.role = payload.role;
         req.roleId = payload.roleDetails.id;

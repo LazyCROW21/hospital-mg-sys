@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ImageCroppedEvent, base64ToFile } from 'ngx-image-cropper';
 import { MessageService } from 'primeng/api';
 import { differentField, matchField } from 'src/app/common/custom-validators';
 import { genderOptions, stateOptions, specializationOptions } from 'src/app/common/dropdown-options';
-import { AdminService } from 'src/app/services/admin.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { DoctorService } from 'src/app/services/doctor.service';
-import { PatientService } from 'src/app/services/patient.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -22,6 +21,15 @@ export class ProfileComponent implements OnInit {
   specializationOptions = specializationOptions;
   mode: 'A' | 'U' | 'M' | 'X' = 'X';
   readonly = true;
+  @ViewChild('profileImg')
+  profileImg: ElementRef | undefined;
+  imageEditorDialog = {
+    show: false,
+    heading: 'Set profile photo',
+    loading: false
+  }
+  profileImageChangedEvent: any;
+  croppedImageEvent: any;
   maxDate = new Date();
   user: any = {};
   role: any = {};
@@ -127,7 +135,7 @@ export class ProfileComponent implements OnInit {
       (
         this.authService.userType === 'A' &&
         (
-          this.authService.roleSubject.value.access.includes('MNG_U') || 
+          this.authService.roleSubject.value.access.includes('MNG_U') ||
           this.authService.roleSubject.value.access.includes('SA')
         )
       ) ||
@@ -135,7 +143,60 @@ export class ProfileComponent implements OnInit {
     ) {
       this.readonly = false;
     }
+    this.userService.getProfile(this.user.id).subscribe((img: ArrayBuffer) => {
+      if(this.profileImg) {
+        const b = new Blob([img]);
+        (<HTMLImageElement>this.profileImg.nativeElement).src = URL.createObjectURL(b);
+      }
+    });
   }
+
+  // ----------------- Image Editor Start ----------------------
+  onProfileImageUpload(event: any) {
+    this.profileImageChangedEvent = event;
+    this.imageEditorDialog.show = true;
+  }
+  loadImageFailed() {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Image Error!',
+      detail: 'Image format not supported or corrupted'
+    });
+  }
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImageEvent = event;
+  }
+  uploadProfile() {
+    const profileForm = new FormData();
+    profileForm.append('profile', base64ToFile(this.croppedImageEvent.base64), 'profile.png');
+    this.imageEditorDialog.loading = true;
+    this.userService.uploadProfile(this.user.id, profileForm).subscribe({
+      next: (resp) => {
+        this.imageEditorDialog.loading = false;
+        this.imageEditorDialog.show = false;
+
+        if(this.profileImg) {
+          (<HTMLImageElement>this.profileImg.nativeElement).src = this.croppedImageEvent.base64;
+        }
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'Profile image saved!'
+        });
+      },
+      error: (err) => {
+        this.imageEditorDialog.loading = false;
+        console.log(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error!',
+          detail: 'Something went wrong'
+        });
+      }
+    });
+  }
+  // ----------------- Image Editor End ----------------------
 
   onProfileMenuItemClick(menu: string) {
     this.profileMenuIndex = menu;
@@ -206,7 +267,7 @@ export class ProfileComponent implements OnInit {
           });
         }
       });
-    } 
+    }
   }
 
   onProfileSave() {

@@ -1,7 +1,6 @@
 module.exports = function checkAccess(roles, reqFieldLoc, reqField, matchField, adminAccess) {
     return (req, res, next) => {
         try {
-            console.log(roles, req.role, req.roleDetails);
             if(!roles.includes(req.role) ) {
                 return res.sendStatus(403);
             }

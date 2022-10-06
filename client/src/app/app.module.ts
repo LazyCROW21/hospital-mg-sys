@@ -57,6 +57,7 @@ import { DepartmentTableComponent } from './common/department-table/department-t
 import { FullNamePipe } from './pipes/full-name.pipe';
 import { TranferDoctorDialogComponent } from './common/tranfer-doctor-dialog/tranfer-doctor-dialog.component';
 import { DoctorsComponent } from './dashboard/doctors/doctors.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { DoctorsComponent } from './dashboard/doctors/doctors.component';
     ConfirmDialogModule,
     CheckboxModule,
     MultiSelectModule,
-    TreeSelectModule
+    TreeSelectModule,
+    ImageCropperModule
   ],
   providers: [
     MessageService,

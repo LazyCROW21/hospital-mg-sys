@@ -14,26 +14,34 @@ export class UserService {
   }
   
   getAllNewUsers() {
-    return this.http.get(environment.apiURL+'/user/new', { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/user/new');
   }
 
   getUserById(id: number) {
-    return this.http.get(environment.apiURL+'/user/'+id, { headers: this.baseHeader });
+    return this.http.get(environment.apiURL+'/user/'+id);
   }
 
   commitUser(userId: number, status: 'A' | 'R') {
-    return this.http.patch(environment.apiURL+'/user/commit/'+userId, { status }, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/user/commit/'+userId, { status });
   }
 
   updateUser(userId: number, data: any) {
-    return this.http.patch(environment.apiURL+'/user/'+userId, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/user/'+userId, data);
+  }
+
+  getProfile(userId: number) {
+    return this.http.get(environment.apiURL+'/user/'+userId+'/img', { responseType: 'arraybuffer' });
+  }
+
+  uploadProfile(userId: number, data: any) {
+    return this.http.post(environment.apiURL+'/user/'+userId+'/img', data);
   }
 
   changeUserPWD(userId: number, data: any) {
-    return this.http.patch(environment.apiURL+'/user/changePWD/'+userId, data, { headers: this.baseHeader });
+    return this.http.patch(environment.apiURL+'/user/changePWD/'+userId, data);
   }
   
   deleteUser(userId: number) {
-    return this.http.delete(environment.apiURL+'/user/'+userId, { headers: this.baseHeader });
+    return this.http.delete(environment.apiURL+'/user/'+userId);
   }
 }

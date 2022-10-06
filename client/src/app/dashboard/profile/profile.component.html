@@ -13,12 +13,28 @@
   </div>
   <div class="col-12 md:col-3">
     <p-card>
-      <div class="text-center">
+      <div class="text-center relative">
         <img
           style="width: 100%; height: auto"
           alt="Profile"
-          src="https://img.icons8.com/color/96/000000/gender-neutral-user.png"
+          [src]=""
+          #profileImg
         />
+        <div class="absolute top-0 right-0">
+          <p-button
+            icon="pi pi-upload"
+            styleClass="p-button-sm p-button-rounded"
+            (onClick)="profileInput.click()"
+          >
+          </p-button>
+          <input
+            #profileInput
+            type="file"
+            (change)="onProfileImageUpload($event)"
+            accept="image/*"
+            hidden
+          />
+        </div>
         <h2 class="mb-3">{{ user | fullName }}</h2>
         <ng-template [ngIf]="userType === 'Doctor'">
           <p class="text-purple-600">{{ role.designation }}</p>
@@ -27,7 +43,6 @@
         <ng-template [ngIf]="userType === 'Admin'">
           <p>Admin</p>
         </ng-template>
-        
       </div>
       <p-divider></p-divider>
       <div>
@@ -465,6 +480,37 @@
     </p-card>
   </div>
 </div>
+
+<p-dialog
+  [header]="imageEditorDialog.heading"
+  [(visible)]="imageEditorDialog.show"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '90%', height: '90vh' }"
+>
+  <image-cropper
+    [maintainAspectRatio]="true"
+    [aspectRatio]="1 / 1"
+    [resizeToWidth]="256"
+    [resizeToHeight]="256"
+    format="png"
+    [imageChangedEvent]="profileImageChangedEvent"
+    (imageCropped)="imageCropped($event)"
+    (loadImageFailed)="loadImageFailed()"
+  ></image-cropper>
+  <ng-template pTemplate="footer">
+    <p-button
+      styleClass="p-button-secondary p-button-text"
+      label="Cancel"
+      (onClick)="imageEditorDialog.show = false"
+    ></p-button>
+    <p-button
+      label="Upload"
+      (onClick)="uploadProfile()"
+      [loading]="imageEditorDialog.loading"
+    ></p-button>
+  </ng-template>
+</p-dialog>
 
 <p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>
