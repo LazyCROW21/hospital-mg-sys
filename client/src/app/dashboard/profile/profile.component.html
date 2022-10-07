@@ -13,27 +13,29 @@
   </div>
   <div class="col-12 md:col-3">
     <p-card>
-      <div class="text-center relative">
-        <img
-          style="width: 100%; height: auto"
-          alt="Profile"
-          [src]=""
-          #profileImg
-        />
-        <div class="absolute top-0 right-0">
-          <p-button
-            icon="pi pi-upload"
-            styleClass="p-button-sm p-button-rounded"
-            (onClick)="profileInput.click()"
-          >
-          </p-button>
-          <input
-            #profileInput
-            type="file"
-            (change)="onProfileImageUpload($event)"
-            accept="image/*"
-            hidden
+      <div class="text-center ">
+        <div id="profile-container" class="relative">
+          <img
+            style="width: 100%; height: auto"
+            alt="Profile"
+            [src]=""
+            #profileImg
           />
+          <div class="absolute top-0 left-0 flex align-items-center justify-content-center">
+            <p-button
+              icon="pi pi-upload"
+              styleClass="p-button-outlined p-button-sm p-button-rounded p-button-warning"
+              (onClick)="profileInput.click()"
+            >
+            </p-button>
+            <input
+              #profileInput
+              type="file"
+              (change)="onProfileImageUpload($event)"
+              accept="image/*"
+              hidden
+            />
+          </div>
         </div>
         <h2 class="mb-3">{{ user | fullName }}</h2>
         <ng-template [ngIf]="userType === 'Doctor'">

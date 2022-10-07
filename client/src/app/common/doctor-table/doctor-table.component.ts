@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FilterMetadata, MenuItem } from 'primeng/api';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MenuItem, SortEvent } from 'primeng/api';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-doctor-table',
@@ -8,6 +9,9 @@ import { FilterMetadata, MenuItem } from 'primeng/api';
 })
 export class DoctorTableComponent implements OnInit {
   activeRow = 0;
+
+  @ViewChild('dt')
+  dataTable!: Table;
 
   @Input('doctors')
   doctors: any[] = [];
@@ -51,4 +55,40 @@ export class DoctorTableComponent implements OnInit {
     });
   }
 
+  print(event: any) {
+    console.log(event);
+  }
+
+  doctorSort(event: SortEvent) {
+    event.data?.sort((a: any, b: any) => {
+      let result = 1;
+      switch(event.field) {
+        case 'name':
+          let aName = <string>(a.user.firstName + a.user.lastName);
+          let bName = <string>(b.user.firstName + b.user.lastName);
+          result = aName.localeCompare(bName);
+          break;
+        case 'gender':
+          let aG = <string>(a.user.gender);
+          let bG = <string>(b.user.gender);
+          result = aG.localeCompare(bG);
+          break;
+        case 'phone':
+          let aP = <string>(a.user.phone);
+          let bP = <string>(b.user.phone);
+          result = aP.localeCompare(bP);
+          break;
+        case 'specialization':
+          let aS = <string>(a.specialization);
+          let bS = <string>(b.specialization);
+          result = aS.localeCompare(bS);
+          break;
+      }
+      return result * (event.order ?? 1);
+    });
+  }
+
+  filterTable(event: any) {
+    this.dataTable.filterGlobal(event.target.value, 'contains');
+  }
 }
