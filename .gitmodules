@@ -1,0 +1,3 @@
+[submodule "client/src/style"]
+	path = client/src/style
+	url = https://github.com/LazyCROW21/hospital-mng-sys-style
