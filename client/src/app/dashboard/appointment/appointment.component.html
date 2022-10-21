@@ -27,13 +27,13 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>#</th>
-          <th *ngIf="this.authService.userType !== 'P'">Patient</th>
-          <th *ngIf="this.authService.userType !== 'D'">Doctor</th>
-          <th>Subject</th>
-          <th>Preferred Date</th>
-          <th class="text-center">Status</th>
-          <th class="text-center"></th>
+          <th scope="col">#</th>
+          <th scope="col" *ngIf="this.authService.userType !== 'P'">Patient</th>
+          <th scope="col" *ngIf="this.authService.userType !== 'D'">Doctor</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Preferred Date</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-center"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-appointment let-i="rowIndex">
@@ -215,29 +215,30 @@
   [style]="{ maxWidth: '80%' }"
 >
   <table class="my-table">
+    <caption hidden>Appointment Details</caption>
     <tbody>
       <tr *ngIf="appointmentDetails.patient">
-        <th>Patient:</th>
+        <th scope="row">Patient:</th>
         <td>{{ appointmentDetails.patient.user | fullName }}</td>
       </tr>
       <tr *ngIf="appointmentDetails.doctor">
-        <th>Doctor:</th>
+        <th scope="row">Doctor:</th>
         <td>{{ appointmentDetails.doctor.user | fullName }}</td>
       </tr>
       <tr>
-        <th>Subject:</th>
+        <th scope="row">Subject:</th>
         <td>{{ appointmentDetails.subject }}</td>
       </tr>
       <tr>
-        <th>Message:</th>
+        <th scope="row">Message:</th>
         <td>{{ appointmentDetails.message }}</td>
       </tr>
       <tr>
-        <th>Preferred Date & Time:</th>
+        <th scope="row">Preferred Date & Time:</th>
         <td>{{ appointmentDetails.preferredDateTime | date: "short" }}</td>
       </tr>
       <tr>
-        <th>Status:</th>
+        <th scope="row">Status:</th>
         <td>
           <ng-template [ngIf]="appointmentDetails.status === 'fixed'">
             <p-badge
@@ -297,7 +298,7 @@
         </td>
       </tr>
       <tr *ngIf="appointmentDetails.status === 'rejected'">
-        <th>Reason for Rejection:</th>
+        <th scope="row">Reason for Rejection:</th>
         <td>{{ appointmentDetails.rejectMessage }}</td>
       </tr>
     </tbody>

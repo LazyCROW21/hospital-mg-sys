@@ -26,12 +26,12 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th class="text-center">Gender</th>
-          <th class="text-center">Phone</th>
-          <th class="text-center">Access</th>
-          <th></th>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col" class="text-center">Gender</th>
+          <th scope="col" class="text-center">Phone</th>
+          <th scope="col" class="text-center">Access</th>
+          <th scope="col"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-admin let-i="rowIndex">
@@ -135,8 +135,8 @@
         />
         <small
           *ngIf="
-                        (newAdminForm.errors?.['match'] && newAdminForm.get('phone')?.touched) || 
-                        (newAdminForm.get('emergencyPhone')?.invalid && newAdminForm.get('emergencyPhone')?.touched)"
+            (newAdminForm.errors?.['match'] && newAdminForm.get('phone')?.touched) || 
+            (newAdminForm.get('emergencyPhone')?.invalid && newAdminForm.get('emergencyPhone')?.touched)"
           class="p-error"
         >
           Emergency Contact is required & must be different from Primany Contact

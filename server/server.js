@@ -16,17 +16,17 @@ app.use('/api', router);
 
 const port = process.env.PORT | 4000;
 
-try {
-    sequelize.authenticate().then(() => {
-        console.log('Connected to DB');
-    });
-} catch (error) {
+sequelize.authenticate()
+.then(() => {
+    console.log('Connected to DB');
+})
+.catch((error) => {
     console.error('DB connection error:', error);
-}
+});
 
 // ----------------------- LIVE SERVER CODE -----------------------
 io.on('connection', (socket) => {
-    console.log('Connected');
+    console.log('Connected', socket.id);
 });
 
 app.set("socket", io);

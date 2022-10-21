@@ -3,16 +3,17 @@
         <div class="grid">
             <div class="col-12">
                 <table class="my-table">
+                    <caption class="text-left">Doctor detail:</caption>
                     <tr *ngIf="doctor.user">
-                        <th>Name</th>
+                        <th scope="row">Name</th>
                         <td>{{ doctor.user | fullName }}</td>
                     </tr>
                     <tr>
-                        <th>Experience</th>
+                        <th scope="row">Experience</th>
                         <td>{{ doctor.experience }}</td>
                     </tr>
                     <tr>
-                        <th>Specialization</th>
+                        <th scope="row">Specialization</th>
                         <td>{{ doctor.specialization }}</td>
                     </tr>
                 </table>

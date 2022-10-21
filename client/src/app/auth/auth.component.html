@@ -9,7 +9,7 @@
             <div class="col-6">
                 <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                     <div class="p-inputgroup mb-2">
-                        <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                        <span class="p-inputgroup-addon"><i class="pi pi-envelope" aria-hidden="true"></i></span>
                         <input type="email" pInputText placeholder="Email" formControlName="email">
                     </div>
                     <p class="w-full p-error mb-2"
@@ -17,7 +17,7 @@
                         Invalid Email
                     </p>
                     <div class="p-inputgroup mb-2">
-                        <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                        <span class="p-inputgroup-addon"><i class="pi pi-lock" aria-hidden="true"></i></span>
                         <input type="password" pInputText placeholder="Password" formControlName="pwd">
                     </div>
                     <p class="p-error mb-2"

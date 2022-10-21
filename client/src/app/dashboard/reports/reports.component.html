@@ -19,14 +19,14 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>#</th>
-          <th *ngIf="authService.userType !== 'P'">Patient</th>
-          <th *ngIf="authService.userType !== 'D'">Doctor</th>
-          <th class="text-center">Admitted</th>
-          <th class="text-center">Discharge</th>
-          <th class="text-center">Treatment</th>
-          <th class="text-center">Status</th>
-          <th class="text-center"></th>
+          <th scope="col" >#</th>
+          <th scope="col" *ngIf="authService.userType !== 'P'">Patient</th>
+          <th scope="col" *ngIf="authService.userType !== 'D'">Doctor</th>
+          <th scope="col" class="text-center">Admitted</th>
+          <th scope="col" class="text-center">Discharge</th>
+          <th scope="col" class="text-center">Treatment</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-center"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-report let-i="rowIndex">

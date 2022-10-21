@@ -1,11 +1,10 @@
-// const { Op } = require("sequelize");
 const PatientModel = require('../models/patient');
 const User = require("../models/user");
 
 PatientModel.sync();
 
 const getAllPatients = async () => {
-    const patients = await PatientModel.findAll({
+    return PatientModel.findAll({
         where: {
             "$user.status$": 'A'
         },
@@ -14,14 +13,11 @@ const getAllPatients = async () => {
             as: 'user'
         }
     });
-    return patients;
 }
 
 // returns no of patients registered in the week
 const getNewPatients = async () => {
-    // const d = new Date();
-    // d.setDate(d.getDate() - 7);
-    const patients = await PatientModel.findAndCountAll({
+    return PatientModel.findAndCountAll({
         where: {
             "$user.status$": 'N'
         },
@@ -30,12 +26,10 @@ const getNewPatients = async () => {
             as: 'user'
         }
     });
-    return patients;
 }
 
 const getPatientById = async (id) => {
-    const patient = await PatientModel.findByPk(id);
-    return patient;
+    return PatientModel.findByPk(id);
 }
 
 const addPatient = async (patientData) => {

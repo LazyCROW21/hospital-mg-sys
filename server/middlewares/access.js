@@ -1,27 +1,23 @@
 module.exports = function checkAccess(roles, reqFieldLoc, reqField, matchField, adminAccess) {
     return (req, res, next) => {
         try {
-            if(!roles.includes(req.role) ) {
+            if(!roles.includes(req.role)) {
                 return res.sendStatus(403);
-            }
-            if(req.role === 'A' && adminAccess) {
+            } 
+            else if(req.role === 'A' && adminAccess) {
                 let fnd = false;
-                for(let i=0; i<adminAccess.length; i++) {
-                    if(req.roleDetails.access.includes(adminAccess[i])) {
+                for(const element of adminAccess) {
+                    if(req.roleDetails.access.includes(element)) {
                         fnd = true;
                         break;
                     }
                 }
                 if(!fnd) {
                     return res.sendStatus(403);
-                } else {
-                    return next();
                 }
-            }
-            if(reqFieldLoc && reqField && matchField) {
-                if(req[matchField] != req[reqFieldLoc][reqField]) {
-                    return res.sendStatus(403);
-                }
+            } 
+            else if(reqFieldLoc && reqField && matchField && req[matchField] != req[reqFieldLoc][reqField]) {
+                return res.sendStatus(403);
             }
             next();
         } catch (err) {

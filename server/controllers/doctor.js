@@ -1,4 +1,3 @@
-// const { Op } = require('sequelize');
 const Department = require('../models/department');
 const DoctorModel = require('../models/doctor');
 const User = require('../models/user');
@@ -6,7 +5,7 @@ const User = require('../models/user');
 DoctorModel.sync();
 
 const getAllDoctors = async () => {
-    const doctors = await DoctorModel.findAll({
+    return DoctorModel.findAll({
         where: {
             "$user.status$": 'A'
         },
@@ -21,14 +20,11 @@ const getAllDoctors = async () => {
             }
         ]
     });
-    return doctors;
 }
 
 // returns no of doctors registered in the week
 const getNewDoctors = async () => {
-    // const d = new Date();
-    // d.setDate(d.getDate() - 7);
-    const doctors = await DoctorModel.findAll({
+    return DoctorModel.findAll({
         where: {
             '$user.status$': 'N'
         },
@@ -37,11 +33,10 @@ const getNewDoctors = async () => {
             as: 'user'
         }
     });
-    return doctors;
 }
 
 const getDoctorsByDepartmentId = async (id) => {
-    const doctors = await DoctorModel.findAll({
+    return DoctorModel.findAll({
         where: { departmentId: id },
         include: [
             {
@@ -54,11 +49,10 @@ const getDoctorsByDepartmentId = async (id) => {
             }
         ]
     });
-    return doctors;
 }
 
 const getDoctorById = async (id) => {
-    const doctor = await DoctorModel.findByPk(id, {
+    return DoctorModel.findByPk(id, {
         include: [
             {
                 model: User,
@@ -70,11 +64,10 @@ const getDoctorById = async (id) => {
             }
         ]
     });
-    return doctor;
 }
 
 const getDoctorByUserId = async (id) => {
-    const doctor = await DoctorModel.findOne({
+    return DoctorModel.findOne({
         "$user.id$": id
     }, {
         include: [
@@ -88,7 +81,6 @@ const getDoctorByUserId = async (id) => {
             }
         ]
     });
-    return doctor;
 }
 
 const addDoctor = async (doctorData) => {
@@ -98,17 +90,15 @@ const addDoctor = async (doctorData) => {
 }
 
 const updateDoctorByUserId = async (userId, data) => {
-    const result = await DoctorModel.update(data, {
+    return DoctorModel.update(data, {
         where: { userId }
     });
-    return result;
 }
 
 const updateDoctorById = async (id, data) => {
-    const result = await DoctorModel.update(data, {
+    return DoctorModel.update(data, {
         where: { id }
     });
-    return result;
 }
 
 module.exports = {

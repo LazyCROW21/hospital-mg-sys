@@ -3,23 +3,21 @@ const DepartmentModel = require('../models/department');
 DepartmentModel.sync();
 
 const getAllDepartments = async () => {
-    const departments = await DepartmentModel.findAll({ include: {
+    return DepartmentModel.findAll({ include: {
         model: DepartmentModel,
         as: 'parentDepartment',
     } });
-    return departments;
 }
 
 const getDepartmentById = async (id) => {
-    const department = await DepartmentModel.findByPk(id, { include: {
+    return DepartmentModel.findByPk(id, { include: {
         model: DepartmentModel,
         as: 'parentDepartment',
     } })
-    return department
 }
 
 const getDepartmentsByParentDepartmentId = async (parentId) => {
-    const departments = await DepartmentModel.findAll({
+    return DepartmentModel.findAll({
         where: {
             parentDepartmentId: parentId
         },
@@ -28,7 +26,6 @@ const getDepartmentsByParentDepartmentId = async (parentId) => {
             as: 'parentDepartment',
         }
     });
-    return departments
 }
 
 const addDepartment = async (departmentData) => {
@@ -38,13 +35,13 @@ const addDepartment = async (departmentData) => {
 }
 
 const updateDepartment = async (id, data) => {
-    return await DepartmentModel.update(data, {
+    return DepartmentModel.update(data, {
         where: { id }
     });
 }
 
 const removeDepartment = async (id) => {
-    return await DepartmentModel.destroy({
+    return DepartmentModel.destroy({
         where: { id }
     });
 }

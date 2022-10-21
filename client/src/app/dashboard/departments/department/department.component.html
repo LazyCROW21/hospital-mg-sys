@@ -20,7 +20,7 @@
                         <span class="p-inputgroup-addon" *ngIf="departmentForm.get('parentDepartmentId')?.value">
                             <a
                                 [routerLink]="['/', 'dashboard', 'departments', departmentForm.get('parentDepartmentId')?.value]">
-                                <i class="pi pi-external-link"></i>
+                                <i class="pi pi-external-link" aria-hidden="true"></i>
                             </a>
                         </span>
                     </div>

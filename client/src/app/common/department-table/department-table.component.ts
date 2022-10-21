@@ -27,7 +27,7 @@ export class DepartmentTableComponent implements OnInit {
     index: number
   }> = new EventEmitter();
 
-  constructor() { }
+  // constructor() { }
 
   ngOnInit(): void {
     this.rowMenu.forEach((menuItem) => {

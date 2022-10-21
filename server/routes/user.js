@@ -16,9 +16,14 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         console.log(file);
         cb(null, `user_img_${req.params.id}${path.extname(file.originalname)}`);
-    }
+    },
 });
-const upload = multer({ storage });
+const upload = multer({ 
+    storage,
+    filename: (req, file, cb) => {
+        console.log(file);
+        cb(null, `user_img_${req.params.id}${path.extname(file.originalname)}`);
+    }, limits: { fileSize: 7100000 } });
 
 router.get('/', async (req, res) => {
     const users = await userController.getAllUsers();

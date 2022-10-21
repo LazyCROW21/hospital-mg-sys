@@ -17,70 +17,71 @@
         <h3>
             {{ dialog.header }}
             <a class="ml-2" [routerLink]="['/', 'dashboard', 'users', activeUser?.id]">
-                <i class="pi pi-external-link"></i>
+                <i class="pi pi-external-link" aria-hidden="true"></i>
             </a>
         </h3>
     </ng-template>
     <table class="my-table">
+        <caption hidden>Doctor Details</caption>
         <tbody>
             <tr>
-                <th>User ID:</th>
+                <th scope="row">User ID:</th>
                 <td>{{ activeUser?.id }}</td>
             </tr>
             <tr>
-                <th>First Name:</th>
+                <th scope="row">First Name:</th>
                 <td>{{ activeUser?.firstName }}</td>
             </tr>
             <tr>
-                <th>Last Name:</th>
+                <th scope="row">Last Name:</th>
                 <td>{{ activeUser?.lastName }}</td>
             </tr>
             <tr>
-                <th>Email:</th>
+                <th scope="row">Email:</th>
                 <td>{{ activeUser?.email }}</td>
             </tr>
             <tr>
-                <th>Phone:</th>
+                <th scope="row">Phone:</th>
                 <td>{{ activeUser?.phone }}</td>
             </tr>
             <tr>
-                <th>Emergency Phone:</th>
+                <th scope="row">Emergency Phone:</th>
                 <td>{{ activeUser?.emergencyPhone }}</td>
             </tr>
             <tr>
-                <th>Gender:</th>
+                <th scope="row">Gender:</th>
                 <td>{{ activeUser?.gender }}</td>
             </tr>
             <tr>
-                <th>Date of Birth:</th>
+                <th scope="row">Date of Birth:</th>
                 <td>{{ activeUser?.dob | date: "short" }}</td>
             </tr>
             <tr>
-                <th>Address Line 1:</th>
+                <th scope="row">Address Line 1:</th>
                 <td>{{ activeUser?.line1 }}</td>
             </tr>
             <tr>
-                <th>Address Line 2:</th>
+                <th scope="row">Address Line 2:</th>
                 <td>{{ activeUser?.line2 }}</td>
             </tr>
             <tr>
-                <th>PINCODE:</th>
+                <th scope="row">PINCODE:</th>
                 <td>{{ activeUser?.pincode }}</td>
             </tr>
             <tr>
-                <th>City:</th>
+                <th scope="row">City:</th>
                 <td>{{ activeUser?.city }}</td>
             </tr>
             <tr>
-                <th>State:</th>
+                <th scope="row">State:</th>
                 <td>{{ activeUser?.state }}</td>
             </tr>
             <tr>
-                <th>Specialization:</th>
+                <th scope="row">Specialization:</th>
                 <td>{{ activeUser?.specialization }}</td>
             </tr>
             <tr>
-                <th>Experience:</th>
+                <th scope="row">Experience:</th>
                 <td>{{ activeUser?.experience }}</td>
             </tr>
         </tbody>

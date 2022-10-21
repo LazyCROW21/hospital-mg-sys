@@ -11,7 +11,7 @@ module.exports = {
             text: 'Thankyou for creating a account, please wait until your details are verified, then you will be able to login.',
             html: await ejs.renderFile(path.join(__dirname, './email-template/welcome.ejs'))
         };
-        return await transporter.sendMail(mailOptions);
+        return transporter.sendMail(mailOptions);
     },
     async commitAccountGreeting(user) {
         let subject = '', text = '';
@@ -39,7 +39,7 @@ module.exports = {
             text,
             html: await ejs.renderFile(path.join(__dirname, './email-template/commitAccount.ejs'), { title: subject, status: user.status, msg: text })
         };
-        return await transporter.sendMail(mailOptions);
+        return transporter.sendMail(mailOptions);
     },
     async appointmentAlert(doctor, patient, appointment) {
         let subject = '', text = '', to = '';
@@ -115,7 +115,7 @@ module.exports = {
                 }
             )
         };
-        return await transporter.sendMail(mailOptions);
+        return transporter.sendMail(mailOptions);
     },
     async updateReportAlert(report) {
         let subject = '', text = '';
@@ -151,6 +151,6 @@ module.exports = {
                 }
             )
         };
-        return await transporter.sendMail(mailOptions);
+        return transporter.sendMail(mailOptions);
     },
 }

@@ -25,7 +25,7 @@ export class DoctorTableComponent implements OnInit {
 
   doctorRowMenu: MenuItem[] = [];
 
-  constructor() { }
+  // constructor() { }
 
   @Output('onMenuAction') onMenuAction: EventEmitter<{
     event: string,

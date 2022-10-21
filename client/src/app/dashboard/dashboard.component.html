@@ -19,7 +19,7 @@
     <div *ngFor="let sideMenuItem of sideMenuItems" class="flex align-items-center gap-2 text-xl side-nav-item"
         [routerLink]="sideMenuItem.routerLink" routerLinkActive="side-nav-item-active"
         [routerLinkActiveOptions]="{exact: true}" (click)="showSidebar = false;">
-        <i [class]="sideMenuItem.icon"></i>
+        <i [class]="sideMenuItem.icon" aria-hidden="true"></i>
         <a>
             {{ sideMenuItem.label }}
         </a>
@@ -30,7 +30,7 @@
             class="flex align-items-center gap-2 text-xl side-nav-item" [routerLink]="sideMenuItem.routerLink"
             routerLinkActive="side-nav-item-active" [routerLinkActiveOptions]="{exact: true}"
             (click)="showSidebar = false;">
-            <i [class]="sideMenuItem.icon"></i>
+            <i [class]="sideMenuItem.icon" aria-hidden="true"></i>
             <a>
                 {{ sideMenuItem.label }}
             </a>
@@ -42,7 +42,7 @@
             class="flex align-items-center gap-2 text-xl side-nav-item" [routerLink]="sideMenuItem.routerLink"
             routerLinkActive="side-nav-item-active" [routerLinkActiveOptions]="{exact: true}"
             (click)="showSidebar = false;">
-            <i [class]="sideMenuItem.icon"></i>
+            <i [class]="sideMenuItem.icon" aria-hidden="true"></i>
             <a>
                 {{ sideMenuItem.label }}
             </a>
@@ -53,7 +53,7 @@
         <div *ngFor="let sideMenuItem of adminSideMenuItems" class="flex align-items-center gap-2 text-xl side-nav-item"
             [routerLink]="sideMenuItem.routerLink" routerLinkActive="side-nav-item-active"
             [routerLinkActiveOptions]="{exact: true}" (click)="showSidebar = false;">
-            <i [class]="sideMenuItem.icon"></i>
+            <i [class]="sideMenuItem.icon" aria-hidden="true"></i>
             <a>
                 {{ sideMenuItem.label }}
             </a>

@@ -62,18 +62,10 @@ router.get(
 });
 
 router.post(
-    '/', 
+    '/',
+    access(['P'], 'body', 'patientId', 'roleId', null),
     validation(appointmentJOI.creationSchema), 
     async (req, res) => {
-    switch(req.role) {
-        case 'P':
-            if(req.body.patientId != req.roleId) {
-                return res.sendStatus(401);
-            }
-            break;
-        default:
-            return res.sendStatus(403);
-    }
     req.body.rejectMessage = null;
     req.body.concludedByPatient = false;
     req.body.concludedByDoctor = false;

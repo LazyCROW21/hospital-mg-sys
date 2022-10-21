@@ -81,8 +81,7 @@ const logoutUser = async (refreshToken) => {
     if(rfT !== refreshToken) {
         return null;
     }
-    const res = await client.del(`${payload.user}`);
-    return res;
+    return client.del(`${payload.user}`);
 }
 
 module.exports = {

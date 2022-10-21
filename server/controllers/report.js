@@ -8,7 +8,7 @@ const User = require('../models/user');
 ReportModel.sync();
 
 const getAllReports = async () => {
-    const reports = await ReportModel.findAll({
+    return ReportModel.findAll({
         include: [
             {
                 model: Doctor,
@@ -29,11 +29,10 @@ const getAllReports = async () => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return reports;
 }
 
 const getReportById = async (id) => {
-    const report = await ReportModel.findByPk(id, {
+    return ReportModel.findByPk(id, {
         include: [
             {
                 model: Doctor,
@@ -54,11 +53,10 @@ const getReportById = async (id) => {
         ],
         order: [['createdAt', 'DESC']]
     })
-    return report
 }
 
 const getReportsByPatientId = async (patientId) => {
-    const reports = await ReportModel.findAll({
+    return ReportModel.findAll({
         where: {
             patientId: patientId
         },
@@ -82,11 +80,10 @@ const getReportsByPatientId = async (patientId) => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return reports
 }
 
 const getReportsByDoctorId = async (doctorId) => {
-    const reports = await ReportModel.findAll({
+    return ReportModel.findAll({
         where: {
             doctorId: doctorId
         },
@@ -110,7 +107,6 @@ const getReportsByDoctorId = async (doctorId) => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return reports
 }
 
 const getNewReports = async (role, id) => {
@@ -136,7 +132,7 @@ const getNewReports = async (role, id) => {
             query.where.patientId = id;
             break;
     }
-    return await ReportModel.findAndCountAll(query);
+    return ReportModel.findAndCountAll(query);
 }
 
 const addReport = async ({ id, patientId, doctorId, preferredDateTime }) => {
@@ -185,11 +181,11 @@ const updateReport = async (id, data) => {
         return null;
     }
     report.set(data);
-    return await report.save();
+    return report.save();
 }
 
 const deleteReport = async (id) => {
-    return await ReportModel.destroy({ where: { id } });
+    return ReportModel.destroy({ where: { id } });
 }
 
 

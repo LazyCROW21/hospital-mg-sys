@@ -1,4 +1,5 @@
 const { Op } = require('sequelize');
+require('dotenv').config({ path: '../.env' });
 const UserModel = require('../models/user');
 const PatientModel = require('../models/patient');
 const DoctorModel = require('../models/doctor');
@@ -29,16 +30,15 @@ const getUserById = async (id) => {
 }
 
 const getAllUsers = async () => {
-    return await UserModel.findAll();
+    return UserModel.findAll();
 }
 
 const getAllNewUsers = async () => {
-    const users = await UserModel.findAll({
+    return UserModel.findAll({
         where: {
             status: 'N'
         }
     });
-    return users;
 }
 
 const addPatient = async (userData) => {
@@ -61,7 +61,7 @@ const addDoctor = async (userData) => {
 
 const addAdmin = async (userData) => {
     userData.status = 'A';
-    userData.pwd = 'asdf1234';
+    userData.pwd = process.env.DEFAULT_ADMIN_PWD;
     let newUser = new UserModel(userData);
     await newUser.save();
     let newAdmin = new AdminModel({ userId: newUser.id, ...userData });
@@ -75,7 +75,7 @@ const commitUser = async (id, commit) => {
         return null;
     }
     user.status = commit;
-    return await user.save();
+    return user.save();
 }
 
 const updateUser = async (id, data) => {
@@ -84,10 +84,10 @@ const updateUser = async (id, data) => {
         return null;
     }
     const keys = Object.keys(data);
-    for(let i = 0; i<keys.length; i++) {
-        user[keys[i]] = data[keys[i]];
+    for(const element of keys) {
+        user[element] = data[element];
     }
-    return await user.save();
+    return user.save();
 }
 
 const changePWD = async (id, oldPWD, newPWD) => {
@@ -95,18 +95,18 @@ const changePWD = async (id, oldPWD, newPWD) => {
         where: {
             id,
             pwd: oldPWD,
-            status: { [Op.notIn]: ['X', 'N'] }, pwd: oldPWD 
+            status: { [Op.notIn]: ['X', 'N'] }
         }
     });
     if (!user) {
         return null;
     }
     user.pwd = newPWD;
-    return await user.save();
+    return user.save();
 }
 
 const deleteUser = async (id) => {
-    return await UserModel.update({ status: 'X' }, { where: { id }});
+    return UserModel.update({ status: 'X' }, { where: { id }});
 }
 
 module.exports = {

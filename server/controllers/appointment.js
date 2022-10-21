@@ -7,7 +7,7 @@ const User = require('../models/user');
 AppointmentModel.sync();
 
 const getAllAppointments = async () => {
-    const appointments = await AppointmentModel.findAll({
+    return AppointmentModel.findAll({
         include: [
             {
                 model: Doctor,
@@ -28,11 +28,10 @@ const getAllAppointments = async () => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const getAppointmentById = async (id) => {
-    const appointment = await AppointmentModel.findByPk(id, {
+    return AppointmentModel.findByPk(id, {
         include: [
             {
                 model: Doctor,
@@ -52,11 +51,10 @@ const getAppointmentById = async (id) => {
             }
         ]
     });
-    return appointment;
 }
 
 const getAppointmentsByPatientId = async (patientId) => {
-    const appointments = await AppointmentModel.findAll({
+    return AppointmentModel.findAll({
         where: {
             patientId: patientId
         },
@@ -80,11 +78,10 @@ const getAppointmentsByPatientId = async (patientId) => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const getAllNextAppointments = async () => {
-    const appointments = await AppointmentModel.findAndCountAll({
+    return AppointmentModel.findAndCountAll({
         where: {
             preferredDateTime: {
                 [Op.gt]: new Date()
@@ -92,11 +89,10 @@ const getAllNextAppointments = async () => {
         },
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const getNextAppointmentsByPatientId = async (patientId) => {
-    const appointments = await AppointmentModel.findAndCountAll({
+    return AppointmentModel.findAndCountAll({
         where: {
             patientId: patientId,
             preferredDateTime: {
@@ -105,11 +101,10 @@ const getNextAppointmentsByPatientId = async (patientId) => {
         },
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const getAppointmentsByDoctorId = async (doctorId) => {
-    const appointments = await AppointmentModel.findAll({
+    return AppointmentModel.findAll({
         where: {
             doctorId: doctorId,
         },
@@ -133,17 +128,15 @@ const getAppointmentsByDoctorId = async (doctorId) => {
         ],
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const getNextAppointmentsByDoctorId = async (doctorId) => {
-    const appointments = await AppointmentModel.findAndCountAll({
+    return AppointmentModel.findAndCountAll({
         where: {
             doctorId: doctorId
         },
         order: [['createdAt', 'DESC']]
     });
-    return appointments;
 }
 
 const addAppointment = async (appointmentData) => {
@@ -154,19 +147,17 @@ const addAppointment = async (appointmentData) => {
 }
 
 const changeAppointmentStatus = async (id, status) => {
-    const result = await AppointmentModel.update(
+    return AppointmentModel.update(
         { status },
         { where: { id } }
     );
-    return result;
 }
 
 const updateAppointment = async (id, data) => {
-    const result = await AppointmentModel.update(
+    return AppointmentModel.update(
         data,
         { where: { id, status: 'applied' } }
     );
-    return result;
 }
 
 module.exports = {
