@@ -36,6 +36,23 @@ export class ContactusComponent implements AfterViewInit {
         const coords: google.maps.LatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         this.addMarker(coords, 'user');
         console.log(position);
+        if(this.map) {
+          const directionsService = new google.maps.DirectionsService();
+          const directionsDisplay = new google.maps.DirectionsRenderer();
+          directionsDisplay.setMap(this.map);
+          const req = {
+            origin: coords,
+            destination: this.coordinates,
+            travelMode: google.maps.TravelMode.DRIVING,
+            unitSystem: google.maps.UnitSystem.METRIC
+          }
+          directionsService.route(req, (result, status) => {
+            if(status == google.maps.DirectionsStatus.OK) {
+              console.log(result);
+            } else {
+            }
+          });
+        }
       })
     }
   }
