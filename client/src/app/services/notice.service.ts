@@ -19,6 +19,7 @@ export class NoticeService {
     subject: '', body: '', date: new Date()
   });
   socket: Socket;
+  doDummyTask(){ console.log('some dummy task'); };
   constructor(private http: HttpClient) {
     this.socket = io(environment.wsURL, {
       transports: ['websocket']

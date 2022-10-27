@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
+import { NoticeService } from './services/notice.service';
 
 
 @Component({
@@ -10,7 +11,9 @@ import { PrimeNGConfig } from 'primeng/api';
 export class AppComponent {
   title = 'client';
   
-  constructor(private primengConfig: PrimeNGConfig) {}
+  constructor(private primengConfig: PrimeNGConfig, private noticeService: NoticeService) {
+    noticeService.doDummyTask();
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
