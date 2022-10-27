@@ -27,6 +27,7 @@ sequelize.authenticate()
 // ----------------------- LIVE SERVER CODE -----------------------
 io.on('connection', (socket) => {
     console.log('Connected', socket.id);
+    io.emit('asdasd');
 });
 
 app.set("socket", io);
